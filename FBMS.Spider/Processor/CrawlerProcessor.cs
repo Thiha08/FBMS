@@ -1,0 +1,78 @@
+﻿using FBMS.Core.Attributes;
+using FBMS.SharedKernel;
+using FBMS.SharedKernel.Interfaces;
+using HtmlAgilityPack;
+using HtmlAgilityPack.CssSelectors.NetCore;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FBMS.Spider.Processor
+{
+    public class CrawlerProcessor : ICrawlerProcessor
+    {
+        public IEnumerable<T> Process<T>(HtmlDocument document) where T : BaseEntity, IAggregateRoot
+        {
+            var processorEntities = new List<T>();
+
+            var entityExpression = ReflectionHelper.GetEntityExpression<T>();
+
+            var entityNodes = document.DocumentNode.SelectNodes(entityExpression);
+
+            foreach (var entityNode in entityNodes)
+            {
+                var nameValueDictionary = GetColumnNameValuePairsFromHtml<T>(entityNode);
+
+                var processorEntity = ReflectionHelper.CreateNewEntity<T>();
+                foreach (var pair in nameValueDictionary)
+                {
+                    ReflectionHelper.TrySetProperty(processorEntity, pair.Key, pair.Value);
+                }
+
+                processorEntities.Add(processorEntity as T);
+            }
+
+            return processorEntities;
+        }
+
+        private static Dictionary<string, object> GetColumnNameValuePairsFromHtml<T>(HtmlNode entityNode) where T : BaseEntity, IAggregateRoot
+        {
+            var columnNameValueDictionary = new Dictionary<string, object>();
+
+            var propertyExpressions = ReflectionHelper.GetPropertyAttributes<T>();
+
+            foreach (var expression in propertyExpressions)
+            {
+                var columnName = expression.Key;
+                object columnValue = null;
+                var fieldExpression = expression.Value.Item2;
+
+                switch (expression.Value.Item1)
+                {
+                    case SelectorType.XPath:
+                        var node = entityNode.SelectSingleNode(fieldExpression);
+                        if (node != null)
+                            columnValue = node.InnerText;
+                        break;
+                    case SelectorType.CssSelector:
+                        var nodeCss = entityNode.QuerySelector(fieldExpression);
+                        if (nodeCss != null)
+                            columnValue = nodeCss.InnerText;
+                        break;
+                    case SelectorType.FixedValue:
+                        if (Int32.TryParse(fieldExpression, out var result))
+                        {
+                            columnValue = result;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                columnNameValueDictionary.Add(columnName, columnValue);
+            }
+
+            return columnNameValueDictionary;
+        }
+    }
+}
