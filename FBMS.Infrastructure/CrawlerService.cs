@@ -33,7 +33,9 @@ namespace FBMS.Infrastructure
 
         public async Task CrawlAsync<T>(CrawlerRequestDto request) where T : BaseEntity, IAggregateRoot
         {
-            var links = await _linkReader.GetLinksAsync(request.Url, request.Regex, 0);
+            //var links = await _linkReader.GetLinksAsync(request.Url, request.Regex, 0);
+
+            var links = new List<string> { request.Url };
 
             foreach (var url in links)
             {

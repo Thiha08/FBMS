@@ -20,7 +20,7 @@ namespace FBMS.Spider.Processor
 
             var entityNodes = document.DocumentNode.SelectNodes(entityExpression);
 
-            foreach (var entityNode in entityNodes)
+            foreach (HtmlNode entityNode in entityNodes)
             {
                 var nameValueDictionary = GetColumnNameValuePairsFromHtml<T>(entityNode);
 

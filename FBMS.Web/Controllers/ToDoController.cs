@@ -56,11 +56,18 @@ namespace FBMS.Web.Controllers
                 Url = "https://ag.ibet789.com/_Age/SubAccsWinLose.aspx?role=ag&userName=jxy83",
                 //Regex = @".*itm/.+",
                 TimeOut = 5000,
-                DownloderType = CrawlerDownloaderType.FromMemory,
+                DownloderType = CrawlerDownloaderType.FromWeb,
                 DownloadPath = @"D:\Freelance\Football\FBMS\FBMS\Crawler\"
             };
-            await _crawlerService.CrawlAsync<Catalog>(crawlRequest);
-            return Ok();
+            await _crawlerService.CrawlAsync<Client>(crawlRequest);
+            return RedirectToAction(nameof(Clients));
+        }
+
+        public async Task<IActionResult> Clients()
+        {
+            var items = (await _repository.ListAsync<Client>())
+                            .Select(ClientDTO.FromClient);
+            return View(items);
         }
     }
 }
