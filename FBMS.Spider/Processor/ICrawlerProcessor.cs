@@ -10,6 +10,6 @@ namespace FBMS.Spider.Processor
 {
     public interface ICrawlerProcessor
     {
-        IEnumerable<T> Process<T>(HtmlDocument document) where T : BaseEntity, IAggregateRoot;
+        IEnumerable<TEntity> Process<TEntity>(HtmlDocument document) where TEntity : BaseEntity, IAggregateRoot;
     }
 }

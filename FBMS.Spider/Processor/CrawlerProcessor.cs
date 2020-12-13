@@ -12,35 +12,35 @@ namespace FBMS.Spider.Processor
 {
     public class CrawlerProcessor : ICrawlerProcessor
     {
-        public IEnumerable<T> Process<T>(HtmlDocument document) where T : BaseEntity, IAggregateRoot
+        public IEnumerable<TEntity> Process<TEntity>(HtmlDocument document) where TEntity : BaseEntity, IAggregateRoot
         {
-            var processorEntities = new List<T>();
+            var processorEntities = new List<TEntity>();
 
-            var entityExpression = ReflectionHelper.GetEntityExpression<T>();
+            var entityExpression = ReflectionHelper.GetEntityExpression<TEntity>();
 
             var entityNodes = document.DocumentNode.SelectNodes(entityExpression);
 
             foreach (HtmlNode entityNode in entityNodes)
             {
-                var nameValueDictionary = GetColumnNameValuePairsFromHtml<T>(entityNode);
+                var nameValueDictionary = GetColumnNameValuePairsFromHtml<TEntity>(entityNode);
 
-                var processorEntity = ReflectionHelper.CreateNewEntity<T>();
+                var processorEntity = ReflectionHelper.CreateNewEntity<TEntity>();
                 foreach (var pair in nameValueDictionary)
                 {
                     ReflectionHelper.TrySetProperty(processorEntity, pair.Key, pair.Value);
                 }
 
-                processorEntities.Add(processorEntity as T);
+                processorEntities.Add(processorEntity as TEntity);
             }
 
             return processorEntities;
         }
 
-        private static Dictionary<string, object> GetColumnNameValuePairsFromHtml<T>(HtmlNode entityNode) where T : BaseEntity, IAggregateRoot
+        private static Dictionary<string, object> GetColumnNameValuePairsFromHtml<TEntity>(HtmlNode entityNode) where TEntity : BaseEntity, IAggregateRoot
         {
             var columnNameValueDictionary = new Dictionary<string, object>();
 
-            var propertyExpressions = ReflectionHelper.GetPropertyAttributes<T>();
+            var propertyExpressions = ReflectionHelper.GetPropertyAttributes<TEntity>();
 
             foreach (var expression in propertyExpressions)
             {

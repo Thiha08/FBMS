@@ -7,6 +7,6 @@ namespace FBMS.Core.Interfaces
 {
     public interface ICrawlerService
     {
-        Task CrawlAsync<T>(CrawlerRequestDto request) where T : BaseEntity, IAggregateRoot;
+        Task CrawlAsync<TEntity>(CrawlerRequestDto request) where TEntity : BaseEntity, IAggregateRoot;
     }
 }

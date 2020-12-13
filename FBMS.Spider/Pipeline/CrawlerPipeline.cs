@@ -16,7 +16,7 @@ namespace FBMS.Spider.Pipeline
             _repository = repository;
         }
 
-        public async Task RunAsync<T>(IEnumerable<T> entities) where T : BaseEntity, IAggregateRoot
+        public async Task RunAsync<TEntity>(IEnumerable<TEntity> entities) where TEntity : BaseEntity, IAggregateRoot
         {
             foreach (var entity in entities)
             {

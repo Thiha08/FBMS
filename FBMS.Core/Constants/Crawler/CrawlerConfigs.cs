@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FBMS.Core.Constants.Crawler
 {
-    public class CrawlerConfigs
+    public class CrawlersConfigs
     {
         public string EscoApi { get; set; }
 

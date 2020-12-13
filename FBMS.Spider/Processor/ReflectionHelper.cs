@@ -18,11 +18,11 @@ namespace FBMS.Spider.Processor
             return entityAttribute.XPath;
         }
 
-        public static Dictionary<string, Tuple<SelectorType, string>> GetPropertyAttributes<TEntity>()
+        public static Dictionary<string, Tuple<SelectorType, string>> GetPropertyAttributes<T>()
         {
             var attributeDictionary = new Dictionary<string, Tuple<SelectorType, string>>();
 
-            PropertyInfo[] props = typeof(TEntity).GetProperties();
+            PropertyInfo[] props = typeof(T).GetProperties();
             var propList = props.Where(p => p.CustomAttributes.Count() > 0);
 
             foreach (PropertyInfo prop in propList)

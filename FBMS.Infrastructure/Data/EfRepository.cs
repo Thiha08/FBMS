@@ -20,51 +20,51 @@ namespace FBMS.Infrastructure.Data
             _dbContext = dbContext;
         }
 
-        public T GetById<T>(int id) where T : BaseEntity, IAggregateRoot
+        public TEntity GetById<TEntity>(int id) where TEntity : BaseEntity, IAggregateRoot
         {
-            return _dbContext.Set<T>().SingleOrDefault(e => e.Id == id);
+            return _dbContext.Set<TEntity>().SingleOrDefault(e => e.Id == id);
         }
 
-        public Task<T> GetByIdAsync<T>(int id) where T : BaseEntity, IAggregateRoot
+        public Task<TEntity> GetByIdAsync<TEntity>(int id) where TEntity : BaseEntity, IAggregateRoot
         {
-            return _dbContext.Set<T>().SingleOrDefaultAsync(e => e.Id == id);
+            return _dbContext.Set<TEntity>().SingleOrDefaultAsync(e => e.Id == id);
         }
 
-        public Task<List<T>> ListAsync<T>() where T : BaseEntity, IAggregateRoot
+        public Task<List<TEntity>> ListAsync<TEntity>() where TEntity : BaseEntity, IAggregateRoot
         {
-            return _dbContext.Set<T>().ToListAsync();
+            return _dbContext.Set<TEntity>().ToListAsync();
         }
 
-        public async Task<List<T>> ListAsync<T>(ISpecification<T> spec) where T : BaseEntity, IAggregateRoot
+        public async Task<List<TEntity>> ListAsync<TEntity>(ISpecification<TEntity> spec) where TEntity : BaseEntity, IAggregateRoot
         {
             var specificationResult = ApplySpecification(spec);
             return await specificationResult.ToListAsync();
         }
 
-        public async Task<T> AddAsync<T>(T entity) where T : BaseEntity, IAggregateRoot
+        public async Task<TEntity> AddAsync<TEntity>(TEntity entity) where TEntity : BaseEntity, IAggregateRoot
         {
-            await _dbContext.Set<T>().AddAsync(entity);
+            await _dbContext.Set<TEntity>().AddAsync(entity);
             await _dbContext.SaveChangesAsync();
 
             return entity;
         }
 
-        public async Task UpdateAsync<T>(T entity) where T : BaseEntity, IAggregateRoot
+        public async Task UpdateAsync<TEntity>(TEntity entity) where TEntity : BaseEntity, IAggregateRoot
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync<T>(T entity) where T : BaseEntity, IAggregateRoot
+        public async Task DeleteAsync<TEntity>(TEntity entity) where TEntity : BaseEntity, IAggregateRoot
         {
-            _dbContext.Set<T>().Remove(entity);
+            _dbContext.Set<TEntity>().Remove(entity);
             await _dbContext.SaveChangesAsync();
         }
 
-        private IQueryable<T> ApplySpecification<T>(ISpecification<T> spec) where T : BaseEntity
+        private IQueryable<TEntity> ApplySpecification<TEntity>(ISpecification<TEntity> spec) where TEntity : BaseEntity
         {
-            var evaluator = new SpecificationEvaluator<T>();
-            return evaluator.GetQuery(_dbContext.Set<T>().AsQueryable(), spec);
+            var evaluator = new SpecificationEvaluator<TEntity>();
+            return evaluator.GetQuery(_dbContext.Set<TEntity>().AsQueryable(), spec);
         }
     }
 }

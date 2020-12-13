@@ -12,6 +12,7 @@ using FBMS.Infrastructure;
 using Microsoft.OpenApi.Models;
 using Ardalis.ListStartupServices;
 using Autofac;
+using FBMS.Core.Constants.Crawler;
 
 namespace FBMS.Web
 {
@@ -56,11 +57,20 @@ namespace FBMS.Web
                 // optional - default path to view services is /listallservices - recommended to choose your own path
                 config.Path = "/listservices";
             });
+
+            ConfigureSettings(services);
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
             builder.RegisterModule(new DefaultInfrastructureModule(_env.EnvironmentName == "Development"));
+        }
+
+        private void ConfigureSettings(IServiceCollection services)
+        {
+            var iBetCrawlerConfig = new IBetCrawlerConfig();
+            Configuration.GetSection("IBetCrawlerConfig").Bind(iBetCrawlerConfig);
+            services.AddSingleton(iBetCrawlerConfig);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

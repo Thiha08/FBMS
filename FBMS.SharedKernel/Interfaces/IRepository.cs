@@ -8,11 +8,11 @@ namespace FBMS.SharedKernel.Interfaces
 {
     public interface IRepository
     {
-        Task<T> GetByIdAsync<T>(int id) where T : BaseEntity, IAggregateRoot;
-        Task<List<T>> ListAsync<T>() where T : BaseEntity, IAggregateRoot;
-        Task<List<T>> ListAsync<T>(ISpecification<T> spec) where T : BaseEntity, IAggregateRoot;
-        Task<T> AddAsync<T>(T entity) where T : BaseEntity, IAggregateRoot;
-        Task UpdateAsync<T>(T entity) where T : BaseEntity, IAggregateRoot;
-        Task DeleteAsync<T>(T entity) where T : BaseEntity, IAggregateRoot;
+        Task<TEntity> GetByIdAsync<TEntity>(int id) where TEntity : BaseEntity, IAggregateRoot;
+        Task<List<TEntity>> ListAsync<TEntity>() where TEntity : BaseEntity, IAggregateRoot;
+        Task<List<TEntity>> ListAsync<TEntity>(ISpecification<TEntity> spec) where TEntity : BaseEntity, IAggregateRoot;
+        Task<TEntity> AddAsync<TEntity>(TEntity entity) where TEntity : BaseEntity, IAggregateRoot;
+        Task UpdateAsync<TEntity>(TEntity entity) where TEntity : BaseEntity, IAggregateRoot;
+        Task DeleteAsync<TEntity>(TEntity entity) where TEntity : BaseEntity, IAggregateRoot;
     }
 }

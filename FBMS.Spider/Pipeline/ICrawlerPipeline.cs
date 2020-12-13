@@ -9,6 +9,6 @@ namespace FBMS.Spider.Pipeline
 {
     public interface ICrawlerPipeline
     {
-        Task RunAsync<T>(IEnumerable<T> entities) where T : BaseEntity, IAggregateRoot;
+        Task RunAsync<TEntity>(IEnumerable<TEntity> entities) where TEntity : BaseEntity, IAggregateRoot;
     }
 }
