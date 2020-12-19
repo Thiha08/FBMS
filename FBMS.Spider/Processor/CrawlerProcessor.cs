@@ -53,7 +53,7 @@ namespace FBMS.Spider.Processor
                     case SelectorType.XPath:
                         var node = entityNode.SelectSingleNode(fieldExpression);
                         if (node != null)
-                            columnValue = node.InnerText;
+                            columnValue = node.InnerText?.Replace("&nbsp;","");
                         break;
                     case SelectorType.CssSelector:
                         var nodeCss = entityNode.QuerySelector(fieldExpression);

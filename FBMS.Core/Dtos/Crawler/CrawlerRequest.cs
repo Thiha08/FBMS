@@ -1,13 +1,12 @@
 ﻿using FBMS.Core.Constants.Crawler;
-using System;
+using FBMS.Core.Dtos.Cookies;
 using System.Collections.Generic;
-using System.Text;
 
 namespace FBMS.Core.Dtos.Crawler
 {
-    public class CrawlerRequestDto
+    public class CrawlerRequest
     {
-        public string Url { get; set; }
+        public string BaseUrl { get; set; }
 
         public string Regex { get; set; }
 
@@ -17,5 +16,6 @@ namespace FBMS.Core.Dtos.Crawler
 
         public string DownloadPath { get; set; }
 
+        public Dictionary<string, string> Cookies { get; set; }
     }
 }

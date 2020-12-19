@@ -1,6 +1,5 @@
 ﻿using FBMS.Core;
 using FBMS.Core.Constants.Crawler;
-using FBMS.Core.Dtos.Crawler;
 using FBMS.Core.Entities;
 using FBMS.Core.Interfaces;
 using FBMS.SharedKernel.Interfaces;
@@ -15,11 +14,13 @@ namespace FBMS.Web.Controllers
     {
         private readonly IRepository _repository;
         private readonly ICrawlerService _crawlerService;
+        private readonly IHostApiCrawlerSettings _hostApiCrawlerSettings;
 
-        public ToDoController(IRepository repository, ICrawlerService crawlerService)
+        public ToDoController(IRepository repository, ICrawlerService crawlerService, IHostApiCrawlerSettings hostApiCrawlerSettings)
         {
             _repository = repository;
             _crawlerService = crawlerService;
+            _hostApiCrawlerSettings = hostApiCrawlerSettings;
         }
 
         public async Task<IActionResult> Index()
@@ -35,39 +36,18 @@ namespace FBMS.Web.Controllers
             return Ok(recordsAdded);
         }
 
-        public async Task<IActionResult> Crawl()
-        {
-            var crawlRequest = new CrawlerRequestDto
-            {
-                Url = "https://www.ebay.com/b/Apple-iPhone/9355/bn_319682",
-                Regex = @".*itm/.+",
-                TimeOut = 5000,
-                DownloderType = CrawlerDownloaderType.FromMemory,
-                DownloadPath = @"D:\Freelance\Football\FBMS\FBMS\Crawler\"
-            };
-            await _crawlerService.CrawlAsync<Catalog>(crawlRequest);
-            return Ok();
-        }
-
-        public async Task<IActionResult> CrawlIBet()
-        {
-            var crawlRequest = new CrawlerRequestDto
-            {
-                Url = "https://ag.ibet789.com/_Age/SubAccsWinLose.aspx?role=ag&userName=jxy83",
-                //Regex = @".*itm/.+",
-                TimeOut = 5000,
-                DownloderType = CrawlerDownloaderType.FromWeb,
-                DownloadPath = @"D:\Freelance\Football\FBMS\FBMS\Crawler\"
-            };
-            await _crawlerService.CrawlAsync<Client>(crawlRequest);
-            return RedirectToAction(nameof(Clients));
-        }
-
-        public async Task<IActionResult> Clients()
-        {
-            var items = (await _repository.ListAsync<Client>())
-                            .Select(ClientDTO.FromClient);
-            return View(items);
-        }
+        //public async Task<IActionResult> Crawl()
+        //{
+        //    var crawlRequest = new CrawlerRequestDto
+        //    {
+        //        Url = "https://www.ebay.com/b/Apple-iPhone/9355/bn_319682",
+        //        Regex = @".*itm/.+",
+        //        TimeOut = 5000,
+        //        DownloderType = CrawlerDownloaderType.FromMemory,
+        //        DownloadPath = @"D:\Freelance\Football\FBMS\FBMS\Crawler\"
+        //    };
+        //    await _crawlerService.CrawlAsync<Catalog>(crawlRequest);
+        //    return Ok();
+        //}
     }
 }

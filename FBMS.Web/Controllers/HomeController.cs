@@ -10,7 +10,7 @@ namespace FBMS.Web.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction(nameof(Index), "IBet");
         }
 
         public IActionResult Error()

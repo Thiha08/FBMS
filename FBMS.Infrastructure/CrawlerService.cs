@@ -31,18 +31,18 @@ namespace FBMS.Infrastructure
             _pipeline = pipeline;
         }
 
-        public async Task CrawlAsync<TEntity>(CrawlerRequestDto request) where TEntity : BaseEntity, IAggregateRoot
+        public async Task CrawlAsync<TEntity>(CrawlerRequest request) where TEntity : BaseEntity, IAggregateRoot
         {
             //var links = await _linkReader.GetLinksAsync(request.Url, request.Regex, 0);
 
-            var links = new List<string> { request.Url };
+            //var links = new List<string> { request.BaseUrl };
 
-            foreach (var url in links)
-            {
-                var document = await _downloader.DownloadAsync(url, request.DownloderType, request.DownloadPath);
-                var entity = _processor.Process<TEntity>(document);
-                await _pipeline.RunAsync(entity);
-            }
+            //foreach (var url in links)
+            //{
+            //    var document = await _downloader.DownloadAsync(url, request.DownloderType, request.DownloadPath);
+            //    var entity = _processor.Process<TEntity>(document);
+            //    await _pipeline.RunAsync(entity);
+            //}
         }
     }
 }

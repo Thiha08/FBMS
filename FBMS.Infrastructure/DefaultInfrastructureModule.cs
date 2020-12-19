@@ -2,6 +2,7 @@
 using FBMS.Core;
 using FBMS.Core.Interfaces;
 using FBMS.Infrastructure.Data;
+using FBMS.Infrastructure.Services;
 using FBMS.SharedKernel.Interfaces;
 using FBMS.Spider.Downloader;
 using FBMS.Spider.Pipeline;
@@ -85,26 +86,15 @@ namespace FBMS.Infrastructure
                 .AsImplementedInterfaces();
             }
 
-            builder.RegisterType<EmailSender>().As<IEmailSender>()
-                .InstancePerLifetimeScope();
-
-            builder.RegisterType<CrawlerDownloader>().As<ICrawlerDownloader>()
-               .InstancePerDependency();
-
-            builder.RegisterType<CrawlerPageLinkReader>().As<ICrawlerPageLinkReader>()
-               .InstancePerDependency();
-
-            builder.RegisterType<CrawlerPipeline>().As<ICrawlerPipeline>()
-               .InstancePerDependency();
-
-            builder.RegisterType<CrawlerProcessor>().As<ICrawlerProcessor>()
-               .InstancePerDependency();
-
-            builder.RegisterType<CrawlerScheduler>().As<ICrawlerScheduler>()
-              .InstancePerDependency();
-
-            builder.RegisterType<CrawlerService>().As<ICrawlerService>()
-             .InstancePerDependency();
+            builder.RegisterType<EmailSender>().As<IEmailSender>().InstancePerLifetimeScope();
+            builder.RegisterType<CrawlerDownloader>().As<ICrawlerDownloader>().InstancePerDependency();
+            builder.RegisterType<CrawlerPageLinkReader>().As<ICrawlerPageLinkReader>().InstancePerDependency();
+            builder.RegisterType<CrawlerPipeline>().As<ICrawlerPipeline>().InstancePerDependency();
+            builder.RegisterType<CrawlerProcessor>().As<ICrawlerProcessor>().InstancePerDependency();
+            builder.RegisterType<CrawlerScheduler>().As<ICrawlerScheduler>().InstancePerDependency();
+            builder.RegisterType<CrawlerService>().As<ICrawlerService>().InstancePerDependency();
+            builder.RegisterType<ClientService>().As<IClientService>().InstancePerDependency();
+            builder.RegisterType<TransactionService>().As<ITransactionService>().InstancePerDependency();
         }
 
         private void RegisterDevelopmentOnlyDependencies(ContainerBuilder builder)

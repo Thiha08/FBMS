@@ -1,4 +1,5 @@
 ﻿using FBMS.Core.Constants.Crawler;
+using FBMS.Core.Dtos.Crawler;
 using FBMS.Core.Extensions;
 using HtmlAgilityPack;
 using System;
@@ -14,17 +15,19 @@ namespace FBMS.Spider.Downloader
     public class CrawlerDownloader : ICrawlerDownloader
     {
         private string _localFilePath;
+        private IDictionary<string, string> _cookies;
 
-        public async Task<HtmlDocument> DownloadAsync(string crawlUrl, CrawlerDownloaderType downloderType, string downloadPath)
+        public async Task<HtmlDocument> DownloadAsync(CrawlerRequest request)
         {
             // if exist dont download again
-            PrepareFilePath(crawlUrl, downloadPath);
+            PrepareFilePath(request.BaseUrl, request.DownloadPath);
+            _cookies = request.Cookies;
 
             var existing = GetExistingFile(_localFilePath);
             if (existing != null)
                 return existing;
 
-            return await DownloadInternalAsync(crawlUrl, downloderType);
+            return await DownloadInternalAsync(request.BaseUrl, request.DownloderType);
         }
 
         private async Task<HtmlDocument> DownloadInternalAsync(string crawlUrl, CrawlerDownloaderType downloderType)
@@ -51,13 +54,7 @@ namespace FBMS.Spider.Downloader
                     //HtmlWeb web = new HtmlWeb();
                     //return await web.LoadFromWebAsync(crawlUrl);
                     var htmlDocument2 = new HtmlDocument();
-                    var cookieNameValues = new Dictionary<string, string>();
-                    cookieNameValues.Add("__cfduid", "d789ac8ae5a12e34f2fc00f52d50024db1606743671");
-                    cookieNameValues.Add("ASP.NET_SessionId", "3nrdpknbbdukyd5uacib3jqv");
-                    cookieNameValues.Add("BPX-STICKY-SESSION", "77");
-                    cookieNameValues.Add("IGA_Agent_v8_jxy83", "EEEF49F1327FA52A36241FFEA2042AAADE7D8DC0373C27A9F81B5EFD7027557062847D03DD518F3FE9B237751BBB4F14B066063388EAED28DD1AD14375BCAC55B7AD2F091E6E0D875E273ED94AE50C205AD656598B03DE77D82E4D3170E20791764DC54655FE341A18D467A2FC7AD9D87D9E6B4B598CE986D4AFC0C485CD2E9CD551C5F65AFE43FF0BF02448E6F005EF");
-                    cookieNameValues.Add(".ASPXAUTH", "F43314769630A513029C733F4BF6C2074EC6D09C20FB9DF0D538416C0BB3A808E60630DF62E991A1D3495F3F83CCF0F6683F68457D389D6616B898DD5A387491A8074A0DA44D306748F9DE9C52E14FABB24C57BE0A865E0441F5CFDD400ADC59A1199D43EEDCA2D3F8443905B894C43C9BE5FD92904BA70E3CFC339FA5E0A504");
-                    var htmlCode2 = DownloadStringWithCookies(crawlUrl, Encoding.UTF8, cookieNameValues);
+                    var htmlCode2 = DownloadStringWithCookies(crawlUrl, Encoding.UTF8);
                     htmlDocument2.LoadHtml(htmlCode2);
                     return htmlDocument2;
             }
@@ -98,13 +95,13 @@ namespace FBMS.Spider.Downloader
             return null;
         }
 
-        private string DownloadStringWithCookies(string url, Encoding encoding, IDictionary<string, string> cookieNameValues)
+        private string DownloadStringWithCookies(string url, Encoding encoding)
         {
             using (var webClient = new WebClient())
             {
                 var uri = new Uri(url);
                 var webRequest = WebRequest.Create(uri);
-                foreach (var nameValue in cookieNameValues)
+                foreach (var nameValue in _cookies)
                 {
                     webRequest.TryAddCookie(new Cookie(nameValue.Key, nameValue.Value, "/", uri.Host));
                 }

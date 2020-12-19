@@ -46,7 +46,13 @@ namespace FBMS.Spider.Processor
         {
             var prop = obj.GetType().GetProperty(property, BindingFlags.Public | BindingFlags.Instance);
             if (prop != null && prop.CanWrite)
-                prop.SetValue(obj, value, null);
+            {
+                try
+                {
+                    prop.SetValue(obj, value, null);
+                }
+                catch (Exception e) { }
+            }
         }
     }
 }
