@@ -8,6 +8,8 @@ namespace FBMS.Core.Attributes
     {
         public string Expression { get; set; }
 
+        public string HtmlAttribute { get; set; }
+
         public SelectorType SelectorType { get; set; }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using FBMS.Core.Attributes;
+using FBMS.Core.Extensions;
 using FBMS.SharedKernel;
 using FBMS.SharedKernel.Interfaces;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FBMS.Spider.Processor
 {
@@ -47,18 +46,25 @@ namespace FBMS.Spider.Processor
                 var columnName = expression.Key;
                 object columnValue = null;
                 var fieldExpression = expression.Value.Item2;
+                string attribute = expression.Value.Item3;
 
                 switch (expression.Value.Item1)
                 {
                     case SelectorType.XPath:
                         var node = entityNode.SelectSingleNode(fieldExpression);
                         if (node != null)
-                            columnValue = node.InnerText?.Replace("&nbsp;","");
+                        {
+                            columnValue = string.IsNullOrEmpty(attribute) ?
+                                node.InnerText?.Replace("&nbsp;", "") :
+                                node.Attributes[attribute].Value?.Replace("&nbsp;", "");
+                        }
                         break;
                     case SelectorType.CssSelector:
                         var nodeCss = entityNode.QuerySelector(fieldExpression);
                         if (nodeCss != null)
+                        {
                             columnValue = nodeCss.InnerText;
+                        }
                         break;
                     case SelectorType.FixedValue:
                         if (Int32.TryParse(fieldExpression, out var result))

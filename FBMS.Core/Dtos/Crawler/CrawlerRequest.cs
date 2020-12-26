@@ -1,6 +1,5 @@
-﻿using FBMS.Core.Constants.Crawler;
-using FBMS.Core.Dtos.Cookies;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Net;
 
 namespace FBMS.Core.Dtos.Crawler
 {
@@ -12,10 +11,6 @@ namespace FBMS.Core.Dtos.Crawler
 
         public long TimeOut { get; set; }
 
-        public CrawlerDownloaderType DownloderType { get; set; }
-
-        public string DownloadPath { get; set; }
-
-        public Dictionary<string, string> Cookies { get; set; }
+        public List<Cookie> Cookies { get; set; } = new List<Cookie>();
     }
 }

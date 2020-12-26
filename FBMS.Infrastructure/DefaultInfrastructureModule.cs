@@ -4,6 +4,7 @@ using FBMS.Core.Interfaces;
 using FBMS.Infrastructure.Data;
 using FBMS.Infrastructure.Services;
 using FBMS.SharedKernel.Interfaces;
+using FBMS.Spider.Auth;
 using FBMS.Spider.Downloader;
 using FBMS.Spider.Pipeline;
 using FBMS.Spider.Processor;
@@ -92,6 +93,7 @@ namespace FBMS.Infrastructure
             builder.RegisterType<CrawlerPipeline>().As<ICrawlerPipeline>().InstancePerDependency();
             builder.RegisterType<CrawlerProcessor>().As<ICrawlerProcessor>().InstancePerDependency();
             builder.RegisterType<CrawlerScheduler>().As<ICrawlerScheduler>().InstancePerDependency();
+            builder.RegisterType<CrawlerAuthorization>().As<ICrawlerAuthorization>().InstancePerDependency();
             builder.RegisterType<CrawlerService>().As<ICrawlerService>().InstancePerDependency();
             builder.RegisterType<ClientService>().As<IClientService>().InstancePerDependency();
             builder.RegisterType<TransactionService>().As<ITransactionService>().InstancePerDependency();

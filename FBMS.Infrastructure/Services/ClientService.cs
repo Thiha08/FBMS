@@ -1,7 +1,6 @@
 ﻿using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Dtos.Crawler;
 using FBMS.Core.Entities;
-using FBMS.Core.Extensions;
 using FBMS.Core.Interfaces;
 using FBMS.SharedKernel.Interfaces;
 using FBMS.Spider.Downloader;
@@ -9,6 +8,7 @@ using FBMS.Spider.Pipeline;
 using FBMS.Spider.Processor;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace FBMS.Infrastructure.Services
@@ -35,8 +35,7 @@ namespace FBMS.Infrastructure.Services
             var request = new CrawlerRequest
             {
                 BaseUrl = _hostApiCrawlerSettings.ClientListUrl,
-                DownloderType = CrawlerDownloaderType.FromWeb,
-                Cookies = _hostApiCrawlerSettings.IBetCookie.ToDictionary()
+                Cookies = new List<Cookie>()
             };
             var document = await _downloader.DownloadAsync(request);
             var clients = _processor.Process<Client>(document);

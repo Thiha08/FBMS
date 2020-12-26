@@ -1,4 +1,7 @@
-﻿@model IEnumerable<FBMS.Web.ApiModels.TransactionDTO>
+﻿@using FBMS.Core.Constants
+@using FBMS.Core.Extensions
+
+@model IEnumerable<FBMS.Web.ApiModels.TransactionDTO>
 
 @{
     ViewData["Title"] = "AllTransactions";
@@ -53,7 +56,7 @@
 
         @foreach (var item in Model)
         {
-            <tr>
+            <tr style="@(item.PricingType == PricingType.Parlay.ToDescription() ? "color : red" : "")">
                 <td>
                     @index
                 </td>

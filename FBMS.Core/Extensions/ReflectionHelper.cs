@@ -1,15 +1,15 @@
 ﻿using FBMS.Core.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
-namespace FBMS.Spider.Processor
+namespace FBMS.Core.Extensions
 {
     public class ReflectionHelper
     {
-        internal static string GetEntityExpression<T>()
+        public static string GetEntityExpression<T>()
         {
             var entityAttribute = (typeof(T)).GetCustomAttribute<CrawlerEntityAttribute>();
             if (entityAttribute == null || string.IsNullOrWhiteSpace(entityAttribute.XPath))
@@ -18,9 +18,9 @@ namespace FBMS.Spider.Processor
             return entityAttribute.XPath;
         }
 
-        public static Dictionary<string, Tuple<SelectorType, string>> GetPropertyAttributes<T>()
+        public static Dictionary<string, Tuple<SelectorType, string, string>> GetPropertyAttributes<T>()
         {
-            var attributeDictionary = new Dictionary<string, Tuple<SelectorType, string>>();
+            var attributeDictionary = new Dictionary<string, Tuple<SelectorType, string, string>>();
 
             PropertyInfo[] props = typeof(T).GetProperties();
             var propList = props.Where(p => p.CustomAttributes.Count() > 0);
@@ -30,19 +30,37 @@ namespace FBMS.Spider.Processor
                 var attr = prop.GetCustomAttribute<CrawlerFieldAttribute>();
                 if (attr != null)
                 {
-                    attributeDictionary.Add(prop.Name, Tuple.Create(attr.SelectorType, attr.Expression));
+                    attributeDictionary.Add(prop.Name, Tuple.Create(attr.SelectorType, attr.Expression, attr.HtmlAttribute));
                 }
             }
             return attributeDictionary;
         }
 
-        internal static object CreateNewEntity<T>()
+        public static Dictionary<string, string> GetDescriptionAttributes<T>()
+        {
+            var attributeDictionary = new Dictionary<string, string>();
+
+            PropertyInfo[] props = typeof(T).GetProperties();
+            var propList = props.Where(p => p.CustomAttributes.Count() > 0);
+
+            foreach (PropertyInfo prop in propList)
+            {
+                var attr = prop.GetCustomAttribute<DescriptionAttribute>();
+                if (attr != null)
+                {
+                    attributeDictionary.Add(prop.Name, attr.Description);
+                }
+            }
+            return attributeDictionary;
+        }
+
+        public static object CreateNewEntity<T>()
         {
             object instance = Activator.CreateInstance(typeof(T));
             return instance;
         }
 
-        internal static void TrySetProperty(object obj, string property, object value)
+        public static void TrySetProperty(object obj, string property, object value)
         {
             var prop = obj.GetType().GetProperty(property, BindingFlags.Public | BindingFlags.Instance);
             if (prop != null && prop.CanWrite)

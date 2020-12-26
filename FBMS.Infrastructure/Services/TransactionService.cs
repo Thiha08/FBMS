@@ -1,16 +1,21 @@
 ﻿using FBMS.Core.Constants.Crawler;
+using FBMS.Core.Dtos.Auth;
 using FBMS.Core.Dtos.Crawler;
 using FBMS.Core.Entities;
 using FBMS.Core.Extensions;
 using FBMS.Core.Interfaces;
 using FBMS.Core.Specifications;
 using FBMS.SharedKernel.Interfaces;
+using FBMS.Spider.Auth;
 using FBMS.Spider.Downloader;
 using FBMS.Spider.Pipeline;
 using FBMS.Spider.Processor;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 
 namespace FBMS.Infrastructure.Services
@@ -20,14 +25,16 @@ namespace FBMS.Infrastructure.Services
         private readonly ICrawlerDownloader _downloader;
         private readonly ICrawlerProcessor _processor;
         private readonly ICrawlerPipeline _pipeline;
+        private readonly ICrawlerAuthorization _crawlerAuthorization;
         private readonly IHostApiCrawlerSettings _hostApiCrawlerSettings;
         private readonly IRepository _repository;
 
-        public TransactionService(ICrawlerDownloader downloader, ICrawlerProcessor processor, ICrawlerPipeline pipeline, IHostApiCrawlerSettings hostApiCrawlerSettings, IRepository repository)
+        public TransactionService(ICrawlerDownloader downloader, ICrawlerProcessor processor, ICrawlerPipeline pipeline, ICrawlerAuthorization crawlerAuthorization, IHostApiCrawlerSettings hostApiCrawlerSettings, IRepository repository)
         {
             _downloader = downloader;
             _processor = processor;
             _pipeline = pipeline;
+            _crawlerAuthorization = crawlerAuthorization;
             _hostApiCrawlerSettings = hostApiCrawlerSettings;
             _repository = repository;
         }
@@ -44,8 +51,7 @@ namespace FBMS.Infrastructure.Services
                     .Replace("{{CLIENT_NAME}}", client.Account.Replace("*", ""))
                     .Replace("{{START_DATE}}", startDate)
                     .Replace("{{END_DATE}}", endDate),
-                DownloderType = CrawlerDownloaderType.FromWeb,
-                Cookies = _hostApiCrawlerSettings.IBetCookie.ToDictionary()
+                Cookies = new List<Cookie>()
             };
             var document = await _downloader.DownloadAsync(request);
             var transactions = _processor.Process<Transaction>(document);
@@ -63,6 +69,41 @@ namespace FBMS.Infrastructure.Services
             var endDate = DateTime.UtcNow.ToString("MM/dd/yyyy");
             var clients = await _repository.ListAsync<Client>();
 
+            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
+
+            if (!authResponse.isSignedIn)
+            {
+                var htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(authResponse.HtmlCode);
+                var formData = (_processor.Process<SignInCrawlingDto>(htmlDocument)).FirstOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(formData.AuthUrl))
+                {
+                    var authRequest = new AuthRequest
+                    {
+                        AuthUrl = _hostApiCrawlerSettings.AuthUrl + formData.AuthUrl.Replace("./", ""),
+                        Cookies = authResponse.Cookies
+                    };
+
+                    authRequest.RequestForm = new SignInDto
+                    {
+                        EventTarget = "btnSignIn",
+                        EventArgument = "",
+                        EventValidation = formData.EventValidation,
+                        ViewState = formData.ViewState,
+                        ViewStateGenerator = formData.ViewStateGenerator,
+                        TxtUserName = _hostApiCrawlerSettings.UserName,
+                        TxtPassword = _hostApiCrawlerSettings.Password
+                    };
+
+                    authResponse = await _crawlerAuthorization.SignInAsync(authRequest);
+                    if (!authResponse.isSignedIn)
+                    {
+                        throw new AuthenticationException(authResponse.HtmlCode);
+                    }
+                }
+            }
+
             foreach (var client in clients)
             {
                 var request = new CrawlerRequest
@@ -71,8 +112,7 @@ namespace FBMS.Infrastructure.Services
                     .Replace("{{CLIENT_NAME}}", client.Account.Replace("*", ""))
                     .Replace("{{START_DATE}}", startDate)
                     .Replace("{{END_DATE}}", endDate),
-                    DownloderType = CrawlerDownloaderType.FromWeb,
-                    Cookies = _hostApiCrawlerSettings.IBetCookie.ToDictionary()
+                    Cookies = authResponse.Cookies
                 };
                 var document = await _downloader.DownloadAsync(request);
                 var transactions = _processor.Process<Transaction>(document);
