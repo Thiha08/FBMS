@@ -1,11 +1,11 @@
-﻿using FBMS.Core.Dtos.Auth;
+﻿using FBMS.Core.Constants;
+using FBMS.Core.Dtos.Auth;
 using FBMS.Core.Extensions;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,25 +13,42 @@ namespace FBMS.Spider.Auth
 {
     public class CrawlerAuthorization : ICrawlerAuthorization
     {
+        private readonly IMemoryCache memoryCache;
+
+        public CrawlerAuthorization(IMemoryCache memoryCache)
+        {
+            this.memoryCache = memoryCache;
+        }
+
         public async Task<AuthResponse> IsSignedInAsync(string baseUrl)
         {
             using (var webClient = new WebClient())
             {
                 var uri = new Uri(baseUrl);
                 var webRequest = (HttpWebRequest)WebRequest.Create(uri);
-                webRequest.CookieContainer = new CookieContainer();
 
+                if (!memoryCache.TryGetValue(CacheKeys.IBetAuthCookies, out List<Cookie> authCookies))
+                {
+                    webRequest.CookieContainer = new CookieContainer();
+                }
+                else
+                {
+                    foreach (var cookie in authCookies)
+                    {
+                        webRequest.TryAddCookie(cookie);
+                    }
+                }
                 var authResponse = new AuthResponse();
                 using (var response = (HttpWebResponse)webRequest.GetResponse())
                 {
                     authResponse.BaseUrl = response.ResponseUri;
+                    if (authResponse.BaseUrl.AbsoluteUri == baseUrl)
+                    {
+                        authResponse.isSignedIn = true;
+                    }
                     authResponse.Cookies = new List<Cookie>();
                     foreach (Cookie cookie in response.Cookies)
                     {
-                        if (cookie.Name == ".ASPXAUTH")
-                        {
-                            authResponse.isSignedIn = true;
-                        }
                         authResponse.Cookies.Add(cookie);
                     }
                     var receiveStream = response.GetResponseStream();
@@ -67,6 +84,16 @@ namespace FBMS.Spider.Auth
                             authResponse.isSignedIn = true;
                         }
                         authResponse.Cookies.Add(cookie);
+                    }
+                    if (authResponse.isSignedIn)
+                    {
+                        var cacheExpiryOptions = new MemoryCacheEntryOptions
+                        {
+                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                            Priority = CacheItemPriority.High,
+                            SlidingExpiration = TimeSpan.FromMinutes(10)
+                        };
+                        memoryCache.Set(CacheKeys.IBetAuthCookies, authResponse.Cookies, cacheExpiryOptions);
                     }
                     var receiveStream = response.GetResponseStream();
                     var readStream = new StreamReader(receiveStream, Encoding.UTF8);

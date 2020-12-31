@@ -54,6 +54,8 @@ namespace FBMS.Web
                 c.EnableAnnotations();
             });
 
+            services.AddMemoryCache();
+
             // add list services for diagnostic purposes - see https://github.com/ardalis/AspNetCoreStartupServices
             services.Configure<ServiceConfig>(config =>
             {
