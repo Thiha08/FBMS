@@ -56,7 +56,7 @@
 
         @foreach (var item in Model)
         {
-            <tr style="@(item.PricingType == PricingType.Parlay.ToDescription() ? "color : red" : "")">
+            <tr style="@(item.PricingType == TransactionType.Parlay.ToDescription() ? "color : red" : "")">
                 <td>
                     @index
                 </td>

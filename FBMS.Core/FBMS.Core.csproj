@@ -12,6 +12,7 @@
     <PackageReference Include="Ardalis.GuardClauses" Version="3.0.1" />
     <PackageReference Include="Ardalis.Result" Version="3.0.2" />
     <PackageReference Include="Ardalis.Specification" Version="4.1.0" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.18" />
     <PackageReference Include="MediatR" Version="9.0.0" />
   </ItemGroup>
 

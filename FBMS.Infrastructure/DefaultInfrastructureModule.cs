@@ -2,6 +2,7 @@
 using FBMS.Core;
 using FBMS.Core.Interfaces;
 using FBMS.Infrastructure.Data;
+using FBMS.Infrastructure.HangfireServices;
 using FBMS.Infrastructure.Services;
 using FBMS.SharedKernel.Interfaces;
 using FBMS.Spider.Auth;
@@ -11,10 +12,8 @@ using FBMS.Spider.Processor;
 using FBMS.Spider.Scheduler;
 using MediatR;
 using MediatR.Pipeline;
-using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Module = Autofac.Module;
 
 namespace FBMS.Infrastructure
@@ -97,6 +96,7 @@ namespace FBMS.Infrastructure
             builder.RegisterType<CrawlerService>().As<ICrawlerService>().InstancePerDependency();
             builder.RegisterType<ClientService>().As<IClientService>().InstancePerDependency();
             builder.RegisterType<TransactionService>().As<ITransactionService>().InstancePerDependency();
+            builder.RegisterType<TransactionHostedService>().As<ITransactionHostedService>().InstancePerDependency();
         }
 
         private void RegisterDevelopmentOnlyDependencies(ContainerBuilder builder)

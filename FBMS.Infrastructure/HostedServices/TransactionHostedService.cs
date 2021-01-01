@@ -29,7 +29,7 @@ namespace FBMS.Infrastructure.HostedServices
             _logger.LogInformation("Transaction Hosted Service running.");
 
             _timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromMilliseconds(_hostApiCrawlerSettings.TriggerPerMilliseconds));
+                TimeSpan.FromMilliseconds(12000));
 
             return Task.CompletedTask;
         }

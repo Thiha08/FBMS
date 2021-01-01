@@ -4,6 +4,7 @@ using FBMS.Core.Entities;
 using FBMS.Core.Interfaces;
 using FBMS.SharedKernel.Interfaces;
 using FBMS.Web.ApiModels;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,12 +16,14 @@ namespace FBMS.Web.Controllers
         private readonly IRepository _repository;
         private readonly IClientService _clientService;
         private readonly ITransactionService _transactionService;
+        private readonly ITransactionHostedService _transactionHostedService;
 
-        public IBetController(IRepository repository, IClientService clientService, ITransactionService transactionService)
+        public IBetController(IRepository repository, IClientService clientService, ITransactionService transactionService, ITransactionHostedService transactionHostedService)
         {
             _repository = repository;
             _clientService = clientService;
             _transactionService = transactionService;
+            _transactionHostedService = transactionHostedService;
         }
 
         public async Task<IActionResult> Index()
@@ -84,6 +87,18 @@ namespace FBMS.Web.Controllers
         public async Task<IActionResult> DeleteAllTransactions()
         {
             await _transactionService.DeleteAllAsync();
+            return RedirectToAction(nameof(AllTransactions));
+        }
+
+        public async Task<IActionResult> StartTransactionBackgroundJob()
+        {
+            await _transactionHostedService.StartAsync();
+            return RedirectToAction(nameof(AllTransactions));
+        }
+
+        public async Task<IActionResult> StopTransactionBackgroundJob()
+        {
+            await _transactionHostedService.StopAsync();
             return RedirectToAction(nameof(AllTransactions));
         }
     }

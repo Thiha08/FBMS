@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FBMS.Core.Constants
 {
-    public enum PricingType
+    public enum TransactionType
     {
         [Description("Parlay")]
         Parlay,

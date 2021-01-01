@@ -8,8 +8,6 @@
 
         public string Password { get; set; }
 
-        public int TriggerPerMilliseconds { get; set; }
-
         public string AuthUrl { get; set; }
 
         public string ClientListUrl { get; set; }
