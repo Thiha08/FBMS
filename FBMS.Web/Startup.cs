@@ -41,6 +41,7 @@ namespace FBMS.Web
 
             services.AddDbContext(connectionString);
             services.AddIdentityCore();
+            services.AddHostedService();
 
             services.AddControllersWithViews().AddNewtonsoftJson();
 

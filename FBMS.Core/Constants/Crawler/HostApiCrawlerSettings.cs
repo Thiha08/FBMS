@@ -1,6 +1,4 @@
-﻿using FBMS.Core.Dtos.Cookies;
-
-namespace FBMS.Core.Constants.Crawler
+﻿namespace FBMS.Core.Constants.Crawler
 {
     public class HostApiCrawlerSettings : IHostApiCrawlerSettings
     {
@@ -10,14 +8,12 @@ namespace FBMS.Core.Constants.Crawler
 
         public string Password { get; set; }
 
-        public int TriggerPerMinutes { get; set; }
+        public int TriggerPerMilliseconds { get; set; }
 
         public string AuthUrl { get; set; }
 
         public string ClientListUrl { get; set; }
 
         public string ClientTransactionsUrl { get; set; }
-
-        public IBetCookie IBetCookie { get; set; }
     }
 }
