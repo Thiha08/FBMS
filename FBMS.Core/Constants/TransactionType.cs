@@ -8,18 +8,18 @@ namespace FBMS.Core.Constants
     public enum TransactionType
     {
         [Description("Parlay")]
-        Parlay,
+        Parlay = 100,
 
         [Description("Home")]
-        Home,
+        Home = 200,
 
         [Description("Away")]
-        Away,
+        Away = 300,
 
         [Description("OVER")]
-        Over,
+        Over = 400,
 
         [Description("Under")]
-        Under
+        Under = 500
     }
 }

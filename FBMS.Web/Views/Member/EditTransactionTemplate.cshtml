@@ -1,0 +1,112 @@
+﻿@*@using FMS.Data.Constants
+@using FMS.Data.Constants.Units
+@using FMS.Data.Extensions
+@using FMS.Data.Entities.CropProductions.ViewModels
+
+@model CropProductionCreateOrEditViewModel
+
+
+@{
+    ViewData["Title"] = "Edit Crop Production";
+
+    var availableProductionTypes = EnumerationUtility.GetValues<ProductionType>();
+    var availableCrops = (List<CropOverviewViewModel>)ViewBag.CropList;
+}
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Edit">
+
+                <input asp-for="Id" class="form-control" />
+
+                <div class="card ">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">local_florist</i>
+                        </div>
+                        <h4 class="card-title">Update Crop Production</h4>
+                    </div>
+                    <div class="card-body ">
+                        <div class="row">
+                            <label asp-for="Name" class="col-md-3 col-form-label"></label>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <input asp-for="Name" class="form-control" />
+
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="CropId" class="col-md-3 col-form-label"></label>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <select asp-for="CropId" class="form-control">
+                                        <option value="0"> - </option>
+                                        @foreach (var crop in availableCrops)
+                                        {
+                                            <option value="@crop.Id">@crop.Name</option>
+                                        }
+                                    </select>
+
+                                    <span asp-validation-for="CropId" class="text-danger"></span>
+                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="ProductionType" class="col-md-3 col-form-label"></label>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <select asp-for="ProductionType" class="form-control">
+                                        @foreach (var productionType in availableProductionTypes)
+                                        {
+                                            <option value="@productionType">@productionType.Description()</option>
+                                        }
+                                    </select>
+
+                                    <span asp-validation-for="ProductionType" class="text-danger"></span>
+                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="Location" class="col-md-3 col-form-label"></label>
+                            <div class="col-md-9">
+                                <div class="form-group bmd-form-group">
+                                    <input asp-for="Location" class="form-control" />
+
+                                    <span asp-validation-for="Location" class="text-danger"></span>
+                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer ">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <button type="submit" class="btn btn-fill btn-success">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <div>
+        <a class="back-to" asp-action="Index">Back to List</a>
+    </div>
+
+</div>*@
+
+
+
+
+

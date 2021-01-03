@@ -1,0 +1,66 @@
+﻿using FBMS.Core.Dtos.Filters;
+using FBMS.Core.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
+namespace FBMS.Web.Controllers
+{
+    public class MemberController : BaseController
+    {
+        private readonly IMemberService _memberService;
+
+        public MemberController(IMemberService memberService)
+        {
+            _memberService = memberService;
+        }
+
+        public async Task<IActionResult> Index([FromQuery] MemberFilterDto filter)
+        {
+            filter = filter ?? new MemberFilterDto();
+
+            filter.IsPagingEnabled = false;
+
+            return View(await _memberService.GetMembers(filter));
+        }
+
+        // GET: Worker/Create
+        public async Task<IActionResult> Crawl()
+        {
+            await _memberService.CrawlMembers();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Enable(int id)
+        {
+            await _memberService.EnableMember(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Disable(int id)
+        {
+            await _memberService.DeleteMember(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<ActionResult> EditTransactionTemplate(long id)
+        {
+            //var model = await _cropRepository.GetSingleAsync(x => x.Status && x.Id == id);
+
+            //if (model == null)
+            //{
+            //    return RedirectToAction(nameof(Index));
+            //}
+
+            //var viewModel = new CropCreateOrEditViewModel
+            //{
+            //    Id = model.Id,
+            //    Name = model.Name,
+            //    Type = model.Type,
+            //    Category = model.Category,
+            //    DefaultUnit = model.DefaultUnit
+            //};
+
+            return View();
+        }
+    }
+}

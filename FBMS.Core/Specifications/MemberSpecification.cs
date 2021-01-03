@@ -4,18 +4,18 @@ using FBMS.Core.Specifications.Filters;
 
 namespace FBMS.Core.Specifications
 {
-    public class ClientSpecification : Specification<Client>
+    public class MemberSpecification : Specification<Member>
     {
-        public ClientSpecification(ClientFilter filter)
+        public MemberSpecification(MemberFilter filter)
         {
-            Query.OrderBy(x => x.Account);
+            Query.OrderBy(x => x.UserName);
 
             if (filter.IsPagingEnabled)
                 Query.Skip(PaginationHelper.CalculateSkip(filter))
                      .Take(PaginationHelper.CalculateTake(filter));
 
-            if (!string.IsNullOrEmpty(filter.Account))
-                Query.Where(x => x.Account == filter.Account);
+            if (!string.IsNullOrEmpty(filter.UserName))
+                Query.Where(x => x.UserName == filter.UserName);
 
             if (filter.Status.HasValue)
                 Query.Where(x => x.Status == filter.Status);

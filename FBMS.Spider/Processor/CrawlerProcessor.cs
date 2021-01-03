@@ -1,7 +1,6 @@
 ﻿using FBMS.Core.Attributes;
+using FBMS.Core.Ctos;
 using FBMS.Core.Extensions;
-using FBMS.SharedKernel;
-using FBMS.SharedKernel.Interfaces;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using System;
@@ -11,7 +10,7 @@ namespace FBMS.Spider.Processor
 {
     public class CrawlerProcessor : ICrawlerProcessor
     {
-        public IEnumerable<TEntity> Process<TEntity>(HtmlDocument document) where TEntity : BaseEntity, IAggregateRoot
+        public IEnumerable<TEntity> Process<TEntity>(HtmlDocument document) where TEntity : BaseCto
         {
             var processorEntities = new List<TEntity>();
 
@@ -35,7 +34,7 @@ namespace FBMS.Spider.Processor
             return processorEntities;
         }
 
-        private static Dictionary<string, object> GetColumnNameValuePairsFromHtml<TEntity>(HtmlNode entityNode) where TEntity : BaseEntity, IAggregateRoot
+        private static Dictionary<string, object> GetColumnNameValuePairsFromHtml<TEntity>(HtmlNode entityNode) where TEntity : BaseCto
         {
             var columnNameValueDictionary = new Dictionary<string, object>();
 

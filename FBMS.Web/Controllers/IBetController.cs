@@ -14,11 +14,11 @@ namespace FBMS.Web.Controllers
     public class IBetController : Controller
     {
         private readonly IRepository _repository;
-        private readonly IClientService _clientService;
+        private readonly IMemberService _clientService;
         private readonly ITransactionService _transactionService;
         private readonly ITransactionHostedService _transactionHostedService;
 
-        public IBetController(IRepository repository, IClientService clientService, ITransactionService transactionService, ITransactionHostedService transactionHostedService)
+        public IBetController(IRepository repository, IMemberService clientService, ITransactionService transactionService, ITransactionHostedService transactionHostedService)
         {
             _repository = repository;
             _clientService = clientService;
@@ -31,17 +31,17 @@ namespace FBMS.Web.Controllers
             return View();
         }
 
-        public async Task<IActionResult> CrawlClients()
-        {
-            await _clientService.CrawlClients();
-            return RedirectToAction(nameof(Clients));
-        }
+        //public async Task<IActionResult> CrawlClients()
+        //{
+        //    await _clientService.CrawlClients();
+        //    return RedirectToAction(nameof(Clients));
+        //}
 
-        public async Task<IActionResult> Clients()
-        {
-            var items = await _clientService.GetClients();
-            return View(items);
-        }
+        //public async Task<IActionResult> Clients()
+        //{
+        //    var items = await _clientService.GetClients();
+        //    return View(items);
+        //}
 
         //public async Task<IActionResult> DeleteClients()
         //{

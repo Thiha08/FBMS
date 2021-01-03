@@ -4,9 +4,9 @@ using System.Text;
 
 namespace FBMS.Core.Specifications.Filters
 {
-    public class ClientFilter : BaseFilter
+    public class MemberFilter : BaseFilter
     {
-        public string Account { get; set; }
+        public string UserName { get; set; }
 
         public bool? Status { get; set; }
     }

@@ -1,8 +1,9 @@
-﻿using FBMS.Core.Constants.Crawler;
+﻿using AutoMapper;
+using FBMS.Core.Constants.Crawler;
+using FBMS.Core.Ctos;
 using FBMS.Core.Dtos.Auth;
 using FBMS.Core.Dtos.Crawler;
 using FBMS.Core.Entities;
-using FBMS.Core.Extensions;
 using FBMS.Core.Interfaces;
 using FBMS.Core.Specifications;
 using FBMS.SharedKernel.Interfaces;
@@ -28,8 +29,9 @@ namespace FBMS.Infrastructure.Services
         private readonly ICrawlerAuthorization _crawlerAuthorization;
         private readonly IHostApiCrawlerSettings _hostApiCrawlerSettings;
         private readonly IRepository _repository;
+        private readonly IMapper _mapper;
 
-        public TransactionService(ICrawlerDownloader downloader, ICrawlerProcessor processor, ICrawlerPipeline pipeline, ICrawlerAuthorization crawlerAuthorization, IHostApiCrawlerSettings hostApiCrawlerSettings, IRepository repository)
+        public TransactionService(ICrawlerDownloader downloader, ICrawlerProcessor processor, ICrawlerPipeline pipeline, ICrawlerAuthorization crawlerAuthorization, IHostApiCrawlerSettings hostApiCrawlerSettings, IRepository repository, IMapper mapper)
         {
             _downloader = downloader;
             _processor = processor;
@@ -37,28 +39,31 @@ namespace FBMS.Infrastructure.Services
             _crawlerAuthorization = crawlerAuthorization;
             _hostApiCrawlerSettings = hostApiCrawlerSettings;
             _repository = repository;
+            _mapper = mapper;
         }
 
-        public async Task CrawlAsync(int clientId)
+        public async Task CrawlAsync(int memberId)
         {
             var startDate = DateTime.UtcNow.ToString("MM/dd/yyyy");
             var endDate = DateTime.UtcNow.ToString("MM/dd/yyyy");
-            var client = await _repository.GetByIdAsync<Client>(clientId);
+            var member = await _repository.GetByIdAsync<Member>(memberId);
 
             var request = new CrawlerRequest
             {
                 BaseUrl = _hostApiCrawlerSettings.ClientTransactionsUrl
-                    .Replace("{{CLIENT_NAME}}", client.Account.Replace("*", ""))
+                    .Replace("{{CLIENT_NAME}}", member.UserName)
                     .Replace("{{START_DATE}}", startDate)
                     .Replace("{{END_DATE}}", endDate),
                 Cookies = new List<Cookie>()
             };
             var document = await _downloader.DownloadAsync(request);
-            var transactions = _processor.Process<Transaction>(document);
-            transactions = transactions.Where(x => !string.IsNullOrWhiteSpace(x.Account));
+            var transactionCtos = _processor.Process<TransactionCto>(document);
+            transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName));
+
+            var transactions = _mapper.Map<List<Transaction>>(transactionCtos);
             foreach (var item in transactions)
             {
-                item.Client = client;
+                item.MemberId = member.Id;
             }
             await _pipeline.RunAsync(transactions);
         }
@@ -67,7 +72,7 @@ namespace FBMS.Infrastructure.Services
         {
             var startDate = DateTime.UtcNow.ToString("MM/dd/yyyy");
             var endDate = DateTime.UtcNow.ToString("MM/dd/yyyy");
-            var clients = await _repository.ListAsync<Client>();
+            var members = await _repository.ListAsync<Member>();
 
             var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
 
@@ -75,7 +80,7 @@ namespace FBMS.Infrastructure.Services
             {
                 var htmlDocument = new HtmlDocument();
                 htmlDocument.LoadHtml(authResponse.HtmlCode);
-                var formData = (_processor.Process<SignInCrawlingDto>(htmlDocument)).FirstOrDefault();
+                var formData = (_processor.Process<SignInCto>(htmlDocument)).FirstOrDefault();
 
                 if (!string.IsNullOrWhiteSpace(formData.AuthUrl))
                 {
@@ -104,22 +109,24 @@ namespace FBMS.Infrastructure.Services
                 }
             }
 
-            foreach (var client in clients)
+            foreach (var member in members)
             {
                 var request = new CrawlerRequest
                 {
                     BaseUrl = _hostApiCrawlerSettings.ClientTransactionsUrl
-                    .Replace("{{CLIENT_NAME}}", client.Account.Replace("*", ""))
+                    .Replace("{{CLIENT_NAME}}", member.UserName)
                     .Replace("{{START_DATE}}", startDate)
                     .Replace("{{END_DATE}}", endDate),
                     Cookies = authResponse.Cookies
                 };
                 var document = await _downloader.DownloadAsync(request);
-                var transactions = _processor.Process<Transaction>(document);
-                transactions = transactions.Where(x => !string.IsNullOrWhiteSpace(x.Account));
+                var transactionCtos = _processor.Process<TransactionCto>(document);
+                transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName));
+
+                var transactions = _mapper.Map<List<Transaction>>(transactionCtos);
                 foreach (var item in transactions)
                 {
-                    item.Client = client;
+                    item.MemberId = member.Id;
                 }
                 await _pipeline.RunAsync(transactions);
             }

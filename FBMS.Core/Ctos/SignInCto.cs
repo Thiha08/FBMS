@@ -1,15 +1,10 @@
 ﻿using FBMS.Core.Attributes;
-using FBMS.SharedKernel;
-using FBMS.SharedKernel.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+using FBMS.Core.Ctos;
 
-namespace FBMS.Core.Dtos.Auth
+namespace FBMS.Core.Ctos
 {
     [CrawlerEntity(XPath = "//form[@id='form1']")]
-    public class SignInCrawlingDto : BaseEntity, IAggregateRoot
+    public class SignInCto : BaseCto
     {
         [CrawlerField(Expression = "//form[@id='form1']", HtmlAttribute = "action", SelectorType = SelectorType.XPath)]
         public string AuthUrl { get; set; }

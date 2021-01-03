@@ -24,9 +24,10 @@ namespace FBMS.Infrastructure.Data
         }
 
         public DbSet<ToDoItem> ToDoItems { get; set; }
-        public DbSet<Client> Clients { get; set; }
+        public DbSet<Member> Members { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<Catalog> Catalogs { get; set; }
+        public DbSet<TransactionTemplate> TransactionTemplates { get; set; }
+        public DbSet<TransactionTemplateItem> TransactionTemplateItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FBMS.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201219180222_TransactionAccount")]
-    partial class TransactionAccount
+    [Migration("20210103203552_InitialSetup")]
+    partial class InitialSetup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,49 +21,28 @@ namespace FBMS.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.1");
 
-            modelBuilder.Entity("FBMS.Core.Entities.Catalog", b =>
+            modelBuilder.Entity("FBMS.Core.Entities.Member", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("CatalogBrandId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("CatalogTypeId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PictureUri")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Catalogs");
-                });
-
-            modelBuilder.Entity("FBMS.Core.Entities.Client", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Account")
+                    b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("FBMS.Core.Entities.ToDoItem", b =>
@@ -73,10 +52,19 @@ namespace FBMS.Infrastructure.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDone")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Status")
                         .HasColumnType("bit");
 
                     b.Property<string>("Title")
@@ -95,26 +83,20 @@ namespace FBMS.Infrastructure.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Account")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("AwayTeam")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Date")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Detail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Event")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("HomeTeam")
                         .HasColumnType("nvarchar(max)");
@@ -122,23 +104,92 @@ namespace FBMS.Infrastructure.Migrations
                     b.Property<string>("League")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Pricing")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("PricingType")
+                    b.Property<string>("Pricing")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SerialNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
                     b.Property<string>("TransactionNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("FBMS.Core.Entities.TransactionTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId")
+                        .IsUnique();
+
+                    b.ToTable("TransactionTemplates");
+                });
+
+            modelBuilder.Entity("FBMS.Core.Entities.TransactionTemplateItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("AmountPercent")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsInverse")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("TransactionTemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransactionTemplateId");
+
+                    b.ToTable("TransactionTemplateItems");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -337,15 +388,20 @@ namespace FBMS.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("FBMS.Core.Entities.Transaction", b =>
+            modelBuilder.Entity("FBMS.Core.Entities.TransactionTemplate", b =>
                 {
-                    b.HasOne("FBMS.Core.Entities.Client", "Client")
-                        .WithMany("Transactions")
-                        .HasForeignKey("ClientId")
+                    b.HasOne("FBMS.Core.Entities.Member", null)
+                        .WithOne("TransactionTemplate")
+                        .HasForeignKey("FBMS.Core.Entities.TransactionTemplate", "MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("Client");
+            modelBuilder.Entity("FBMS.Core.Entities.TransactionTemplateItem", b =>
+                {
+                    b.HasOne("FBMS.Core.Entities.TransactionTemplate", null)
+                        .WithMany("TemplateItems")
+                        .HasForeignKey("TransactionTemplateId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -399,9 +455,14 @@ namespace FBMS.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FBMS.Core.Entities.Client", b =>
+            modelBuilder.Entity("FBMS.Core.Entities.Member", b =>
                 {
-                    b.Navigation("Transactions");
+                    b.Navigation("TransactionTemplate");
+                });
+
+            modelBuilder.Entity("FBMS.Core.Entities.TransactionTemplate", b =>
+                {
+                    b.Navigation("TemplateItems");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FBMS.Core.Dtos
+﻿namespace FBMS.Core.Dtos
 {
     public class BaseDto
     {

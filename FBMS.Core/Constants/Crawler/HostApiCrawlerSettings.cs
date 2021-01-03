@@ -10,6 +10,8 @@
 
         public string AuthUrl { get; set; }
 
+        public string AllClientListUrl { get; set; }
+
         public string ClientListUrl { get; set; }
 
         public string ClientTransactionsUrl { get; set; }

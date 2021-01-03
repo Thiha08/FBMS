@@ -6,10 +6,8 @@ namespace FBMS.Core.Entities
 {
     public class TransactionTemplate : BaseEntity, IAggregateRoot
     {
-        public List<TransactionTemplateItem> Items { get; set; }
+        public int MemberId { get; set; }
 
-        public int ClientId { get; set; }
-
-        public Client Client { get; set; }
+        public List<TransactionTemplateItem> TemplateItems { get; set; }
     }
 }

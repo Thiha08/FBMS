@@ -8,9 +8,9 @@ namespace FBMS.Core.Specifications
 {
     public class TransactionSpecification : Specification<Transaction>
     {
-        public TransactionSpecification(int clientId)
+        public TransactionSpecification(int memberId)
         {
-            Query.Where(x => x.ClientId == clientId);
+            Query.Where(x => x.MemberId == memberId);
         }
     }
 }

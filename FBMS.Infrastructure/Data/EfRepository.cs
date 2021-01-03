@@ -48,6 +48,8 @@ namespace FBMS.Infrastructure.Data
 
         public async Task<TEntity> AddAsync<TEntity>(TEntity entity) where TEntity : BaseEntity, IAggregateRoot
         {
+            entity.Status = true;
+            entity.DateCreated = DateTime.Now;
             await _dbContext.Set<TEntity>().AddAsync(entity);
             await _dbContext.SaveChangesAsync();
 
@@ -56,6 +58,7 @@ namespace FBMS.Infrastructure.Data
 
         public async Task UpdateAsync<TEntity>(TEntity entity) where TEntity : BaseEntity, IAggregateRoot
         {
+            entity.DateUpdated = DateTime.Now;
             _dbContext.Entry(entity).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
         }

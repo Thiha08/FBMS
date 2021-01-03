@@ -27,17 +27,17 @@ namespace FBMS.Web.ApiModels
             return new TransactionDTO()
             {
                 Id = item.Id,
-                ClientId = item.ClientId,
+                ClientId = item.MemberId,
                 SerialNumber = item.SerialNumber,
-                Account = item.Account,
+                Account = item.UserName,
                 TransactionNumber = item.TransactionNumber,
-                Date = item.Date,
+                //Date = item.Date,
                 League = item.League,
                 HomeTeam = item.HomeTeam,
                 AwayTeam = item.AwayTeam,
-                PricingType = item.PricingType,
+                //PricingType = item.PricingType,
                 Pricing = item.Pricing,
-                Amount = item.Amount
+                //Amount = item.Amount
             };
         }
     }
