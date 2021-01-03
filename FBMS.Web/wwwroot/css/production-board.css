@@ -1,0 +1,15 @@
+﻿
+
+.board-info {
+    color: #fff;
+    box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(0,188,212,.4);
+    background: linear-gradient(60deg,#26c6da,#00acc1);
+    text-align: center;
+}
+
+.board-success {
+    color: #fff;
+    box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(76,175,80,.4);
+    background: linear-gradient(60deg,#66bb6a,#43a047);
+    text-align: center;
+}

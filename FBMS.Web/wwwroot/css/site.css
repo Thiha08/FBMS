@@ -1,38 +1,256 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+body {
+    font-family: "Assistant", sans-serif;
 }
 
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+.main-panel > .content {
+    margin-top: 30px;
 }
 
-/* Set widths on the form inputs since otherwise they're 100% wide */
-input,
-select,
-textarea {
-    max-width: 280px;
-}
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
-}
-
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"]
-{
+.tim-typo {
+    padding-left: 25%;
+    margin-bottom: 40px;
+    position: relative;
     width: 100%;
 }
 
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-  /* Hide captions */
-  .carousel-caption {
-    display: none
-  }
+    .tim-typo .tim-note {
+        bottom: 5px;
+        color: #c0c1c2;
+        display: block;
+        font-weight: 400;
+        font-size: 13px;
+        line-height: 15px;
+        left: 0;
+        margin-left: 20px;
+        position: absolute;
+        width: 260px;
+    }
+
+/* offline-doc */
+
+.offline-doc .navbar.navbar-transparent {
+    padding-top: 25px;
+    border-bottom: none;
 }
+
+    .offline-doc .navbar.navbar-transparent .navbar-minimize {
+        display: none;
+    }
+
+    .offline-doc .navbar.navbar-transparent .navbar-brand,
+    .offline-doc .navbar.navbar-transparent .collapse .navbar-nav .nav-link {
+        color: #FFFFFF !important;
+    }
+
+.offline-doc .footer {
+    z-index: 3 !important;
+}
+
+.offline-doc .page-header .container {
+    z-index: 3;
+}
+
+.offline-doc .page-header:after {
+    background-color: rgba(0, 0, 0, 0.5);
+    content: "";
+    display: block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+}
+
+#map {
+    z-index: 2;
+    height: calc(100vh - 70px);
+    margin-top: 70px;
+}
+
+.card .card-body .col-form-label, .card .card-body .label-on-right {
+    padding: 17px 5px 0 0;
+    text-align: right;
+}
+
+.alert-dismissible .close {
+    top: 10px;
+}
+
+/* Validation CSS */
+
+.field-validation-error + .has-error {
+    color: #f44336;
+    opacity: 1;
+}
+
+.form-control-feedback {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    z-index: 2;
+    display: block;
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+}
+
+/* Form Control */
+.form-control, .is-focused .form-control {
+    background-image: linear-gradient(0deg,#4caf50 2px,rgba(76,175,80,0) 0),linear-gradient(0deg,#d2d2d2 1px,hsla(0,0%,82%,0) 0);
+}
+
+    .form-control, .form-control.input-validation-error {
+        background-image: linear-gradient(0deg,#f44336 2px,rgba(244,67,54,0) 0),linear-gradient(0deg,#d2d2d2 1px,hsla(0,0%,82%,0) 0);
+    }
+
+
+.btn-create .material-icons {
+    top: -2px;
+}
+
+.back-to:hover {
+    background-image: linear-gradient(0deg,#ff9800 2px,hsla(0,0%,82%,0) 0);
+}
+
+/* Crop Production */
+/*.crop-production-table tr td {
+    cursor: pointer;
+}
+
+    .crop-production-table tr td:last-child {
+        cursor: context-menu;
+    }*/
+
+/* Login Page */
+.login-page {
+    background-image: url('../img/agriculture-barley-field-beautiful-close-up-207247.jpg');
+    background-size: cover;
+    background-position: top center;
+}
+
+    .login-page .card-title {
+        font-weight: 500;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+
+
+/* Register Page */
+.sign-up-page {
+    background-image: url('../img/scenic-view-of-agricultural-field-against-sky-during-sunset-325944.jpg');
+    background-size: cover;
+    background-position: top center;
+}
+
+    .sign-up-page .card-title {
+        font-weight: 500;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+
+.card-login .field-validation-error {
+    margin-left: 55px;
+}
+
+.card-login .input-group {
+    padding-bottom: 7px;
+    margin: 27px 0 0;
+}
+
+
+/* Change Autocomplete styles in Chrome*/
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+
+/* Check box */
+
+.form-check .form-check-label .circle .check {
+    background-color: #4caf50;
+}
+
+.form-check .form-check-input:checked ~ .circle {
+    border-color: #4caf50;
+}
+
+/* Crop Production Management */
+.label-on-left {
+    display: inline-block;
+    font-weight: bold;
+    width: 25%;
+}
+
+.job-card .modal-body {
+    height: 100px;
+}
+
+.job-card .job-code {
+    width: 40%;
+    border-radius: 3px;
+    background-color: #999999;
+    padding: 10px;
+    margin-top: -20px;
+    margin-right: 15px;
+    float: left;
+    background: linear-gradient(60deg, #ffa726, #fb8c00);
+    box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(255, 152, 0, 0.4);
+    text-align: left !important;
+}
+
+    .job-card .job-code i {
+        font-size: 17px !important;
+        line-height: 20px !important;
+        width: 26px !important;
+        height: auto !important;
+    }
+
+.job-card .job-manager {
+    width: 40%;
+    border-radius: 3px;
+    background-color: #999999;
+    padding: 10px;
+    margin-top: -20px;
+    margin-right: 15px;
+    float: left;
+    background: linear-gradient(60deg, #26c6da, #00acc1);
+    box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(0, 188, 212, 0.4);
+    text-align: left !important;
+}
+
+    .job-card .job-manager i {
+        font-size: 17px !important;
+        line-height: 20px !important;
+        width: 26px !important;
+        height: auto !important;
+    }
+    
+
+/*Datatable*/
+div.dataTables_wrapper div.dataTables_filter {
+    text-align: right;
+    margin-top: 20px;
+}
+
+div.dataTables_wrapper div.dataTables_paginate {
+    margin: 0;
+    white-space: nowrap;
+    text-align: right;
+}
+
+    div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+        margin: 2px 0;
+        white-space: nowrap;
+        justify-content: flex-end;
+    }

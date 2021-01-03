@@ -1,0 +1,147 @@
+﻿
+
+@{
+    string controllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+
+    string actionName = this.ViewContext.RouteData.Values["action"].ToString();
+
+    string areaName = this.ViewContext.RouteData.Values["area"]?.ToString();
+}
+
+
+
+<!-- Sidebar -->
+
+<div class="sidebar" data-color="green" data-background-color="white" data-image="~/lib/material-dashboard/assets/img/sidebar-1.jpg">
+    <!--
+        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+        Tip 2: you can also add an image using data-image tag
+    -->
+    <div class="logo">
+        <a href="#" class="simple-text logo-normal">
+            FMS
+        </a>
+    </div>
+    <div class="sidebar-wrapper">
+
+        <ul class="nav">
+
+            @*<li class="nav-item @(controllerName == "Dashboard" ? "active" : "")">
+                    <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
+                        <i class="material-icons">dashboard</i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>*@
+
+            <li class="nav-item @(controllerName == "Client" ? "active" : "")">
+                <a class="nav-link" asp-controller="Client" asp-action="Index">
+                    <i class="material-icons">people</i>
+                    <p>Client Management</p>
+                </a>
+            </li>
+
+            <li class="nav-item @(controllerName == "CropProduction" || controllerName == "Job" ? "active" : "")">
+                <a class="nav-link" data-toggle="collapse" href="#productionManagement" aria-expanded="@(controllerName == "CropProduction" || controllerName == "Job" ? "true" : "false")" aria-controls="productionManagement">
+                    <i class="material-icons">home_work</i>
+                    <p>Production<b class="caret"></b></p>
+                </a>
+                <div class="collapse @(controllerName == "CropProduction" || controllerName == "Job" ? "show" : "")" id="productionManagement">
+                    <ul class="nav">
+                        <li class="nav-item @(controllerName == "CropProduction" ? "active" : "")">
+                            <a class="nav-link" asp-controller="CropProduction" asp-action="Index">
+                                <span class="sidebar-mini">
+                                    <i class="material-icons">local_florist</i>
+                                </span>
+                                <span class="sidebar-normal"> Crop Production</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item @(controllerName == "Job" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Job" asp-action="Index">
+                                <span class="sidebar-mini">
+                                    <i class="material-icons">assignment</i>
+                                </span>
+                                <span class="sidebar-normal"> Job </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="nav-item @(controllerName == "Crop" || controllerName == "Field" ? "active" : "")">
+                <a class="nav-link" data-toggle="collapse" href="#cropManagement" aria-expanded="@(controllerName == "Crop" || controllerName == "Field" ? "true" : "false")" aria-controls="cropManagement">
+                    <i class="material-icons">eco</i>
+                    <p>Crop Management<b class="caret"></b></p>
+                </a>
+                <div class="collapse @(controllerName == "Crop" || controllerName == "Field" ? "show" : "")" id="cropManagement">
+                    <ul class="nav">
+                        <li class="nav-item @(controllerName == "Crop" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Crop" asp-action="Index">
+                                <span class="sidebar-mini">
+                                    <i class="material-icons">spa</i>
+                                </span>
+                                <span class="sidebar-normal"> Crop </span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item @(controllerName == "Field" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Field" asp-action="Index">
+                                <span class="sidebar-mini">
+                                    <i class="material-icons">terrain</i>
+                                </span>
+                                <span class="sidebar-normal"> Field </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="nav-item @(controllerName == "Inventory" || controllerName == "Warehouse" || controllerName == "Item" ? "active" : "")">
+                <a class="nav-link" data-toggle="collapse" href="#inventoryManagement" aria-expanded="@(controllerName == "Inventory" || controllerName == "Warehouse" || controllerName == "Item" ? "true" : "false")" aria-controls="inventoryManagement">
+                    <i class="material-icons">rv_hookup</i>
+                    <p>Inventory<b class="caret"></b></p>
+                </a>
+                <div class="collapse @(controllerName == "Inventory" || controllerName == "Warehouse" || controllerName == "Item" ? "show" : "")" id="inventoryManagement">
+                    <ul class="nav">
+                        <li class="nav-item @(controllerName == "Inventory" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Inventory" asp-action="Index">
+                                <span class="sidebar-mini">
+                                    <i class="material-icons">import_export</i>
+                                </span>
+                                <span class="sidebar-normal"> Stock </span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item @(controllerName == "Warehouse" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Warehouse" asp-action="Index">
+                                <span class="sidebar-mini">
+                                    <i class="material-icons">apartment</i>
+                                </span>
+                                <span class="sidebar-normal"> Warehouse </span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item @(controllerName == "Item" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Item" asp-action="Index">
+                                <span class="sidebar-mini">
+                                    <i class="material-icons">view_comfy</i>
+                                </span>
+                                <span class="sidebar-normal"> Item </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="nav-item @(controllerName == "Machinery" ? "active" : "")">
+                <a class="nav-link" asp-controller="Machinery" asp-action="Index">
+                    <i class="material-icons">perm_data_setting</i>
+                    <p>Machinery Management</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- ./ End Sidebar -->

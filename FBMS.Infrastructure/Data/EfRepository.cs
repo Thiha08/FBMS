@@ -30,6 +30,11 @@ namespace FBMS.Infrastructure.Data
             return _dbContext.Set<TEntity>().SingleOrDefaultAsync(e => e.Id == id);
         }
 
+        public async Task<TEntity> GetBySpecificationAsync<TEntity>(ISpecification<TEntity> specification) where TEntity : BaseEntity, IAggregateRoot
+        {
+            return (await ListAsync(specification)).FirstOrDefault();
+        }
+
         public Task<List<TEntity>> ListAsync<TEntity>() where TEntity : BaseEntity, IAggregateRoot
         {
             return _dbContext.Set<TEntity>().ToListAsync();

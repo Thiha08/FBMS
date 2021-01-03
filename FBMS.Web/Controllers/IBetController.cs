@@ -33,22 +33,21 @@ namespace FBMS.Web.Controllers
 
         public async Task<IActionResult> CrawlClients()
         {
-            await _clientService.CrawlAsync();
+            await _clientService.CrawlClients();
             return RedirectToAction(nameof(Clients));
         }
 
         public async Task<IActionResult> Clients()
         {
-            var items = (await _clientService.ListAsync())
-                .Select(ClientDTO.FromClient);
+            var items = await _clientService.GetClients();
             return View(items);
         }
 
-        public async Task<IActionResult> DeleteClients()
-        {
-            await _clientService.DeleteAllAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //public async Task<IActionResult> DeleteClients()
+        //{
+        //    await _clientService.DeleteClients();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         public async Task<IActionResult> Transactions(int clientId)
         {

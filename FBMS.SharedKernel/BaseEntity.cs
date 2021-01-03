@@ -9,6 +9,12 @@ namespace FBMS.SharedKernel
     {
         public int Id { get; set; }
 
+        public DateTime? DateCreated { get; set; }
+
+        public DateTime? DateUpdated { get; set; }
+
+        public bool Status { get; set; }
+
         public List<BaseDomainEvent> Events = new List<BaseDomainEvent>();
     }
 }

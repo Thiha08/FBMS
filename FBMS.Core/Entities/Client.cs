@@ -15,5 +15,11 @@ namespace FBMS.Core.Entities
 
         public List<Transaction> Transactions { get; set; }
 
+        public Client()
+        {
+            Status = true;
+            DateCreated = DateTime.Now;
+        }
+
     }
 }
