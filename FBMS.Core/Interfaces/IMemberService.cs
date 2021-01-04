@@ -24,5 +24,7 @@ namespace FBMS.Core.Interfaces
         Task DeleteMembers(MemberFilterDto filterDto);
 
         Task CrawlMembers();
+
+        Task<List<int>> CrawlActiveMembers();
     }
 }

@@ -171,5 +171,58 @@ namespace FBMS.Infrastructure.Services
             memberCtos = memberCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingMemberNames.Contains(x.UserName));
             await _pipeline.RunAsync(_mapper.Map<List<Member>>(memberCtos));
         }
+
+        public async Task<List<int>> CrawlActiveMembers()
+        {
+            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
+
+            if (!authResponse.isSignedIn)
+            {
+                var htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(authResponse.HtmlCode);
+                var formData = (_processor.Process<SignInCto>(htmlDocument)).FirstOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(formData.AuthUrl))
+                {
+                    var authRequest = new AuthRequest
+                    {
+                        AuthUrl = _hostApiCrawlerSettings.AuthUrl + formData.AuthUrl.Replace("./", ""),
+                        Cookies = authResponse.Cookies
+                    };
+
+                    authRequest.RequestForm = new SignInDto
+                    {
+                        EventTarget = "btnSignIn",
+                        EventArgument = "",
+                        EventValidation = formData.EventValidation,
+                        ViewState = formData.ViewState,
+                        ViewStateGenerator = formData.ViewStateGenerator,
+                        TxtUserName = _hostApiCrawlerSettings.UserName,
+                        TxtPassword = _hostApiCrawlerSettings.Password
+                    };
+
+                    authResponse = await _crawlerAuthorization.SignInAsync(authRequest);
+                    if (!authResponse.isSignedIn)
+                    {
+                        throw new AuthenticationException(authResponse.HtmlCode);
+                    }
+                }
+            }
+
+            var request = new CrawlerRequest
+            {
+                BaseUrl = _hostApiCrawlerSettings.ClientListUrl,
+                Cookies = authResponse.Cookies
+            };
+
+            var document = await _downloader.DownloadAsync(request);
+            var memberCtos = _processor.Process<ActiveMemberCto>(document);
+            var activerMemberNames = memberCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName)).Select(x => x.UserName.Replace("*", "")).ToList();
+
+            return (await _repository.ListAsync<Member>())
+                .Where(x => x.Status && activerMemberNames.Contains(x.UserName))
+                .Select(x => x.Id)
+                .ToList();
+        }
     }
 }

@@ -129,7 +129,7 @@ namespace FBMS.Infrastructure.Services
 
             var specification = new TransactionByDateSpecification();
             var existingTransactions = await _repository.ListAsync(specification);
-            var existingSerialNumbers = existingTransactions.Select(x => x.SerialNumber).ToList();
+            var existingTransactionNumbers = existingTransactions.Select(x => x.TransactionNumber).ToList();
 
             foreach (var member in members)
             {
@@ -143,7 +143,7 @@ namespace FBMS.Infrastructure.Services
                 };
                 var document = await _downloader.DownloadAsync(request);
                 var transactionCtos = _processor.Process<TransactionCto>(document);
-                transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingSerialNumbers.Contains(x.SerialNumber));
+                transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingTransactionNumbers.Contains(x.TransactionNumber));
 
                 var transactions = new List<Transaction>();
                 foreach (var item in transactionCtos)
@@ -173,8 +173,8 @@ namespace FBMS.Infrastructure.Services
 
         public async Task CrawlTransactions(TransactionFilterCto filterCto)
         {
-            var startDateUTC = filterCto.StartDate.ToUniversalTime().ToString("MM/dd/yyyy");
-            var endDateUTC = filterCto.EndDate.ToUniversalTime().ToString("MM/dd/yyyy");
+            var startDateUTC = filterCto.StartDate.ToString("MM/dd/yyyy");
+            var endDateUTC = filterCto.EndDate.ToString("MM/dd/yyyy");
             var members = (await _repository.ListAsync<Member>())
                 .Where(x => x.Status);
 
@@ -220,7 +220,7 @@ namespace FBMS.Infrastructure.Services
 
             var specification = new TransactionByDateSpecification();
             var existingTransactions = await _repository.ListAsync(specification);
-            var existingSerialNumbers = existingTransactions.Select(x => x.SerialNumber).ToList();
+            var existingTransactionNumbers = existingTransactions.Select(x => x.TransactionNumber).ToList();
 
             foreach (var member in members)
             {
@@ -234,12 +234,29 @@ namespace FBMS.Infrastructure.Services
                 };
                 var document = await _downloader.DownloadAsync(request);
                 var transactionCtos = _processor.Process<TransactionCto>(document);
-                transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingSerialNumbers.Contains(x.SerialNumber));
+                transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingTransactionNumbers.Contains(x.TransactionNumber));
 
-                var transactions = _mapper.Map<List<Transaction>>(transactionCtos);
-                foreach (var item in transactions)
+                var transactions = new List<Transaction>();
+                foreach (var item in transactionCtos)
                 {
-                    item.MemberId = member.Id;
+                    var transaction = new Transaction();
+                    transaction.MemberId = member.Id;
+                    transaction.SerialNumber = item.SerialNumber;
+                    transaction.TransactionNumber = item.TransactionNumber;
+                    transaction.UserName = item.UserName;
+                    transaction.League = item.League;
+                    transaction.HomeTeam = item.HomeTeam;
+                    transaction.AwayTeam = item.AwayTeam;
+                    transaction.Pricing = item.Pricing;
+
+                    string iString = item.TransactionDate.ReplaceFirst(" ", "/" + DateTime.Now.Year.ToString() + " ");
+                    transaction.TransactionDate = DateTime.ParseExact(iString, "dd/MM/yyyy h:mm:ss tt", null);
+
+                    transaction.TransactionType = GetTransactionType(item.TransactionType, item.HomeTeam, item.AwayTeam);
+
+                    transaction.Amount = Convert.ToDecimal(item.Amount);
+
+                    transactions.Add(transaction);
                 }
                 await _pipeline.RunAsync(transactions);
             }
