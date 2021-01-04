@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FBMS.Core.Constants;
 using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Ctos;
 using FBMS.Core.Ctos.Filters;
@@ -7,6 +8,7 @@ using FBMS.Core.Dtos.Auth;
 using FBMS.Core.Dtos.Crawler;
 using FBMS.Core.Dtos.Filters;
 using FBMS.Core.Entities;
+using FBMS.Core.Extensions;
 using FBMS.Core.Interfaces;
 using FBMS.Core.Specifications;
 using FBMS.Core.Specifications.Filters;
@@ -143,10 +145,27 @@ namespace FBMS.Infrastructure.Services
                 var transactionCtos = _processor.Process<TransactionCto>(document);
                 transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingSerialNumbers.Contains(x.SerialNumber));
 
-                var transactions = _mapper.Map<List<Transaction>>(transactionCtos);
-                foreach (var item in transactions)
+                var transactions = new List<Transaction>();
+                foreach (var item in transactionCtos)
                 {
-                    item.MemberId = member.Id;
+                    var transaction = new Transaction();
+                    transaction.MemberId = member.Id;
+                    transaction.SerialNumber = item.SerialNumber;
+                    transaction.TransactionNumber = item.TransactionNumber;
+                    transaction.UserName = item.UserName;
+                    transaction.League = item.League;
+                    transaction.HomeTeam = item.HomeTeam;
+                    transaction.AwayTeam = item.AwayTeam;
+                    transaction.Pricing = item.Pricing;
+                   
+                    string iString = item.TransactionDate.ReplaceFirst(" ", "/" + DateTime.Now.Year.ToString() + " ");
+                    transaction.TransactionDate = DateTime.ParseExact(iString, "dd/MM/yyyy h:mm:ss tt", null);
+
+                    transaction.TransactionType = GetTransactionType(item.TransactionType, item.HomeTeam, item.AwayTeam);
+
+                    transaction.Amount = Convert.ToDecimal(item.Amount);
+
+                    transactions.Add(transaction);
                 }
                 await _pipeline.RunAsync(transactions);
             }
@@ -224,6 +243,34 @@ namespace FBMS.Infrastructure.Services
                 }
                 await _pipeline.RunAsync(transactions);
             }
+        }
+
+        private TransactionType GetTransactionType(string type, string homeTeam, string awayTeam)
+        {
+            var transactionType = TransactionType.Parlay;
+
+            if (type == homeTeam)
+            {
+                transactionType = TransactionType.Home;
+            }
+            else if (type == awayTeam)
+            {
+                transactionType = TransactionType.Away;
+            }
+            else if (type == TransactionType.Parlay.ToDescription())
+            {
+                transactionType = TransactionType.Parlay;
+            }
+            else if (type == TransactionType.Over.ToDescription())
+            {
+                transactionType = TransactionType.Over;
+            }
+            else if (type == TransactionType.Under.ToDescription())
+            {
+                transactionType = TransactionType.Under;
+            }
+
+            return transactionType;
         }
     }
 }

@@ -40,6 +40,12 @@
                     <p>Member Management</p>
                 </a>
             </li>
+            <li class="nav-item @(controllerName == "Transaction" ? "active" : "")">
+                <a class="nav-link" asp-controller="Transaction" asp-action="Index">
+                    <i class="material-icons">analytics</i>
+                    <p>Transactions</p>
+                </a>
+            </li>
 
             <li class="nav-item @(controllerName == "CropProduction" || controllerName == "Job" ? "active" : "")">
                 <a class="nav-link" data-toggle="collapse" href="#productionManagement" aria-expanded="@(controllerName == "CropProduction" || controllerName == "Job" ? "true" : "false")" aria-controls="productionManagement">

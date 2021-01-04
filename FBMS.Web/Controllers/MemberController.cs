@@ -23,7 +23,6 @@ namespace FBMS.Web.Controllers
             return View(await _memberService.GetMembers(filter));
         }
 
-        // GET: Worker/Create
         public async Task<IActionResult> Crawl()
         {
             await _memberService.CrawlMembers();

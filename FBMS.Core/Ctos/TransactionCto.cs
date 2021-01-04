@@ -18,7 +18,7 @@ namespace FBMS.Core.Ctos
         public string TransactionNumber { get; set; }
 
         [CrawlerField(Expression = ".//td[3]//br[1]/following-sibling::text()[1]", SelectorType = SelectorType.XPath)]
-        public string Date { get; set; }
+        public string TransactionDate { get; set; }
 
         [CrawlerField(Expression = ".//td[4]/span[1]/text()[1]", SelectorType = SelectorType.XPath)]
         public string League { get; set; }

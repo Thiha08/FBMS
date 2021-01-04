@@ -1,0 +1,134 @@
+﻿
+@using FBMS.Core.Dtos;
+
+@model IEnumerable<TransactionDto>
+
+@{
+    ViewData["Title"] = "Transactions";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">analytics</i>
+                    </div>
+                    <h4 class="card-title">Transaction Report</h4>
+                </div>
+                <div class="card-body">
+                    <div class="toolbar text-right">
+                        <a class="btn btn-info btn-create" asp-controller="Transaction" asp-action="Crawl">
+                            <i class="material-icons">system_update_alt</i>
+                            Crawl
+                        </a>
+                    </div>
+                    <div class="material-datatables">
+                        <div id="datatables_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table id="datatables" class="table table-no-bordered table-hover dataTable dtr-inline" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
+                                        <thead class="text-primary">
+                                            <tr role="row">
+                                                <th>
+                                                    ID
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.SerialNumber)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.UserName)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.TransactionNumber)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Date)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.League)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.HomeTeam)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.AwayTeam)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.TransactionType)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Pricing)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Amount)
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.Any())
+                                            {
+                                                int i = 0;
+
+                                                foreach (var item in Model)
+                                                {
+                                                    i++;
+                                                    <tr role="row">
+                                                        <td>
+                                                            @i
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.SerialNumber)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.UserName)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.TransactionNumber)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Date)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.League)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.HomeTeam)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.AwayTeam)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.TransactionType)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Pricing)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Amount)
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr role="row">
+                                                    <td colspan="11" class="text-center">
+                                                        No data found.
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end content-->
+            </div>
+            <!--  end card  -->
+        </div>
+    </div>
+</div>

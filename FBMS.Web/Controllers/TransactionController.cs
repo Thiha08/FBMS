@@ -22,5 +22,11 @@ namespace FBMS.Web.Controllers
 
             return View(await _transactionService.GetTransactions(filter));
         }
+
+        public async Task<IActionResult> Crawl()
+        {
+            await _transactionService.CrawlTransactions();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

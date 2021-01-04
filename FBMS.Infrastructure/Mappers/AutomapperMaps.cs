@@ -18,7 +18,11 @@ namespace FBMS.Infrastructure.Mappers
             CreateMap<Member, MemberDto>().ReverseMap();
 
             CreateMap<TransactionFilterDto, TransactionFilter>().ReverseMap();
-            CreateMap<Transaction, TransactionCto>().ReverseMap();
+            CreateMap<Transaction, TransactionCto>()
+                .ForMember(cto => cto.TransactionDate, x => x.Ignore())
+                .ForMember(cto => cto.TransactionType, x => x.Ignore())
+                .ForMember(cto => cto.Amount, x => x.Ignore())
+                .ReverseMap();
             CreateMap<Transaction, TransactionDto>().ReverseMap();
         }
     }

@@ -1,5 +1,4 @@
-﻿using FBMS.Core.Attributes;
-using FBMS.Core.Constants;
+﻿using FBMS.Core.Constants;
 using FBMS.SharedKernel;
 using FBMS.SharedKernel.Interfaces;
 using System;
@@ -14,7 +13,7 @@ namespace FBMS.Core.Entities
 
         public string TransactionNumber { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime TransactionDate { get; set; }
 
         public string League { get; set; }
 

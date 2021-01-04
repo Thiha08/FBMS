@@ -54,8 +54,8 @@ namespace FBMS.Spider.Processor
                         if (node != null)
                         {
                             columnValue = string.IsNullOrEmpty(attribute) ?
-                                node.InnerText?.Replace("&nbsp;", "") :
-                                node.Attributes[attribute].Value?.Replace("&nbsp;", "");
+                                node.InnerText?.Replace("&nbsp;", "")?.Trim() :
+                                node.Attributes[attribute].Value?.Replace("&nbsp;", "")?.Trim();
                         }
                         break;
                     case SelectorType.CssSelector:
