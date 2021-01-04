@@ -12,12 +12,14 @@ namespace FBMS.Infrastructure.Mappers
         public AutomapperMaps()
         {
             CreateMap<BaseFilterDto, BaseFilter>().IncludeAllDerived().ReverseMap();
+
             CreateMap<MemberFilterDto, MemberFilter>().ReverseMap();
-
-            CreateMap<Member, MemberDto>().ReverseMap();
             CreateMap<Member, MemberCto>().ReverseMap();
+            CreateMap<Member, MemberDto>().ReverseMap();
 
+            CreateMap<TransactionFilterDto, TransactionFilter>().ReverseMap();
             CreateMap<Transaction, TransactionCto>().ReverseMap();
+            CreateMap<Transaction, TransactionDto>().ReverseMap();
         }
     }
 }

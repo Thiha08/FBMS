@@ -1,5 +1,6 @@
 ﻿using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Dtos.Crawler;
+using FBMS.Core.Dtos.Filters;
 using FBMS.Core.Entities;
 using FBMS.Core.Interfaces;
 using FBMS.SharedKernel.Interfaces;
@@ -53,41 +54,46 @@ namespace FBMS.Web.Controllers
         {
             ViewBag.ClientId = clientId;
 
-            var items = (await _transactionService.ListAsync(clientId))
-                .Select(TransactionDTO.FromTransaction);
-            return View(items);
+            var filter = new TransactionFilterDto();
+
+            filter.MemberId = clientId;
+            filter.IsPagingEnabled = false;
+            
+            return View(await _transactionService.GetTransactions(filter));
         }
 
-        public async Task<IActionResult> CrawlTransactions(int clientId)
-        {
-            await _transactionService.CrawlAsync(clientId);
-            return RedirectToAction(nameof(Transactions), new { clientId });
-        }
+        //public async Task<IActionResult> CrawlTransactions(int clientId)
+        //{
+        //    await _transactionService.CrawlTransactions();
+        //    return RedirectToAction(nameof(Transactions), new { clientId });
+        //}
 
-        public async Task<IActionResult> DeleteTransactions(int clientId)
-        {
-            await _transactionService.DeleteAllAsync(clientId);
-            return RedirectToAction(nameof(Transactions), new { clientId });
-        }
+        //public async Task<IActionResult> DeleteTransactions(int clientId)
+        //{
+        //    await _transactionService.DeleteAllAsync(clientId);
+        //    return RedirectToAction(nameof(Transactions), new { clientId });
+        //}
 
         public async Task<IActionResult> CrawlAllTransactions()
         {
-            await _transactionService.CrawlAsync();
+            await _transactionService.CrawlTransactions();
             return RedirectToAction(nameof(AllTransactions));
         }
 
         public async Task<IActionResult> AllTransactions()
         {
-            var items = (await _transactionService.ListAsync())
-                .Select(TransactionDTO.FromTransaction);
-            return View(items);
+            var filter = new TransactionFilterDto();
+
+            filter.IsPagingEnabled = false;
+
+            return View(await _transactionService.GetTransactions(filter));
         }
 
-        public async Task<IActionResult> DeleteAllTransactions()
-        {
-            await _transactionService.DeleteAllAsync();
-            return RedirectToAction(nameof(AllTransactions));
-        }
+        //public async Task<IActionResult> DeleteAllTransactions()
+        //{
+        //    await _transactionService.DeleteAllAsync();
+        //    return RedirectToAction(nameof(AllTransactions));
+        //}
 
         public async Task<IActionResult> StartTransactionBackgroundJob()
         {

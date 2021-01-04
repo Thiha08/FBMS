@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
 using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Ctos;
+using FBMS.Core.Ctos.Filters;
+using FBMS.Core.Dtos;
 using FBMS.Core.Dtos.Auth;
 using FBMS.Core.Dtos.Crawler;
+using FBMS.Core.Dtos.Filters;
 using FBMS.Core.Entities;
 using FBMS.Core.Interfaces;
 using FBMS.Core.Specifications;
+using FBMS.Core.Specifications.Filters;
 using FBMS.SharedKernel.Interfaces;
 using FBMS.Spider.Auth;
 using FBMS.Spider.Downloader;
@@ -15,7 +19,6 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 
@@ -42,37 +45,50 @@ namespace FBMS.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public async Task CrawlAsync(int memberId)
+        public async Task<List<TransactionDto>> GetTransactions()
         {
-            var startDate = DateTime.UtcNow.ToString("MM/dd/yyyy");
-            var endDate = DateTime.UtcNow.ToString("MM/dd/yyyy");
-            var member = await _repository.GetByIdAsync<Member>(memberId);
+            var transactions = await _repository.ListAsync<Transaction>();
 
-            var request = new CrawlerRequest
-            {
-                BaseUrl = _hostApiCrawlerSettings.ClientTransactionsUrl
-                    .Replace("{{CLIENT_NAME}}", member.UserName)
-                    .Replace("{{START_DATE}}", startDate)
-                    .Replace("{{END_DATE}}", endDate),
-                Cookies = new List<Cookie>()
-            };
-            var document = await _downloader.DownloadAsync(request);
-            var transactionCtos = _processor.Process<TransactionCto>(document);
-            transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName));
-
-            var transactions = _mapper.Map<List<Transaction>>(transactionCtos);
-            foreach (var item in transactions)
-            {
-                item.MemberId = member.Id;
-            }
-            await _pipeline.RunAsync(transactions);
+            return _mapper.Map<List<TransactionDto>>(transactions);
         }
 
-        public async Task CrawlAsync()
+        public async Task<List<TransactionDto>> GetTransactions(TransactionFilterDto filterDto)
         {
-            var startDate = DateTime.UtcNow.ToString("MM/dd/yyyy");
-            var endDate = DateTime.UtcNow.ToString("MM/dd/yyyy");
-            var members = await _repository.ListAsync<Member>();
+            var specification = new TransactionSpecification(_mapper.Map<TransactionFilter>(filterDto));
+            var transactions = await _repository.ListAsync(specification);
+
+            return _mapper.Map<List<TransactionDto>>(transactions);
+        }
+
+        public async Task DeleteTransactions()
+        {
+            var transactions = await _repository.ListAsync<Transaction>();
+
+            foreach (var transaction in transactions)
+            {
+                transaction.Status = false;
+                await _repository.UpdateAsync(transaction);
+            }
+        }
+
+        public async Task DeleteTransactions(TransactionFilterDto filterDto)
+        {
+            var specification = new TransactionSpecification(_mapper.Map<TransactionFilter>(filterDto));
+            var transactions = await _repository.ListAsync(specification);
+
+            foreach (var transaction in transactions)
+            {
+                transaction.Status = false;
+                await _repository.UpdateAsync(transaction);
+            }
+        }
+
+        public async Task CrawlTransactions()
+        {
+            var startDateUTC = DateTime.UtcNow.ToString("MM/dd/yyyy");
+            var endDateUTC = DateTime.UtcNow.ToString("MM/dd/yyyy");
+            var members = (await _repository.ListAsync<Member>())
+                .Where(x => x.Status);
 
             var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
 
@@ -109,19 +125,23 @@ namespace FBMS.Infrastructure.Services
                 }
             }
 
+            var specification = new TransactionByDateSpecification();
+            var existingTransactions = await _repository.ListAsync(specification);
+            var existingSerialNumbers = existingTransactions.Select(x => x.SerialNumber).ToList();
+
             foreach (var member in members)
             {
                 var request = new CrawlerRequest
                 {
                     BaseUrl = _hostApiCrawlerSettings.ClientTransactionsUrl
                     .Replace("{{CLIENT_NAME}}", member.UserName)
-                    .Replace("{{START_DATE}}", startDate)
-                    .Replace("{{END_DATE}}", endDate),
+                    .Replace("{{START_DATE}}", startDateUTC)
+                    .Replace("{{END_DATE}}", endDateUTC),
                     Cookies = authResponse.Cookies
                 };
                 var document = await _downloader.DownloadAsync(request);
                 var transactionCtos = _processor.Process<TransactionCto>(document);
-                transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName));
+                transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingSerialNumbers.Contains(x.SerialNumber));
 
                 var transactions = _mapper.Map<List<Transaction>>(transactionCtos);
                 foreach (var item in transactions)
@@ -132,33 +152,77 @@ namespace FBMS.Infrastructure.Services
             }
         }
 
-        public async Task<List<Transaction>> ListAsync(int clientId)
+        public async Task CrawlTransactions(TransactionFilterCto filterCto)
         {
-            var transactionOfClientSpec = new TransactionSpecification(clientId);
-            return await _repository.ListAsync(transactionOfClientSpec);
-        }
+            var startDateUTC = filterCto.StartDate.ToUniversalTime().ToString("MM/dd/yyyy");
+            var endDateUTC = filterCto.EndDate.ToUniversalTime().ToString("MM/dd/yyyy");
+            var members = (await _repository.ListAsync<Member>())
+                .Where(x => x.Status);
 
-        public async Task<List<Transaction>> ListAsync()
-        {
-            return await _repository.ListAsync<Transaction>();
-        }
-
-        public async Task DeleteAllAsync(int clientId)
-        {
-            var transactionOfClientSpec = new TransactionSpecification(clientId);
-            var items = await _repository.ListAsync(transactionOfClientSpec);
-            foreach (var item in items)
+            if (filterCto.MemberIds.Any())
             {
-                await _repository.DeleteAsync(item);
+                members = members.Where(x => filterCto.MemberIds.Contains(x.Id));
             }
-        }
 
-        public async Task DeleteAllAsync()
-        {
-            var items = await _repository.ListAsync<Transaction>();
-            foreach (var item in items)
+            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
+
+            if (!authResponse.isSignedIn)
             {
-                await _repository.DeleteAsync(item);
+                var htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(authResponse.HtmlCode);
+                var formData = (_processor.Process<SignInCto>(htmlDocument)).FirstOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(formData.AuthUrl))
+                {
+                    var authRequest = new AuthRequest
+                    {
+                        AuthUrl = _hostApiCrawlerSettings.AuthUrl + formData.AuthUrl.Replace("./", ""),
+                        Cookies = authResponse.Cookies
+                    };
+
+                    authRequest.RequestForm = new SignInDto
+                    {
+                        EventTarget = "btnSignIn",
+                        EventArgument = "",
+                        EventValidation = formData.EventValidation,
+                        ViewState = formData.ViewState,
+                        ViewStateGenerator = formData.ViewStateGenerator,
+                        TxtUserName = _hostApiCrawlerSettings.UserName,
+                        TxtPassword = _hostApiCrawlerSettings.Password
+                    };
+
+                    authResponse = await _crawlerAuthorization.SignInAsync(authRequest);
+                    if (!authResponse.isSignedIn)
+                    {
+                        throw new AuthenticationException(authResponse.HtmlCode);
+                    }
+                }
+            }
+
+            var specification = new TransactionByDateSpecification();
+            var existingTransactions = await _repository.ListAsync(specification);
+            var existingSerialNumbers = existingTransactions.Select(x => x.SerialNumber).ToList();
+
+            foreach (var member in members)
+            {
+                var request = new CrawlerRequest
+                {
+                    BaseUrl = _hostApiCrawlerSettings.ClientTransactionsUrl
+                    .Replace("{{CLIENT_NAME}}", member.UserName)
+                    .Replace("{{START_DATE}}", startDateUTC)
+                    .Replace("{{END_DATE}}", endDateUTC),
+                    Cookies = authResponse.Cookies
+                };
+                var document = await _downloader.DownloadAsync(request);
+                var transactionCtos = _processor.Process<TransactionCto>(document);
+                transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingSerialNumbers.Contains(x.SerialNumber));
+
+                var transactions = _mapper.Map<List<Transaction>>(transactionCtos);
+                foreach (var item in transactions)
+                {
+                    item.MemberId = member.Id;
+                }
+                await _pipeline.RunAsync(transactions);
             }
         }
     }

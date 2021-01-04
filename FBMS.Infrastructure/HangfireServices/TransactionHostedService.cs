@@ -21,7 +21,7 @@ namespace FBMS.Infrastructure.HangfireServices
         {
             _logger.LogInformation("Transaction Hosted Service running.");
 
-            RecurringJob.AddOrUpdate<ITransactionService>(_hangfireSettings.RecurringJobIdentifier, x => x.CrawlAsync(), _hangfireSettings.CronExpression);
+            RecurringJob.AddOrUpdate<ITransactionService>(_hangfireSettings.RecurringJobIdentifier, x => x.CrawlTransactions(), _hangfireSettings.CronExpression);
 
             return Task.CompletedTask;
         }

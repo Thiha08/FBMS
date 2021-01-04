@@ -1,5 +1,6 @@
-﻿using FBMS.Core.Dtos.Crawler;
-using FBMS.Core.Entities;
+﻿using FBMS.Core.Ctos.Filters;
+using FBMS.Core.Dtos;
+using FBMS.Core.Dtos.Filters;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,17 +8,16 @@ namespace FBMS.Core.Interfaces
 {
     public interface ITransactionService
     {
-        Task CrawlAsync(int clientId);
+        Task<List<TransactionDto>> GetTransactions();
 
-        Task CrawlAsync();
+        Task<List<TransactionDto>> GetTransactions(TransactionFilterDto filterDto);
 
-        Task<List<Transaction>> ListAsync(int clientId);
+        Task DeleteTransactions();
 
-        Task<List<Transaction>> ListAsync();
+        Task DeleteTransactions(TransactionFilterDto filterDto);
 
-        Task DeleteAllAsync(int clientId);
+        Task CrawlTransactions();
 
-        Task DeleteAllAsync();
-
+        Task CrawlTransactions(TransactionFilterCto filterCto);        
     }
 }

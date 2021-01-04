@@ -163,13 +163,13 @@ namespace FBMS.Infrastructure.Services
             };
 
             var document = await _downloader.DownloadAsync(request);
-            var members = _processor.Process<MemberCto>(document);
+            var memberCtos = _processor.Process<MemberCto>(document);
 
             var existingMembers = await _repository.ListAsync<Member>();
             var existingMemberNames = existingMembers.Select(x => x.UserName).ToList();
 
-            members = members.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingMemberNames.Contains(x.UserName));
-            await _pipeline.RunAsync(_mapper.Map<List<Member>>(members));
+            memberCtos = memberCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingMemberNames.Contains(x.UserName));
+            await _pipeline.RunAsync(_mapper.Map<List<Member>>(memberCtos));
         }
     }
 }

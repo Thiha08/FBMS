@@ -1,16 +1,24 @@
 ﻿using Ardalis.Specification;
 using FBMS.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using FBMS.Core.Specifications.Filters;
 
 namespace FBMS.Core.Specifications
 {
     public class TransactionSpecification : Specification<Transaction>
     {
-        public TransactionSpecification(int memberId)
+        public TransactionSpecification(TransactionFilter filter)
         {
-            Query.Where(x => x.MemberId == memberId);
+            Query.OrderBy(x => x.UserName);
+
+            if (filter.IsPagingEnabled)
+                Query.Skip(PaginationHelper.CalculateSkip(filter))
+                     .Take(PaginationHelper.CalculateTake(filter));
+
+            if (!string.IsNullOrEmpty(filter.UserName))
+                Query.Where(x => x.UserName == filter.UserName);
+
+            if (filter.MemberId.HasValue)
+                Query.Where(x => x.MemberId == filter.MemberId);
         }
     }
 }
