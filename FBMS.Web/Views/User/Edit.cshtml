@@ -1,0 +1,147 @@
+﻿@using FBMS.Core.Dtos;
+@using Microsoft.AspNetCore.Identity;
+
+@model UserDto
+
+@{
+    ViewData["Title"] = "Edit User";
+
+    var availableRoles = (List<IdentityRole>)ViewBag.Roles;
+}
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Edit">
+
+                <input asp-for="Id" class="form-control" />
+
+                <div class="card ">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">people</i>
+                        </div>
+                        <h4 class="card-title">Edit User</h4>
+                    </div>
+                    <div class="card-body ">
+                        <div class="row">
+                            <label asp-for="UserName" class="col-md-3 col-form-label"></label>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <input asp-for="UserName" class="form-control" />
+
+                                    <span asp-validation-for="UserName" class="text-danger"></span>
+                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <label asp-for="Role" class="col-md-3 col-form-label"></label>
+
+                            <div class="col-md-9">
+                                <div class="form-group" style="margin-top: 15px;">
+
+                                    @foreach (var role in availableRoles)
+                                    {
+                                        <div class="form-check form-check-radio form-check-inline">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="Role" value="@role.Id" @(role.Name == Model.Role ? "checked" : "" ) />
+                                                @role.Name
+                                                <span class="circle">
+                                                    <span class="check"></span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer ">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <button type="submit" class="btn btn-fill btn-info">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+
+            <form asp-action="ResetPassword">
+
+                <input asp-for="Id" class="form-control" />
+
+                <div class="card ">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">lock_outline</i>
+                        </div>
+                        <h4 class="card-title">Authentication</h4>
+                    </div>
+                    <div class="card-body ">
+
+                        <div class="row">
+                            <label asp-for="Email" class="col-md-3 col-form-label"></label>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <input asp-for="Email" class="form-control" disabled />
+
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="Password" class="col-md-3 col-form-label">Password</label>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <input name="Password" class="form-control" />
+
+                                    @*<span asp-validation-for="Password" class="text-danger"></span>
+                                        <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="ConfirmPassword" class="col-md-3 col-form-label">Confirm Password</label>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <input name="ConfirmPassword" class="form-control" />
+
+                                    @*<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                        <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer ">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <button type="submit" class="btn btn-fill btn-info">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+
+    <div>
+        <a class="back-to" asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+
+
+
+

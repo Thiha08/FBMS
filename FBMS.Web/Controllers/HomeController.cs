@@ -1,6 +1,7 @@
 ﻿using FBMS.Core.Dtos;
 using FBMS.Core.Interfaces;
 using Hangfire.Storage;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace FBMS.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ITransactionHostedService _transactionHostedService;

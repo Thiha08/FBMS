@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FBMS.SharedKernel", "FBMS.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FBMS.Web", "FBMS.Web\FBMS.Web.csproj", "{49D0B939-7ECB-468C-8040-EE9F14323317}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FBMS.Spider", "FBMS.Spider\FBMS.Spider.csproj", "{7CB27179-1B45-4285-8630-C6DDF63ED621}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FBMS.Spider", "FBMS.Spider\FBMS.Spider.csproj", "{7CB27179-1B45-4285-8630-C6DDF63ED621}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

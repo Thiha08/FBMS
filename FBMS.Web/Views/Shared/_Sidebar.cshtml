@@ -36,22 +36,34 @@
 
             <li class="nav-item @(controllerName == "Member" ? "active" : "")">
                 <a class="nav-link" asp-controller="Member" asp-action="Index">
-                    <i class="material-icons">people</i>
+                    <i class="material-icons">connect_without_contact</i>
                     <p>Member Management</p>
                 </a>
             </li>
+
             <li class="nav-item @(controllerName == "Transaction" ? "active" : "")">
                 <a class="nav-link" asp-controller="Transaction" asp-action="Index">
                     <i class="material-icons">analytics</i>
                     <p>Transactions</p>
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="~/hangfire">
                     <i class="material-icons">timeline</i>
                     <p>Hangfire</p>
                 </a>
             </li>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <li class="nav-item @(controllerName == "User" ? "active" : "")">
+                    <a class="nav-link" asp-controller="User" asp-action="Index">
+                        <i class="material-icons">people</i>
+                        <p>User Management</p>
+                    </a>
+                </li>
+            }
 
             <li class="nav-item @(controllerName == "CropProduction" || controllerName == "Job" ? "active" : "")">
                 <a class="nav-link" data-toggle="collapse" href="#productionManagement" aria-expanded="@(controllerName == "CropProduction" || controllerName == "Job" ? "true" : "false")" aria-controls="productionManagement">

@@ -4,15 +4,17 @@ using AutoMapper;
 using FBMS.Core.Attributes;
 using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Constants.Hangfire;
-using FBMS.Core.Interfaces;
 using FBMS.Infrastructure;
 using FBMS.Infrastructure.Mappers;
+using FBMS.Web.Filters;
 using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.SqlServer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -46,7 +48,7 @@ namespace FBMS.Web
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext(connectionString);
-            services.AddIdentityCore();
+            services.AddIdentity();
             //services.AddHostedService();
 
             // Add Hangfire services.
@@ -69,7 +71,28 @@ namespace FBMS.Web
 
             services.AddAutoMapper(typeof(AutomapperMaps));
 
-            services.AddControllersWithViews().AddNewtonsoftJson();
+            //services.AddControllersWithViews().AddNewtonsoftJson();
+
+            services.AddControllersWithViews(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                options.Filters.Add(new AuthorizeFilter(policy));
+            })
+            .AddNewtonsoftJson();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });
 
             services.Configure<HostApiCrawlerSettings>(Configuration.GetSection(nameof(HostApiCrawlerSettings)));
             services.AddTransient<IHostApiCrawlerSettings>(sp => sp.GetRequiredService<IOptions<HostApiCrawlerSettings>>().Value);
@@ -79,7 +102,8 @@ namespace FBMS.Web
 
             services.AddRazorPages();
 
-            services.AddSwaggerGen(c => {
+            services.AddSwaggerGen(c =>
+            {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FBMS API", Version = "v1" });
                 c.EnableAnnotations();
             });
@@ -138,6 +162,7 @@ namespace FBMS.Web
 
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
+                Authorization = new[] { new HangfireAuthorizationFilter() },
                 IsReadOnlyFunc = (DashboardContext context) => true
             });
 
