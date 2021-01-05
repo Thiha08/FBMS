@@ -1,7 +1,10 @@
 ﻿using FBMS.Core.Constants.Hangfire;
 using FBMS.Core.Interfaces;
 using Hangfire;
+using Hangfire.Storage;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FBMS.Infrastructure.HangfireServices
@@ -33,6 +36,15 @@ namespace FBMS.Infrastructure.HangfireServices
             RecurringJob.RemoveIfExists(_hangfireSettings.RecurringJobIdentifier);
 
             return Task.CompletedTask;
+        }
+
+        public Task<bool> IsRunning()
+        {
+            List<RecurringJobDto> recurringJobs = new List<RecurringJobDto>();
+            recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs().ToList();
+
+            bool isRunning = recurringJobs.Any(x => x.Id == _hangfireSettings.RecurringJobIdentifier);
+            return Task.FromResult(isRunning);
         }
     }
 }

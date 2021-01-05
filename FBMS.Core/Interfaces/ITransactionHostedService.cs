@@ -7,5 +7,7 @@ namespace FBMS.Core.Interfaces
         Task StartAsync();
 
         Task StopAsync();
+
+        Task<bool> IsRunning();
     }
 }
