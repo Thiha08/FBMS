@@ -46,6 +46,12 @@
                     <p>Transactions</p>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/hangfire">
+                    <i class="material-icons">timeline</i>
+                    <p>Hangfire</p>
+                </a>
+            </li>
 
             <li class="nav-item @(controllerName == "CropProduction" || controllerName == "Job" ? "active" : "")">
                 <a class="nav-link" data-toggle="collapse" href="#productionManagement" aria-expanded="@(controllerName == "CropProduction" || controllerName == "Job" ? "true" : "false")" aria-controls="productionManagement">
