@@ -219,8 +219,7 @@ namespace FBMS.Infrastructure.Services
             var memberCtos = _processor.Process<ActiveMemberCto>(document);
             var activerMemberNames = memberCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName)).Select(x => x.UserName.Replace("*", "")).ToList();
 
-            return (await _repository.ListAsync<Member>())
-                .Where(x => x.Status && activerMemberNames.Contains(x.UserName))
+            return (await _repository.ListAsync(new AcitveMembersSpecification(activerMemberNames)))
                 .Select(x => x.Id)
                 .ToList();
         }

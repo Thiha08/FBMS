@@ -175,12 +175,11 @@ namespace FBMS.Infrastructure.Services
         {
             var startDateUTC = filterCto.StartDate.ToString("MM/dd/yyyy");
             var endDateUTC = filterCto.EndDate.ToString("MM/dd/yyyy");
-            var members = (await _repository.ListAsync<Member>())
-                .Where(x => x.Status);
+            var members = await _repository.ListAsync(new MemberWithTransactionTemplateSpecification());
 
             if (filterCto.MemberIds.Any())
             {
-                members = members.Where(x => filterCto.MemberIds.Contains(x.Id));
+                members = members.Where(x => filterCto.MemberIds.Contains(x.Id)).ToList();
             }
 
             var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
