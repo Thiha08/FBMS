@@ -1,5 +1,6 @@
 ﻿using FBMS.Core.Constants;
 using FBMS.Core.Entities;
+using FBMS.Core.Events;
 using System.Collections.Generic;
 
 namespace FBMS.Core.Extensions
@@ -18,8 +19,9 @@ namespace FBMS.Core.Extensions
                     TransactionType = transactionType,
                     AmountPercent = 100,
                     IsInverse = true
-                }); ;
+                });
             }
+            transactionTemplate.Events.Add(new TransactionTemplateAddedEvent(transactionTemplate));
             return transactionTemplate;
         }
     }

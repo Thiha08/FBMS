@@ -24,6 +24,9 @@ namespace FBMS.Infrastructure.Mappers
                 .ForMember(cto => cto.Amount, x => x.Ignore())
                 .ReverseMap();
             CreateMap<Transaction, TransactionDto>().ReverseMap();
+
+            CreateMap<TransactionTemplate, MemberTransactionTemplateDto>().ReverseMap();
+            CreateMap<TransactionTemplateItem, TransactionTemplateItemDto>().ReverseMap();
         }
     }
 }

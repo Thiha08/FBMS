@@ -10,8 +10,9 @@ namespace FBMS.Core.Specifications
         {
             Query.OrderBy(x => x.UserName);
 
-            if(filter.LoadChildren)
-                Query.Include(x => x.TransactionTemplate);
+            if (filter.LoadChildren)
+                Query.Include(x => x.TransactionTemplate)
+                    .ThenInclude(x => x.TemplateItems);
 
             if (filter.IsPagingEnabled)
                 Query.Skip(PaginationHelper.CalculateSkip(filter))

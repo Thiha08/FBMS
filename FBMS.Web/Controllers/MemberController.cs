@@ -41,25 +41,16 @@ namespace FBMS.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<ActionResult> EditTransactionTemplate(long id)
+        public async Task<ActionResult> EditTransactionTemplate(int id)
         {
-            //var model = await _cropRepository.GetSingleAsync(x => x.Status && x.Id == id);
+            return View(await _memberService.GetMemberWithTransactionTemplate(id));
+        }
 
-            //if (model == null)
-            //{
-            //    return RedirectToAction(nameof(Index));
-            //}
-
-            //var viewModel = new CropCreateOrEditViewModel
-            //{
-            //    Id = model.Id,
-            //    Name = model.Name,
-            //    Type = model.Type,
-            //    Category = model.Category,
-            //    DefaultUnit = model.DefaultUnit
-            //};
-
-            return View();
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditTransactionTemplate(MemberTransactionTemplateDto input)
+        {
+            return RedirectToAction(nameof(EditTransactionTemplate));
         }
     }
 }

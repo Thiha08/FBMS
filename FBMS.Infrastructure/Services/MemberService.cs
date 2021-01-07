@@ -63,6 +63,15 @@ namespace FBMS.Infrastructure.Services
             return _mapper.Map<MemberDto>(member);
         }
 
+        public async Task<MemberTransactionTemplateDto> GetMemberWithTransactionTemplate(int memberId)
+        {
+            var member = await _repository.GetBySpecificationAsync(new MemberWithTransactionTemplateSpecification(memberId));
+            Guard.Against.Null(member, nameof(member));
+            var output = _mapper.Map<MemberTransactionTemplateDto>(member.TransactionTemplate);
+            output.MemberName = member.UserName;
+            return output;
+        }
+
         public async Task<List<MemberDto>> GetMembers()
         {
             var members = await _repository.ListAsync<Member>();

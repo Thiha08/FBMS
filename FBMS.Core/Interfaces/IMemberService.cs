@@ -11,6 +11,8 @@ namespace FBMS.Core.Interfaces
 
         Task<MemberDto> GetMember(string userName);
 
+        Task<MemberTransactionTemplateDto> GetMemberWithTransactionTemplate(int memberId);
+
         Task<List<MemberDto>> GetMembers();
 
         Task<List<MemberDto>> GetMembers(MemberFilterDto filterDto);

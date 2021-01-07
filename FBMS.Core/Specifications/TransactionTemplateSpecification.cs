@@ -6,16 +6,15 @@ using System.Text;
 
 namespace FBMS.Core.Specifications
 {
-    public class MemberWithTransactionTemplateSpecification : Specification<Member>
+    public class TransactionTemplateSpecification : Specification<TransactionTemplate>
     {
-        public MemberWithTransactionTemplateSpecification(int id = 0)
+        public TransactionTemplateSpecification(int id = 0)
         {
             if (id > 0)
                 Query.Where(x => x.Id == id);
 
             Query.Where(x => x.Status)
-                .Include(x => x.TransactionTemplate)
-                    .ThenInclude(x => x.TemplateItems);
+                .Include(x => x.TemplateItems);
         }
     }
 }

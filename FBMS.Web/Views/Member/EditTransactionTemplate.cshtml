@@ -1,111 +1,109 @@
-﻿@*@using FMS.Data.Constants
-@using FMS.Data.Constants.Units
-@using FMS.Data.Extensions
-@using FMS.Data.Entities.CropProductions.ViewModels
+﻿@using FBMS.Core.Dtos.Filters;
+@using FBMS.Core.Constants;
 
-@model CropProductionCreateOrEditViewModel
+@model MemberTransactionTemplateDto
 
 
 @{
-    ViewData["Title"] = "Edit Crop Production";
-
-    var availableProductionTypes = EnumerationUtility.GetValues<ProductionType>();
-    var availableCrops = (List<CropOverviewViewModel>)ViewBag.CropList;
+    ViewData["Title"] = "Edit Transaction Template";
 }
 
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-6">
-            <form asp-action="Edit">
-
-                <input asp-for="Id" class="form-control" />
-
-                <div class="card ">
+        <div class="col-md-12">
+            <form asp-action="EditTransactionTemplate">
+                <input asp-for="Id" class="form-control" hidden />
+                <div class="card">
                     <div class="card-header card-header-success card-header-icon">
                         <div class="card-icon">
-                            <i class="material-icons">local_florist</i>
+                            <i class="material-icons">construction</i>
                         </div>
-                        <h4 class="card-title">Update Crop Production</h4>
+                        <h4 class="card-title">@Model.MemberName</h4>
                     </div>
-                    <div class="card-body ">
-                        <div class="row">
-                            <label asp-for="Name" class="col-md-3 col-form-label"></label>
-                            <div class="col-md-9">
-                                <div class="form-group">
-                                    <input asp-for="Name" class="form-control" />
-
-                                    <span asp-validation-for="Name" class="text-danger"></span>
-                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
+                    <div class="card-body">
+                        <div class="toolbar text-right">
+                            <button class="btn btn-info btn-create" type="submit">
+                                Update
+                            </button>
+                        </div>
+                        <div class="material-datatables">
+                            <div id="datatables_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table class="table table-no-bordered table-hover dtr-inline" cellspacing="0" width="100%" style="width: 100%;" role="grid">
+                                            <thead class="text-primary">
+                                                <tr role="row">
+                                                    <th>
+                                                        Type
+                                                    </th>
+                                                    <th>
+                                                        Amount (%)
+                                                    </th>
+                                                    <th>
+                                                        Is Inverse
+                                                    </th>
+                                                    <th>
+                                                        Status
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @{
+                                                    var index = 0;
+                                                }
+                                                @foreach (var item in Model.TemplateItems)
+                                                {
+                                                    <tr role="row">
+                                                        <td tabindex="0" class="sorting_1">
+                                                            @item.Name
+                                                            <input type="hidden" asp-for="@Model.TemplateItems[index].Id" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" asp-for="@Model.TemplateItems[index].AmountPercent" class="form-control" style="max-width: 120px;" />
+                                                        </td>
+                                                        <td>
+                                                            @if (item.TransactionType != TransactionType.Parlay)
+                                                            {
+                                                                <input type="checkbox" asp-for="@Model.TemplateItems[index].IsInverse" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>Unavailable</span>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @if (item.TransactionType != TransactionType.Parlay)
+                                                            {
+                                                                <input type="checkbox" asp-for="@Model.TemplateItems[index].Status" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>Unavailable</span>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                    index++;
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <label asp-for="CropId" class="col-md-3 col-form-label"></label>
-                            <div class="col-md-9">
-                                <div class="form-group">
-                                    <select asp-for="CropId" class="form-control">
-                                        <option value="0"> - </option>
-                                        @foreach (var crop in availableCrops)
-                                        {
-                                            <option value="@crop.Id">@crop.Name</option>
-                                        }
-                                    </select>
-
-                                    <span asp-validation-for="CropId" class="text-danger"></span>
-                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <label asp-for="ProductionType" class="col-md-3 col-form-label"></label>
-                            <div class="col-md-9">
-                                <div class="form-group">
-                                    <select asp-for="ProductionType" class="form-control">
-                                        @foreach (var productionType in availableProductionTypes)
-                                        {
-                                            <option value="@productionType">@productionType.Description()</option>
-                                        }
-                                    </select>
-
-                                    <span asp-validation-for="ProductionType" class="text-danger"></span>
-                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <label asp-for="Location" class="col-md-3 col-form-label"></label>
-                            <div class="col-md-9">
-                                <div class="form-group bmd-form-group">
-                                    <input asp-for="Location" class="form-control" />
-
-                                    <span asp-validation-for="Location" class="text-danger"></span>
-                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
-                    <div class="card-footer ">
-                        <div class="row">
-                            <div class="col-md-9">
-                                <button type="submit" class="btn btn-fill btn-success">Save</button>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- end content-->
                 </div>
+                <!--  end card  -->
             </form>
         </div>
     </div>
-
-
 
     <div>
         <a class="back-to" asp-action="Index">Back to List</a>
     </div>
 
-</div>*@
-
+</div>
 
 
 
