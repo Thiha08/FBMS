@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace FBMS.Core.Extensions
 {
@@ -47,4 +46,6 @@ namespace FBMS.Core.Extensions
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
     }
+
+    
 }

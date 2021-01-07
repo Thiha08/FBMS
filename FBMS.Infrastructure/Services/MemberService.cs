@@ -7,6 +7,7 @@ using FBMS.Core.Dtos.Auth;
 using FBMS.Core.Dtos.Crawler;
 using FBMS.Core.Dtos.Filters;
 using FBMS.Core.Entities;
+using FBMS.Core.Extensions;
 using FBMS.Core.Interfaces;
 using FBMS.Core.Specifications;
 using FBMS.Core.Specifications.Filters;
@@ -80,9 +81,7 @@ namespace FBMS.Infrastructure.Services
         public async Task EnableMember(int memberId)
         {
             var member = await _repository.GetByIdAsync<Member>(memberId);
-
             Guard.Against.Null(member, nameof(member));
-
             member.Status = true;
             await _repository.UpdateAsync(member);
         }
@@ -169,7 +168,15 @@ namespace FBMS.Infrastructure.Services
             var existingMemberNames = existingMembers.Select(x => x.UserName).ToList();
 
             memberCtos = memberCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingMemberNames.Contains(x.UserName));
-            await _pipeline.RunAsync(_mapper.Map<List<Member>>(memberCtos));
+
+            var members = _mapper.Map<List<Member>>(memberCtos);
+
+            foreach (var member in members)
+            {
+                var transactionTemplate = new TransactionTemplate();
+                member.TransactionTemplate = transactionTemplate.GetDefaultTransactionTemplate();
+            }
+            await _pipeline.RunAsync(members);
         }
 
         public async Task<List<int>> CrawlActiveMembers()

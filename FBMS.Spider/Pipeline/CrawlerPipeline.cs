@@ -20,9 +20,6 @@ namespace FBMS.Spider.Pipeline
         {
             foreach (var entity in entities)
             {
-                entity.Status = true;
-                entity.DateCreated = DateTime.Now;
-
                 await _repository.AddAsync(entity);
             }
         }
