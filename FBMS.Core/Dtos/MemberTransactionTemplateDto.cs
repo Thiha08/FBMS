@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace FBMS.Core.Dtos.Filters
+namespace FBMS.Core.Dtos
 {
     public class MemberTransactionTemplateDto : BaseDto
     {

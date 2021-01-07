@@ -43,12 +43,13 @@ namespace FBMS.Web
                 {
                     webBuilder
                         .UseStartup<Startup>()
-                        .ConfigureLogging(logging =>
-                {
-                    logging.ClearProviders();
-                    logging.AddConsole();
-                    // logging.AddAzureWebAppDiagnostics(); add this if deploying to Azure
+                        .ConfigureLogging((ctx, logging) =>
+                    {
+                        //logging.AddConfiguration(ctx.Configuration.GetSection("Logging"));
+                        logging.ClearProviders();
+                        logging.AddConsole();
+                        // logging.AddAzureWebAppDiagnostics(); add this if deploying to Azure
+                    });
                 });
-            });
     }
 }

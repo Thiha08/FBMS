@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using FBMS.Web.ViewModels;
+@using FBMS.Web.ViewExtensions;
+
+@{
+    var alertMessage = TempData.Get<AlertViewModel>("AlertViewModel");
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -30,6 +37,14 @@
             @await Html.PartialAsync("_Navbar")
             <!-- Main content -->
             <div class="content">
+                @if (alertMessage != null)
+                {
+                    <div class="alert alert-@( alertMessage.Success ? "success" : "danger" ) alert-dismissible fade show" role="alert">
+                        @alertMessage.Message
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>}
                 @RenderBody()
             </div>
             <!-- ./ End Main content -->

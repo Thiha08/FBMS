@@ -1,4 +1,5 @@
-﻿using FBMS.Core.Dtos.Filters;
+﻿using FBMS.Core.Dtos;
+using FBMS.Core.Dtos.Filters;
 using FBMS.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -50,7 +51,9 @@ namespace FBMS.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EditTransactionTemplate(MemberTransactionTemplateDto input)
         {
-            return RedirectToAction(nameof(EditTransactionTemplate));
+            await _memberService.UpdateMemberWithTransactionTemplate(input);
+            GenerateAlertMessage(true, "The template is updated successfully.");
+            return RedirectToAction(nameof(EditTransactionTemplate), input.MemberId);
         }
     }
 }

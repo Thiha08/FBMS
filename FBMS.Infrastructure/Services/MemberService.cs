@@ -72,6 +72,21 @@ namespace FBMS.Infrastructure.Services
             return output;
         }
 
+        public async Task UpdateMemberWithTransactionTemplate(MemberTransactionTemplateDto dto)
+        {
+            var member = await _repository.GetBySpecificationAsync(new MemberWithTransactionTemplateSpecification(dto.MemberId));
+            Guard.Against.Null(member, nameof(member));
+            var existingTemplateItems = member.TransactionTemplate.TemplateItems;
+            foreach (var item in dto.TemplateItems)
+            {
+                var existedItem = existingTemplateItems.Where(x => x.Id == item.Id).FirstOrDefault();
+                existedItem.IsInverse = item.IsInverse;
+                existedItem.Status = item.Status;
+                existedItem.AmountPercent = item.AmountPercent;
+                await _repository.UpdateAsync(existedItem).ConfigureAwait(false);
+            }
+        }
+
         public async Task<List<MemberDto>> GetMembers()
         {
             var members = await _repository.ListAsync<Member>();

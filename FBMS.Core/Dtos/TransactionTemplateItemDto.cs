@@ -1,9 +1,6 @@
 ﻿using FBMS.Core.Constants;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace FBMS.Core.Dtos.Filters
+namespace FBMS.Core.Dtos
 {
     public class TransactionTemplateItemDto : BaseDto
     {

@@ -13,6 +13,8 @@ namespace FBMS.Core.Interfaces
 
         Task<MemberTransactionTemplateDto> GetMemberWithTransactionTemplate(int memberId);
 
+        Task UpdateMemberWithTransactionTemplate(MemberTransactionTemplateDto dto);
+
         Task<List<MemberDto>> GetMembers();
 
         Task<List<MemberDto>> GetMembers(MemberFilterDto filterDto);

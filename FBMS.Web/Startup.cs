@@ -7,6 +7,7 @@ using FBMS.Core.Constants.Hangfire;
 using FBMS.Infrastructure;
 using FBMS.Infrastructure.Mappers;
 using FBMS.Web.Filters;
+using FBMS.Web.Middlewares;
 using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.SqlServer;
@@ -41,7 +42,7 @@ namespace FBMS.Web
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
@@ -138,6 +139,9 @@ namespace FBMS.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
             app.UseRouting();
 
             app.UseHttpsRedirection();
