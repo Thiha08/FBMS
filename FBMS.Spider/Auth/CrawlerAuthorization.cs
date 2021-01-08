@@ -93,7 +93,7 @@ namespace FBMS.Spider.Auth
                             Priority = CacheItemPriority.High,
                             SlidingExpiration = TimeSpan.FromMinutes(10)
                         };
-                        memoryCache.Set(CacheKeys.IBetAuthCookies, authResponse.Cookies, cacheExpiryOptions);
+                        memoryCache.Set(response.ResponseUri.Host, authResponse.Cookies, cacheExpiryOptions);
                     }
                     var receiveStream = response.GetResponseStream();
                     var readStream = new StreamReader(receiveStream, Encoding.UTF8);

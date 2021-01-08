@@ -26,5 +26,8 @@ namespace FBMS.Core.Dtos.Auth
 
         [Description("txtPassword")]
         public string TxtPassword { get; set; }
+
+        [Description("password")]
+        public string Password { get; set; }
     }
 }

@@ -96,10 +96,13 @@ namespace FBMS.Web
             });
 
             services.Configure<HostApiCrawlerSettings>(Configuration.GetSection(nameof(HostApiCrawlerSettings)));
-            services.AddTransient<IHostApiCrawlerSettings>(sp => sp.GetRequiredService<IOptions<HostApiCrawlerSettings>>().Value);
+            services.AddSingleton<IHostApiCrawlerSettings>(sp => sp.GetRequiredService<IOptions<HostApiCrawlerSettings>>().Value);
+
+            services.Configure<ClientApiCrawlerSettings>(Configuration.GetSection(nameof(ClientApiCrawlerSettings)));
+            services.AddSingleton<IClientApiCrawlerSettings>(sp => sp.GetRequiredService<IOptions<ClientApiCrawlerSettings>>().Value);
 
             services.Configure<HangfireSettings>(Configuration.GetSection(nameof(HangfireSettings)));
-            services.AddTransient<IHangfireSettings>(sp => sp.GetRequiredService<IOptions<HangfireSettings>>().Value);
+            services.AddSingleton<IHangfireSettings>(sp => sp.GetRequiredService<IOptions<HangfireSettings>>().Value);
 
             services.AddRazorPages();
 
