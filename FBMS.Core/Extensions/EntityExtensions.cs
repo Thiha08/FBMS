@@ -2,6 +2,7 @@
 using FBMS.Core.Entities;
 using FBMS.Core.Events;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FBMS.Core.Extensions
 {
@@ -23,6 +24,41 @@ namespace FBMS.Core.Extensions
             }
             transactionTemplate.Events.Add(new TransactionTemplateAddedEvent(transactionTemplate));
             return transactionTemplate;
+        }
+
+        public static Transaction ApplyTransactionTemplate(this TransactionTemplate transactionTemplate, Transaction transaction)
+        {
+            var templateItem = transactionTemplate.TemplateItems.Where(x => x.TransactionType == transaction.TransactionType).FirstOrDefault();
+            if (templateItem.IsInverse)
+            {
+                transaction.SubmittedTransactionType = transaction.TransactionType.InvertTransactionType();
+                transaction.SubmittedPricing = transaction.SubmittedTransactionType.ToDescription();
+            }
+            else
+            {
+                transaction.SubmittedTransactionType = transaction.TransactionType;
+                transaction.SubmittedPricing = transaction.TransactionType.ToDescription();
+            }
+            if (templateItem.AmountPercent > 0)
+            {
+                transaction.SubmittedAmount = decimal.Round((templateItem.AmountPercent * transaction.Amount) / 100);
+            }
+            transaction.Status = templateItem.Status;
+            return transaction;
+        }
+
+        public static TransactionType InvertTransactionType(this TransactionType transactionType)
+        {
+            if (transactionType == TransactionType.Home)
+                return TransactionType.Away;
+            else if (transactionType == TransactionType.Away)
+                return TransactionType.Home;
+            else if (transactionType == TransactionType.Over)
+                return TransactionType.Under;
+            else if (transactionType == TransactionType.Under)
+                return TransactionType.Over;
+            else
+                return transactionType;
         }
     }
 }

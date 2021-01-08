@@ -235,7 +235,7 @@ input:-webkit-autofill:active {
         width: 26px !important;
         height: auto !important;
     }
-    
+
 
 /*Datatable*/
 div.dataTables_wrapper div.dataTables_filter {
@@ -254,3 +254,12 @@ div.dataTables_wrapper div.dataTables_paginate {
         white-space: nowrap;
         justify-content: flex-end;
     }
+
+#transactions-datatable th, td {
+    white-space: nowrap;
+}
+
+.scrolledTable {
+    overflow-y: auto;
+    clear: both;
+}

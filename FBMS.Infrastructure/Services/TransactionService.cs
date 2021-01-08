@@ -247,16 +247,14 @@ namespace FBMS.Infrastructure.Services
                     transaction.HomeTeam = item.HomeTeam;
                     transaction.AwayTeam = item.AwayTeam;
                     transaction.Pricing = item.Pricing;
-
                     string iString = item.TransactionDate.ReplaceFirst(" ", "/" + DateTime.Now.Year.ToString() + " ");
                     transaction.TransactionDate = DateTime.ParseExact(iString, "dd/MM/yyyy h:mm:ss tt", null);
-
                     transaction.TransactionType = GetTransactionType(item.TransactionType, item.HomeTeam, item.AwayTeam);
-
                     transaction.Amount = Convert.ToDecimal(item.Amount);
-
-                    transactions.Add(transaction);
+                    var convertedTransaction = member.TransactionTemplate.ApplyTransactionTemplate(transaction);
+                    transactions.Add(convertedTransaction);
                 }
+                transactions = transactions.Where(x => x.Status).ToList();
                 await _pipeline.RunAsync(transactions);
             }
         }

@@ -24,100 +24,131 @@
                             Crawl
                         </a>
                     </div>
-                    <div class="material-datatables">
-                        <div id="datatables_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <table id="datatables" class="table table-no-bordered table-hover dataTable dtr-inline" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
-                                        <thead class="text-primary">
-                                            <tr role="row">
-                                                <th>
-                                                    ID
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.UserName)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.TransactionNumber)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.Date)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.League)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.HomeTeam)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.AwayTeam)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.TransactionType)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.Pricing)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.Amount)
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (Model.Any())
-                                            {
-                                                int i = 0;
+                    <div id="transactions-datatable" class="material-datatables">
+                        <table id="datatables" class="table table-bordered table-hover dataTable dtr-inline text-center" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
+                            <thead class="text-primary">
+                                <tr role="row">
+                                    <th>
+                                        ID
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.UserName)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.TransactionNumber)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Date)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.League)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HomeTeam)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.AwayTeam)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.TransactionType)
+                                    </th>
+                                    <th class="table-info">
+                                        @Html.DisplayNameFor(model => model.SubmittedTransactionType)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Pricing)
+                                    </th>
+                                    <th class="table-info">
+                                        @Html.DisplayNameFor(model => model.SubmittedPricing)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Amount)
+                                    </th>
+                                    <th class="table-info">
+                                        @Html.DisplayNameFor(model => model.SubmittedAmount)
+                                    </th>
+                                    <th class="table-info">
+                                        @Html.DisplayNameFor(model => model.SubmittedDate)
+                                    </th>
+                                    <th class="table-info">
+                                        @Html.DisplayNameFor(model => model.IsSubmitted)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Any())
+                                {
+                                    int i = 0;
 
-                                                foreach (var item in Model)
+                                    foreach (var item in Model)
+                                    {
+                                        i++;
+                                        <tr role="row">
+                                            <td>
+                                                @i
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.UserName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.TransactionNumber)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Date)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.League)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.HomeTeam)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AwayTeam)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.TransactionType)
+                                            </td>
+                                            <td class="table-info">
+                                                @Html.DisplayFor(modelItem => item.SubmittedTransactionType)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Pricing)
+                                            </td>
+                                            <td class="table-info">
+                                                @Html.DisplayFor(modelItem => item.SubmittedPricing)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Amount)
+                                            </td>
+                                            <td class="table-info">
+                                                @Html.DisplayFor(modelItem => item.SubmittedAmount)
+                                            </td>
+                                            <td class="table-info">
+                                                @Html.DisplayFor(modelItem => item.SubmittedDate)
+                                            </td>
+                                            <td class="table-info">
+                                                @if (item.IsSubmitted)
                                                 {
-                                                    i++;
-                                                    <tr role="row">
-                                                        <td>
-                                                            @i
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.UserName)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.TransactionNumber)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.Date)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.League)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.HomeTeam)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.AwayTeam)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.TransactionType)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.Pricing)
-                                                        </td>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.Amount)
-                                                        </td>
-                                                    </tr>
+                                                    <span>Submitted</span>
                                                 }
-                                            }
-                                            else
-                                            {
-                                                <tr role="row">
-                                                    <td colspan="11" class="text-center">
-                                                        No data found.
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                                                else
+                                                {
+                                                    <span></span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr role="row">
+                                        <td colspan="16" class="text-center">
+                                            No data found.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <!-- end content-->
@@ -126,3 +157,13 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        $(function () {
+
+            $('#datatables').wrap("<div class='scrolledTable'></div>");
+        });
+    </script>
+}

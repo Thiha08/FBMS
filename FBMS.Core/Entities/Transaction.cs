@@ -23,9 +23,19 @@ namespace FBMS.Core.Entities
 
         public TransactionType TransactionType { get; set; }
 
+        public TransactionType SubmittedTransactionType { get; set; }
+
         public string Pricing { get; set; }
 
+        public string SubmittedPricing { get; set; }
+
         public decimal Amount { get; set; }
+
+        public decimal SubmittedAmount { get; set; }
+
+        public DateTime? SubmittedDate { get; set; }
+
+        public bool IsSubmitted { get; set; }
 
         public int MemberId { get; set; }
     }
