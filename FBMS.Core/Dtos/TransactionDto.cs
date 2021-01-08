@@ -16,7 +16,7 @@ namespace FBMS.Core.Dtos
         public string TransactionNumber { get; set; }
 
         [Display(Name = "Transaction Date")]
-        public DateTime Date { get; set; }
+        public DateTime TransactionDate { get; set; }
 
         [Display(Name = "League")]
         public string League { get; set; }

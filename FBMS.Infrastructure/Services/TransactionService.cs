@@ -85,92 +85,6 @@ namespace FBMS.Infrastructure.Services
             }
         }
 
-        public async Task CrawlTransactions()
-        {
-            var startDateUTC = DateTime.UtcNow.ToString("MM/dd/yyyy");
-            var endDateUTC = DateTime.UtcNow.ToString("MM/dd/yyyy");
-            var members = (await _repository.ListAsync<Member>())
-                .Where(x => x.Status);
-
-            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
-
-            if (!authResponse.isSignedIn)
-            {
-                var htmlDocument = new HtmlDocument();
-                htmlDocument.LoadHtml(authResponse.HtmlCode);
-                var formData = (_processor.Process<SignInCto>(htmlDocument)).FirstOrDefault();
-
-                if (!string.IsNullOrWhiteSpace(formData.AuthUrl))
-                {
-                    var authRequest = new AuthRequest
-                    {
-                        AuthUrl = _hostApiCrawlerSettings.AuthUrl + formData.AuthUrl.Replace("./", ""),
-                        Cookies = authResponse.Cookies
-                    };
-
-                    authRequest.RequestForm = new SignInDto
-                    {
-                        EventTarget = "btnSignIn",
-                        EventArgument = "",
-                        EventValidation = formData.EventValidation,
-                        ViewState = formData.ViewState,
-                        ViewStateGenerator = formData.ViewStateGenerator,
-                        TxtUserName = _hostApiCrawlerSettings.UserName,
-                        TxtPassword = _hostApiCrawlerSettings.Password
-                    };
-
-                    authResponse = await _crawlerAuthorization.SignInAsync(authRequest);
-                    if (!authResponse.isSignedIn)
-                    {
-                        throw new AuthenticationException(authResponse.HtmlCode);
-                    }
-                }
-            }
-
-            var specification = new TransactionByDateSpecification();
-            var existingTransactions = await _repository.ListAsync(specification);
-            var existingTransactionNumbers = existingTransactions.Select(x => x.TransactionNumber).ToList();
-
-            foreach (var member in members)
-            {
-                var request = new CrawlerRequest
-                {
-                    BaseUrl = _hostApiCrawlerSettings.ClientTransactionsUrl
-                    .Replace("{{CLIENT_NAME}}", member.UserName)
-                    .Replace("{{START_DATE}}", startDateUTC)
-                    .Replace("{{END_DATE}}", endDateUTC),
-                    Cookies = authResponse.Cookies
-                };
-                var document = await _downloader.DownloadAsync(request);
-                var transactionCtos = _processor.Process<TransactionCto>(document);
-                transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingTransactionNumbers.Contains(x.TransactionNumber));
-
-                var transactions = new List<Transaction>();
-                foreach (var item in transactionCtos)
-                {
-                    var transaction = new Transaction();
-                    transaction.MemberId = member.Id;
-                    transaction.SerialNumber = item.SerialNumber;
-                    transaction.TransactionNumber = item.TransactionNumber;
-                    transaction.UserName = item.UserName;
-                    transaction.League = item.League;
-                    transaction.HomeTeam = item.HomeTeam;
-                    transaction.AwayTeam = item.AwayTeam;
-                    transaction.Pricing = item.Pricing;
-                   
-                    string iString = item.TransactionDate.ReplaceFirst(" ", "/" + DateTime.Now.Year.ToString() + " ");
-                    transaction.TransactionDate = DateTime.ParseExact(iString, "dd/MM/yyyy h:mm:ss tt", null);
-
-                    transaction.TransactionType = GetTransactionType(item.TransactionType, item.HomeTeam, item.AwayTeam);
-
-                    transaction.Amount = Convert.ToDecimal(item.Amount);
-
-                    transactions.Add(transaction);
-                }
-                await _pipeline.RunAsync(transactions);
-            }
-        }
-
         public async Task CrawlTransactions(TransactionFilterCto filterCto)
         {
             var startDateUTC = filterCto.StartDate.ToString("MM/dd/yyyy");
@@ -182,44 +96,13 @@ namespace FBMS.Infrastructure.Services
                 members = members.Where(x => filterCto.MemberIds.Contains(x.Id)).ToList();
             }
 
-            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
-
-            if (!authResponse.isSignedIn)
-            {
-                var htmlDocument = new HtmlDocument();
-                htmlDocument.LoadHtml(authResponse.HtmlCode);
-                var formData = (_processor.Process<SignInCto>(htmlDocument)).FirstOrDefault();
-
-                if (!string.IsNullOrWhiteSpace(formData.AuthUrl))
-                {
-                    var authRequest = new AuthRequest
-                    {
-                        AuthUrl = _hostApiCrawlerSettings.AuthUrl + formData.AuthUrl.Replace("./", ""),
-                        Cookies = authResponse.Cookies
-                    };
-
-                    authRequest.RequestForm = new SignInDto
-                    {
-                        EventTarget = "btnSignIn",
-                        EventArgument = "",
-                        EventValidation = formData.EventValidation,
-                        ViewState = formData.ViewState,
-                        ViewStateGenerator = formData.ViewStateGenerator,
-                        TxtUserName = _hostApiCrawlerSettings.UserName,
-                        TxtPassword = _hostApiCrawlerSettings.Password
-                    };
-
-                    authResponse = await _crawlerAuthorization.SignInAsync(authRequest);
-                    if (!authResponse.isSignedIn)
-                    {
-                        throw new AuthenticationException(authResponse.HtmlCode);
-                    }
-                }
-            }
+            var authResponse = await GetAuthentication();
 
             var specification = new TransactionByDateSpecification();
             var existingTransactions = await _repository.ListAsync(specification);
             var existingTransactionNumbers = existingTransactions.Select(x => x.TransactionNumber).ToList();
+
+            var transactions = new List<Transaction>();
 
             foreach (var member in members)
             {
@@ -235,7 +118,6 @@ namespace FBMS.Infrastructure.Services
                 var transactionCtos = _processor.Process<TransactionCto>(document);
                 transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingTransactionNumbers.Contains(x.TransactionNumber));
 
-                var transactions = new List<Transaction>();
                 foreach (var item in transactionCtos)
                 {
                     var transaction = new Transaction();
@@ -246,7 +128,7 @@ namespace FBMS.Infrastructure.Services
                     transaction.League = item.League;
                     transaction.HomeTeam = item.HomeTeam;
                     transaction.AwayTeam = item.AwayTeam;
-                    transaction.Pricing = item.Pricing;
+                    transaction.Pricing = item.Pricing?.Replace("@", "");
                     string iString = item.TransactionDate.ReplaceFirst(" ", "/" + DateTime.Now.Year.ToString() + " ");
                     transaction.TransactionDate = DateTime.ParseExact(iString, "dd/MM/yyyy h:mm:ss tt", null);
                     transaction.TransactionType = GetTransactionType(item.TransactionType, item.HomeTeam, item.AwayTeam);
@@ -254,9 +136,9 @@ namespace FBMS.Infrastructure.Services
                     var convertedTransaction = member.TransactionTemplate.ApplyTransactionTemplate(transaction);
                     transactions.Add(convertedTransaction);
                 }
-                transactions = transactions.Where(x => x.Status).ToList();
-                await _pipeline.RunAsync(transactions);
             }
+            transactions = transactions.Where(x => x.Status).ToList();
+            await _pipeline.RunAsync(transactions);
         }
 
         private TransactionType GetTransactionType(string type, string homeTeam, string awayTeam)
@@ -285,6 +167,46 @@ namespace FBMS.Infrastructure.Services
             }
 
             return transactionType;
+        }
+
+        private async Task<AuthResponse> GetAuthentication()
+        {
+            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
+
+            if (!authResponse.isSignedIn)
+            {
+                var htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(authResponse.HtmlCode);
+                var formData = (_processor.Process<SignInCto>(htmlDocument)).FirstOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(formData.AuthUrl))
+                {
+                    var authRequest = new AuthRequest
+                    {
+                        AuthUrl = _hostApiCrawlerSettings.AuthUrl + formData.AuthUrl.Replace("./", ""),
+                        Cookies = authResponse.Cookies
+                    };
+
+                    authRequest.RequestForm = new SignInDto
+                    {
+                        EventTarget = "btnSignIn",
+                        EventArgument = "",
+                        EventValidation = formData.EventValidation,
+                        ViewState = formData.ViewState,
+                        ViewStateGenerator = formData.ViewStateGenerator,
+                        TxtUserName = _hostApiCrawlerSettings.UserName,
+                        TxtPassword = _hostApiCrawlerSettings.Password
+                    };
+
+                    authResponse = await _crawlerAuthorization.SignInAsync(authRequest);
+                    if (!authResponse.isSignedIn)
+                    {
+                        throw new AuthenticationException(authResponse.HtmlCode);
+                    }
+                }
+            }
+
+            return authResponse;
         }
     }
 }

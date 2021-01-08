@@ -16,8 +16,6 @@ namespace FBMS.Core.Interfaces
 
         Task DeleteTransactions(TransactionFilterDto filterDto);
 
-        Task CrawlTransactions();
-
         Task CrawlTransactions(TransactionFilterCto filterCto);        
     }
 }

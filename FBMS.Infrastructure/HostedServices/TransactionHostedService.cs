@@ -43,7 +43,7 @@ namespace FBMS.Infrastructure.HostedServices
                 _logger.LogInformation(
                     "Transaction Hosted Service is working. Count: {Count}", count);
 
-                _transactionService.CrawlTransactions();
+                //_transactionService.CrawlTransactions();
             }
             catch (Exception ex)
             {

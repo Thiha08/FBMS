@@ -38,7 +38,7 @@
                                         @Html.DisplayNameFor(model => model.TransactionNumber)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Date)
+                                        @Html.DisplayNameFor(model => model.TransactionDate)
                                     </th>
                                     <th>
                                         @Html.DisplayNameFor(model => model.League)
@@ -94,7 +94,7 @@
                                                 @Html.DisplayFor(modelItem => item.TransactionNumber)
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.Date)
+                                                @item.TransactionDate.ToString("dd-MM-yyyy HH:mm:ss")
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.League)

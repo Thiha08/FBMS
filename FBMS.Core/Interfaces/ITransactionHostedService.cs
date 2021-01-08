@@ -9,5 +9,7 @@ namespace FBMS.Core.Interfaces
         Task StopAsync();
 
         Task<bool> IsRunning();
+
+        Task RecurringTransactionJob();
     }
 }

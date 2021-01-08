@@ -32,12 +32,10 @@ namespace FBMS.Core.Extensions
             if (templateItem.IsInverse)
             {
                 transaction.SubmittedTransactionType = transaction.TransactionType.InvertTransactionType();
-                transaction.SubmittedPricing = transaction.SubmittedTransactionType.ToDescription();
             }
             else
             {
                 transaction.SubmittedTransactionType = transaction.TransactionType;
-                transaction.SubmittedPricing = transaction.TransactionType.ToDescription();
             }
             if (templateItem.AmountPercent > 0)
             {
