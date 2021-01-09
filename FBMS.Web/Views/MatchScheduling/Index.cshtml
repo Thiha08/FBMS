@@ -50,7 +50,13 @@
                                         FT. HDP
                                     </th>
                                     <th>
+                                        FT. HDP (B)
+                                    </th>
+                                    <th>
                                         FT. O/U
+                                    </th>
+                                    <th>
+                                        FT. O/U (B)
                                     </th>
                                 </tr>
                             </thead>
@@ -72,7 +78,7 @@
                                             <td>
                                                 @item.MatchDate.ToString("yyyy-MM-dd HH:mm:ss")
                                             </td>
-                                            <td>
+                                            <td style="white-space: normal;">
                                                 @Html.DisplayFor(modelItem => item.League)
                                             </td>
                                             <td>
@@ -85,7 +91,15 @@
                                                 @Html.DisplayFor(modelItem => item.FtHdpPricing)
                                             </td>
                                             <td>
+                                                <div class="badge bg-info">@(item.HomeAmount/10)</div>
+                                                <div class="badge bg-warning">@(item.AwayAmount/10)</div>
+                                            </td>
+                                            <td>
                                                 @Html.DisplayFor(modelItem => item.FtOuPricing)
+                                            </td>
+                                            <td>
+                                                <div class="badge bg-info">@(item.OverAmount/10)</div>
+                                                <div class="badge bg-warning">@(item.UnderAmount/10)</div>
                                             </td>
                                         </tr>
                                     }

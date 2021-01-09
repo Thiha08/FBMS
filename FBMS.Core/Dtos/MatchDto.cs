@@ -23,5 +23,13 @@ namespace FBMS.Core.Dtos
         public decimal FtHdpPricing { get; set; }
 
         public decimal FtOuPricing { get; set; }
+
+        public decimal HomeAmount { get; set; }
+
+        public decimal AwayAmount { get; set; }
+
+        public decimal OverAmount { get; set; }
+
+        public decimal UnderAmount { get; set; }
     }
 }

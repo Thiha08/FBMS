@@ -151,7 +151,11 @@ namespace FBMS.Infrastructure.Services
                     match.HomeTeam = entityList[19].ToString();
                     match.AwayTeam = entityList[20].ToString();
                     match.FtHdpPricing = Convert.ToDecimal(entityList[24].ToString());
+                    match.HomeAmount = Convert.ToDecimal(entityList[26].ToString());
+                    match.AwayAmount = Convert.ToDecimal(entityList[27].ToString());
                     match.FtOuPricing = Convert.ToDecimal(entityList[29].ToString());
+                    match.OverAmount = Convert.ToDecimal(entityList[33].ToString());
+                    match.UnderAmount = Convert.ToDecimal(entityList[34].ToString());
                     match.MatchDate = DateTime.ParseExact(entityList[63].ToString(), "yyyy-MM-dd HH:mm:ss", null);
                     matchList.Add(match);
                     index++;

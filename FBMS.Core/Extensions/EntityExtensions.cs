@@ -1,4 +1,5 @@
 ﻿using FBMS.Core.Constants;
+using FBMS.Core.Dtos;
 using FBMS.Core.Entities;
 using FBMS.Core.Events;
 using System.Collections.Generic;
@@ -57,6 +58,26 @@ namespace FBMS.Core.Extensions
                 return TransactionType.Over;
             else
                 return transactionType;
+        }
+
+        public static string GetHomeUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=home&oId={match.Oddsid}&odds={match.HomeAmount}&ep{match.FtHdpPricing}|1";
+        }
+
+        public static string GetAwayUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=away&oId={match.Oddsid}&odds={match.AwayAmount}&ep{match.FtHdpPricing}|1";
+        }
+
+        public static string GetOverUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=over&oId={match.Oddsid}&odds={match.OverAmount}&ep{match.FtOuPricing}";
+        }
+
+        public static string GetUnderUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=under&oId={match.Oddsid}&odds={match.UnderAmount}&ep{match.FtOuPricing}";
         }
     }
 }
