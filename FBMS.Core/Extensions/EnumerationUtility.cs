@@ -15,5 +15,19 @@ namespace FBMS.Core.Extensions
 
             return Enum.GetValues(typeof(T)).Cast<T>();
         }
+
+        public static IEnumerable<T> GetEnumerableByDepth<T>(this IEnumerable<T> enumerable, int depth)
+        {
+            int index = 0;
+            foreach (var item in enumerable)
+            {
+                if (index == depth)
+                {
+                    return (IEnumerable<T>)item;
+                }
+                index++;
+            }
+            return Enumerable.Empty<T>();
+        }
     }
 }

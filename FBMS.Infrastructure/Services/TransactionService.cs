@@ -33,18 +33,16 @@ namespace FBMS.Infrastructure.Services
         private readonly ICrawlerPipeline _pipeline;
         private readonly ICrawlerAuthorization _crawlerAuthorization;
         private readonly IHostApiCrawlerSettings _hostApiCrawlerSettings;
-        private readonly IClientApiCrawlerSettings _clientApiCrawlerSettings;
         private readonly IRepository _repository;
         private readonly IMapper _mapper;
 
-        public TransactionService(ICrawlerDownloader downloader, ICrawlerProcessor processor, ICrawlerPipeline pipeline, ICrawlerAuthorization crawlerAuthorization, IHostApiCrawlerSettings hostApiCrawlerSettings, IClientApiCrawlerSettings clientApiCrawlerSettings, IRepository repository, IMapper mapper)
+        public TransactionService(ICrawlerDownloader downloader, ICrawlerProcessor processor, ICrawlerPipeline pipeline, ICrawlerAuthorization crawlerAuthorization, IHostApiCrawlerSettings hostApiCrawlerSettings, IRepository repository, IMapper mapper)
         {
             _downloader = downloader;
             _processor = processor;
             _pipeline = pipeline;
             _crawlerAuthorization = crawlerAuthorization;
             _hostApiCrawlerSettings = hostApiCrawlerSettings;
-            _clientApiCrawlerSettings = clientApiCrawlerSettings;
             _repository = repository;
             _mapper = mapper;
         }
@@ -173,7 +171,7 @@ namespace FBMS.Infrastructure.Services
 
         private async Task<AuthResponse> GetHostApiAuthentication()
         {
-            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
+            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url, CacheKeys.IBetAuthCookies);
 
             if (!authResponse.isSignedIn)
             {
@@ -198,46 +196,6 @@ namespace FBMS.Infrastructure.Services
                         ViewStateGenerator = formData.ViewStateGenerator,
                         TxtUserName = _hostApiCrawlerSettings.UserName,
                         TxtPassword = _hostApiCrawlerSettings.Password
-                    };
-
-                    authResponse = await _crawlerAuthorization.SignInAsync(authRequest);
-                    if (!authResponse.isSignedIn)
-                    {
-                        throw new AuthenticationException(authResponse.HtmlCode);
-                    }
-                }
-            }
-
-            return authResponse;
-        }
-
-        private async Task<AuthResponse> GetClientApiAuthentication()
-        {
-            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_clientApiCrawlerSettings.Url);
-
-            if (!authResponse.isSignedIn)
-            {
-                var htmlDocument = new HtmlDocument();
-                htmlDocument.LoadHtml(authResponse.HtmlCode);
-                var formData = (_processor.Process<SignInCto>(htmlDocument)).FirstOrDefault();
-
-                if (!string.IsNullOrWhiteSpace(formData.AuthUrl))
-                {
-                    var authRequest = new AuthRequest
-                    {
-                        AuthUrl = _clientApiCrawlerSettings.AuthUrl + formData.AuthUrl.Replace("./", ""),
-                        Cookies = authResponse.Cookies
-                    };
-
-                    authRequest.RequestForm = new SignInDto
-                    {
-                        EventTarget = "btnSignIn",
-                        EventArgument = "",
-                        EventValidation = formData.EventValidation,
-                        ViewState = formData.ViewState,
-                        ViewStateGenerator = formData.ViewStateGenerator,
-                        TxtUserName = _clientApiCrawlerSettings.UserName,
-                        Password = _clientApiCrawlerSettings.Password
                     };
 
                     authResponse = await _crawlerAuthorization.SignInAsync(authRequest);

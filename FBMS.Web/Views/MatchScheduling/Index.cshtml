@@ -1,0 +1,120 @@
+﻿
+@using FBMS.Core.Dtos;
+
+@model IEnumerable<MatchDto>
+
+@{
+    ViewData["Title"] = "Match Schedule";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">sports_soccer</i>
+                    </div>
+                    <h4 class="card-title">Match Schedule</h4>
+                </div>
+                <div class="card-body">
+                    <div class="toolbar text-right">
+                        <a class="btn btn-info btn-create" asp-controller="MatchScheduling" asp-action="Index">
+                            <i class="material-icons">system_update_alt</i>
+                            Get Latest
+                        </a>
+                    </div>
+                    <div id="transactions-datatable" class="material-datatables">
+                        <table id="datatables" class="table table-bordered table-hover dataTable dtr-inline text-center" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
+                            <thead class="text-primary">
+                                <tr role="row">
+                                    <th>
+                                        ID
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Oddsid)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.MatchDate)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.League)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.HomeTeam)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.AwayTeam)
+                                    </th>
+                                    <th>
+                                        FT. HDP
+                                    </th>
+                                    <th>
+                                        FT. O/U
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Any())
+                                {
+                                    int i = 0;
+
+                                    foreach (var item in Model)
+                                    {
+                                        i++;
+                                        <tr role="row">
+                                            <td>
+                                                @i
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Oddsid)
+                                            </td>
+                                            <td>
+                                                @item.MatchDate.ToString("yyyy-MM-dd HH:mm:ss")
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.League)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.HomeTeam)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AwayTeam)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.FtHdpPricing)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.FtOuPricing)
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr role="row">
+                                        <td colspan="8" class="text-center">
+                                            No data found.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- end content-->
+            </div>
+            <!--  end card  -->
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(function () {
+
+            $('#datatables').wrap("<div class='scrolledTable'></div>");
+        });
+    </script>
+}

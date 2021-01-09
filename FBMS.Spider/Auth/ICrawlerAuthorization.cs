@@ -5,7 +5,7 @@ namespace FBMS.Spider.Auth
 {
     public interface ICrawlerAuthorization
     {
-        Task<AuthResponse> IsSignedInAsync(string baseUrl);
+        Task<AuthResponse> IsSignedInAsync(string baseUrl, string cacheKey);
 
         Task<AuthResponse> SignInAsync(AuthRequest request);
     }

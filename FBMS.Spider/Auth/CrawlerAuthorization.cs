@@ -1,5 +1,4 @@
-﻿using FBMS.Core.Constants;
-using FBMS.Core.Dtos.Auth;
+﻿using FBMS.Core.Dtos.Auth;
 using FBMS.Core.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -20,14 +19,14 @@ namespace FBMS.Spider.Auth
             this.memoryCache = memoryCache;
         }
 
-        public async Task<AuthResponse> IsSignedInAsync(string baseUrl)
+        public async Task<AuthResponse> IsSignedInAsync(string baseUrl, string cacheKey)
         {
             using (var webClient = new WebClient())
             {
                 var uri = new Uri(baseUrl);
                 var webRequest = (HttpWebRequest)WebRequest.Create(uri);
 
-                if (!memoryCache.TryGetValue(CacheKeys.IBetAuthCookies, out List<Cookie> authCookies))
+                if (!memoryCache.TryGetValue(cacheKey, out List<Cookie> authCookies))
                 {
                     webRequest.CookieContainer = new CookieContainer();
                 }

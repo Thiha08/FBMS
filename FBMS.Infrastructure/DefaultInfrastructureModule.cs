@@ -96,6 +96,7 @@ namespace FBMS.Infrastructure
             builder.RegisterType<CrawlerService>().As<ICrawlerService>().InstancePerDependency();
             builder.RegisterType<MemberService>().As<IMemberService>().InstancePerDependency();
             builder.RegisterType<TransactionService>().As<ITransactionService>().InstancePerDependency();
+            builder.RegisterType<MatchSchedulingService>().As<IMatchSchedulingService>().InstancePerDependency();
             builder.RegisterType<TransactionHostedService>().As<ITransactionHostedService>().InstancePerDependency();
         }
 

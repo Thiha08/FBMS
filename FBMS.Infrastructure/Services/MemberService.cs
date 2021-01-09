@@ -1,5 +1,6 @@
 ﻿using Ardalis.GuardClauses;
 using AutoMapper;
+using FBMS.Core.Constants;
 using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Ctos;
 using FBMS.Core.Dtos;
@@ -144,7 +145,7 @@ namespace FBMS.Infrastructure.Services
 
         public async Task CrawlMembers()
         {
-            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
+            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url, CacheKeys.IBetAuthCookies);
 
             if (!authResponse.isSignedIn)
             {
@@ -205,7 +206,7 @@ namespace FBMS.Infrastructure.Services
 
         public async Task<List<int>> CrawlActiveMembers()
         {
-            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url);
+            var authResponse = await _crawlerAuthorization.IsSignedInAsync(_hostApiCrawlerSettings.Url, CacheKeys.IBetAuthCookies);
 
             if (!authResponse.isSignedIn)
             {

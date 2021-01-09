@@ -9,5 +9,9 @@
         string Password { get; set; }
 
         string AuthUrl { get; set; }
+
+        string MatchScheduleBaseUrl { get; set; }
+
+        string MatchScheduleUrl { get; set; }
     }
 }
