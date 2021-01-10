@@ -1,4 +1,4 @@
-﻿
+﻿@using FBMS.Core.Extensions;
 @using FBMS.Core.Dtos;
 
 @model IEnumerable<MatchDto>
@@ -91,15 +91,31 @@
                                                 @Html.DisplayFor(modelItem => item.FtHdpPricing)
                                             </td>
                                             <td>
-                                                <div class="badge bg-info">@(item.HomeAmount/10)</div>
-                                                <div class="badge bg-warning">@(item.AwayAmount/10)</div>
+                                                <div class="badge bg-info">
+                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHomeUrl()">
+                                                        @(item.HomeAmount/10)
+                                                    </a>
+                                                </div>
+                                                <div class="badge bg-warning">
+                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetAwayUrl()">
+                                                        @(item.AwayAmount/10)
+                                                    </a>
+                                                </div>
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.FtOuPricing)
                                             </td>
                                             <td>
-                                                <div class="badge bg-info">@(item.OverAmount/10)</div>
-                                                <div class="badge bg-warning">@(item.UnderAmount/10)</div>
+                                                <div class="badge bg-info">
+                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetOverUrl()">
+                                                        @(item.OverAmount/10)
+                                                    </a>
+                                                </div>
+                                                <div class="badge bg-warning">
+                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetUnderUrl()">
+                                                        @(item.UnderAmount/10)
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     }

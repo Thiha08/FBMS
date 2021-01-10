@@ -14,6 +14,6 @@
 
         public string MatchScheduleUrl { get; set; }
 
-        public string MatchBetBaseUrl { get; set; }
+        public string MatchDetailBaseUrl { get; set; }
     }
 }

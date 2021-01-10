@@ -14,6 +14,8 @@ namespace FBMS.Core.Dtos
 
         public string EventKey { get; set; }
 
+        public int Ep { get; set; }
+
         public string HomeTeam { get; set; }
 
         public string AwayTeam { get; set; }

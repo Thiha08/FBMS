@@ -1,0 +1,55 @@
+﻿@using FBMS.Core.Dtos;
+
+@model MatchDetailDto
+
+@{
+    ViewData["Title"] = " Match Detail";
+}
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-controller="MatchScheduling" asp-action="Edit">
+                <input asp-for="BetUrl" class="form-control" hidden />
+                <div class="card card-stats">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">sports_soccer</i>
+                        </div>
+                        <p class="card-category">@Model.ModuleTitle</p>
+                    </div>
+                    <div class="card-body text-center">
+                        <h4 class="card-title">@Model.Home</h4>
+                        <h6>Vs</h6>
+                        <h4 class="card-title">@Model.Away</h4>
+                        <div class="card-description">
+                            @Model.BetHdp @@ @Model.BetOdds
+                        </div>
+                        <div class="row stake-row">
+                            <label name="Stake" class="col-md-3 col-form-label">Stake</label>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input name="Stake" type="number" class="form-control" min="0" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer card-footer-center-flex">
+                        <button type="submit" class="btn btn-fill btn-success">Process</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div>
+        <a class="back-to" asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+
+
+
+
+
+

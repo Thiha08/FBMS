@@ -62,22 +62,27 @@ namespace FBMS.Core.Extensions
 
         public static string GetHomeUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=home&oId={match.Oddsid}&odds={match.HomeAmount}&ep{match.FtHdpPricing}|1";
+            return $"JRecPanel.aspx?b=home&oId={match.Oddsid}&odds={match.HomeAmount}&ep={match.FtHdpPricing}|{match.Ep}";
         }
 
         public static string GetAwayUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=away&oId={match.Oddsid}&odds={match.AwayAmount}&ep{match.FtHdpPricing}|1";
+            return $"JRecPanel.aspx?b=away&oId={match.Oddsid}&odds={match.AwayAmount}&ep={match.FtHdpPricing}|{match.Ep}";
         }
 
         public static string GetOverUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=over&oId={match.Oddsid}&odds={match.OverAmount}&ep{match.FtOuPricing}";
+            return $"JRecPanel.aspx?b=over&oId={match.Oddsid}&odds={match.OverAmount}&ep={match.FtOuPricing}";
         }
 
         public static string GetUnderUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=under&oId={match.Oddsid}&odds={match.UnderAmount}&ep{match.FtOuPricing}";
+            return $"JRecPanel.aspx?b=under&oId={match.Oddsid}&odds={match.UnderAmount}&ep={match.FtOuPricing}";
+        }
+
+        public static string GetBetUrl(this MatchBetDto match)
+        {
+            return $"{match.BetUrl}&amt={match.Stack}&isBetterOdds=true";
         }
     }
 }

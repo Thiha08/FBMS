@@ -7,5 +7,9 @@ namespace FBMS.Core.Interfaces
     public interface IMatchSchedulingService
     {
         Task<List<MatchDto>> GetMatchSchedule();
+
+        Task<MatchDetailDto> GetMatchDetail(string matchUrl);
+
+        Task<string> SubmitMatchTransaction(MatchBetDto dto);
     }
 }

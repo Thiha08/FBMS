@@ -263,3 +263,13 @@ div.dataTables_wrapper div.dataTables_paginate {
     overflow-y: auto;
     clear: both;
 }
+
+.card-footer-center-flex {
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.stake-row {
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+}
