@@ -9,5 +9,7 @@ namespace FBMS.Core.Dtos.Filters
         public int? MemberId { get; set; }
 
         public string UserName { get; set; }
+
+        public bool? IsSubmitted { get; set; }
     }
 }

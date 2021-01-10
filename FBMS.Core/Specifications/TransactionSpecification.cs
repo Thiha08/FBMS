@@ -19,6 +19,9 @@ namespace FBMS.Core.Specifications
 
             if (filter.MemberId.HasValue)
                 Query.Where(x => x.MemberId == filter.MemberId);
+
+            if (filter.IsSubmitted.HasValue)
+                Query.Where(x => x.IsSubmitted == filter.IsSubmitted);
         }
     }
 }

@@ -6,7 +6,9 @@ namespace FBMS.Core.Constants.Hangfire
 {
     public class HangfireSettings : IHangfireSettings
     {
-        public string RecurringJobIdentifier { get; set; }
+        public string TransactionJobIdentifier { get; set; }
+
+        public string SchedulingJobIdentifier { get; set; }
 
         public string CronExpression { get; set; }
     }

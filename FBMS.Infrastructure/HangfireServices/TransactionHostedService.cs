@@ -30,7 +30,7 @@ namespace FBMS.Infrastructure.HangfireServices
         {
             _logger.LogInformation("Transaction Hosted Service running.");
 
-            RecurringJob.AddOrUpdate<ITransactionHostedService>(_hangfireSettings.RecurringJobIdentifier, x => x.RecurringTransactionJob(), _hangfireSettings.CronExpression);
+            RecurringJob.AddOrUpdate<ITransactionHostedService>(_hangfireSettings.TransactionJobIdentifier, x => x.RecurringTransactionJob(), _hangfireSettings.CronExpression);
 
             return Task.CompletedTask;
         }
@@ -39,7 +39,7 @@ namespace FBMS.Infrastructure.HangfireServices
         {
             _logger.LogInformation("Transaction Hosted Service is stopping.");
 
-            RecurringJob.RemoveIfExists(_hangfireSettings.RecurringJobIdentifier);
+            RecurringJob.RemoveIfExists(_hangfireSettings.TransactionJobIdentifier);
 
             return Task.CompletedTask;
         }
@@ -49,7 +49,7 @@ namespace FBMS.Infrastructure.HangfireServices
             List<RecurringJobDto> recurringJobs = new List<RecurringJobDto>();
             recurringJobs = JobStorage.Current.GetConnection().GetRecurringJobs().ToList();
 
-            bool isRunning = recurringJobs.Any(x => x.Id == _hangfireSettings.RecurringJobIdentifier);
+            bool isRunning = recurringJobs.Any(x => x.Id == _hangfireSettings.TransactionJobIdentifier);
             return Task.FromResult(isRunning);
         }
 

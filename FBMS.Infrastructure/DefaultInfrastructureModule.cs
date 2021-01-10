@@ -98,6 +98,7 @@ namespace FBMS.Infrastructure
             builder.RegisterType<TransactionService>().As<ITransactionService>().InstancePerDependency();
             builder.RegisterType<MatchSchedulingService>().As<IMatchSchedulingService>().InstancePerDependency();
             builder.RegisterType<TransactionHostedService>().As<ITransactionHostedService>().InstancePerDependency();
+            builder.RegisterType<SchedulingHostedService>().As<ISchedulingHostedService>().InstancePerDependency();
         }
 
         private void RegisterDevelopmentOnlyDependencies(ContainerBuilder builder)

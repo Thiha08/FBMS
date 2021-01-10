@@ -23,6 +23,10 @@ namespace FBMS.Core.Interfaces
 
         Task DisableMember(int memberId);
 
+        Task EnableMembers(MemberFilterDto filterDto);
+
+        Task DisableMembers(MemberFilterDto filterDto);
+
         Task DeleteMember(int memberId);
 
         Task DeleteMembers(MemberFilterDto filterDto);

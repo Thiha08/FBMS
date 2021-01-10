@@ -12,6 +12,13 @@
 <form asp-controller="Home" asp-action="StopTransactionJob" id="formStopTransactionJob">
 </form>
 
+<form asp-controller="Home" asp-action="StartSchedulingJob" id="formStartSchedulingJob">
+</form>
+
+<form asp-controller="Home" asp-action="StopSchedulingJob" id="formStopSchedulingJob">
+</form>
+
+
 <div class="container-fluid">
 
     <div class="row">
@@ -35,6 +42,18 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-12 form-group">
+                            <div class="togglebutton">
+                                <label>
+                                    <input id="shedulingJobToggle" type="checkbox" @(Model.IsRunningSchedulingJob ? "checked" : "")>
+                                    <span class="toggle"></span>
+                                    @(Model.IsRunningSchedulingJob ? "Scheduling job is running" : "Scheduling job is not running")
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,6 +72,18 @@
                 } else {
                     if (confirm('Are you sure want to stop transaction job?')) {
                         $("#formStopTransactionJob").submit();
+                    }
+                }
+            });
+
+            $('#shedulingJobToggle').change(function () {
+                if (this.checked) {
+                    if (confirm('Are you sure want to start sheduling job?')) {
+                        $("#formStartSchedulingJob").submit();
+                    }
+                } else {
+                    if (confirm('Are you sure want to stop sheduling job?')) {
+                        $("#formStopSchedulingJob").submit();
                     }
                 }
             });

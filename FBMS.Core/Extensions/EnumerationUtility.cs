@@ -29,5 +29,10 @@ namespace FBMS.Core.Extensions
             }
             return Enumerable.Empty<T>();
         }
+
+        public static T Closest<T, TKey>(this IEnumerable<T> source, Func<T, TKey> keySelector, TKey pivot) where TKey : IComparable<TKey>
+        {
+            return source.Where(x => pivot.CompareTo(keySelector(x)) <= 0).OrderBy(keySelector).FirstOrDefault();
+        }
     }
 }

@@ -111,6 +111,18 @@ namespace FBMS.Infrastructure.Services
             await _repository.UpdateAsync(member);
         }
 
+        public async Task EnableMembers(MemberFilterDto filterDto)
+        {
+            var specification = new MemberSpecification(_mapper.Map<MemberFilter>(filterDto));
+            var members = await _repository.ListAsync(specification);
+
+            foreach (var member in members)
+            {
+                member.Status = true;
+                await _repository.UpdateAsync(member);
+            }
+        }
+
         public async Task DisableMember(int memberId)
         {
             var member = await _repository.GetByIdAsync<Member>(memberId);
@@ -119,6 +131,18 @@ namespace FBMS.Infrastructure.Services
 
             member.Status = false;
             await _repository.UpdateAsync(member);
+        }
+
+        public async Task DisableMembers(MemberFilterDto filterDto)
+        {
+            var specification = new MemberSpecification(_mapper.Map<MemberFilter>(filterDto));
+            var members = await _repository.ListAsync(specification);
+
+            foreach (var member in members)
+            {
+                member.Status = false;
+                await _repository.UpdateAsync(member);
+            }
         }
 
         public async Task DeleteMember(int clientId)

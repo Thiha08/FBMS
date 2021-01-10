@@ -143,7 +143,7 @@ namespace FBMS.Web
                 app.UseHsts();
             }
 
-            app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+            //app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
             app.UseRouting();
 
