@@ -45,3 +45,4 @@ steps:
     remoteDirectory: '/fbms'
     trustSSL: true
     preservePaths: true
+    clean: true
