@@ -37,7 +37,7 @@ steps:
   displayName: 'FTP Upload'
   inputs:
     credentialsOption: inputs
-    serverUrl: 'ftp.site4now.net'
+    serverUrl: 'ftp://ftp.site4now.net'
     username: 'thihakyawhtin-002'
     password: 'welcome123!@#'
     rootDirectory: '$(Build.ArtifactStagingDirectory)'
