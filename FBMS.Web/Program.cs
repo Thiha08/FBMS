@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 using System;
 
 namespace FBMS.Web
@@ -13,43 +14,44 @@ namespace FBMS.Web
     {
         public static void Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
-
-            using (var scope = host.Services.CreateScope())
+            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            try
             {
-                var services = scope.ServiceProvider;
+                logger.Debug("init main");
+                var host = CreateHostBuilder(args).Build();
 
-                try
+                using (var scope = host.Services.CreateScope())
                 {
+                    var services = scope.ServiceProvider;
                     var context = services.GetRequiredService<AppDbContext>();
                     context.Database.Migrate();
                     context.Database.EnsureCreated();
                     SeedData.Initialize(services);
                 }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred seeding the DB.");
-                }
+                host.Run();
             }
-
-            host.Run();
+            catch (Exception exception)
+            {
+                //NLog: catch setup errors
+                logger.Error(exception, "Stopped program because of exception");
+                throw;
+            }
+            finally
+            {
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                NLog.LogManager.Shutdown();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureWebHostDefaults(webBuilder =>
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
+                .ConfigureLogging(logging =>
                 {
-                    webBuilder
-                        .UseStartup<Startup>()
-                        .ConfigureLogging((ctx, logging) =>
-                    {
-                        //logging.AddConfiguration(ctx.Configuration.GetSection("Logging"));
-                        logging.ClearProviders();
-                        logging.AddConsole();
-                        // logging.AddAzureWebAppDiagnostics(); add this if deploying to Azure
-                    });
-                });
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(LogLevel.Trace);
+                })
+                .UseNLog();  // NLog: Setup NLog for Dependency injection;
     }
 }
