@@ -41,5 +41,5 @@ steps:
     username: 'thihakyawhtin-002'
     password: 'welcome123!@#'
     rootDirectory: '$(Build.ArtifactStagingDirectory)'
-    remoteDirectory: '/fbms'
+    remoteDirectory: 'fbms'
     trustSSL: true
