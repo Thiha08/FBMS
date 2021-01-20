@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
@@ -11,11 +12,13 @@ namespace FBMS.Web.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _logger = logger;
         }
 
         [AllowAnonymous]
@@ -59,8 +62,12 @@ namespace FBMS.Web.Controllers
 
                 return View(model);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
+                _logger.LogError(
+                    "Login was failed with an exception `{0}`.",
+                    exception);
+
                 return RedirectToAction(nameof(Login));
             }
         }
