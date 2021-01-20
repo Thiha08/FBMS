@@ -65,6 +65,7 @@ namespace FBMS.Web
                     UseRecommendedIsolationLevel = true,
                     DisableGlobalLocks = true
                 })
+                .UseNLogLogProvider()
                 .UseFilter(new LogFailureAttribute()));
 
             // Add the processing server as IHostedService
