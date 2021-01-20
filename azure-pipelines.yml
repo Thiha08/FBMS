@@ -29,6 +29,7 @@ steps:
     configuration: '$(buildConfiguration)'
 
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifacts'
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: fbms-drop
@@ -41,5 +42,5 @@ steps:
     username: 'thihakyawhtin-002'
     password: 'welcome123!@#'
     rootDirectory: '$(Build.ArtifactStagingDirectory)'
-    remoteDirectory: 'fbms'
+    remoteDirectory: ''
     trustSSL: true
