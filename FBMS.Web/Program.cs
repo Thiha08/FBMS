@@ -24,6 +24,7 @@ namespace FBMS.Web
                 {
                     var services = scope.ServiceProvider;
                     var context = services.GetRequiredService<AppDbContext>();
+                    //context.Database.EnsureDeleted(); // *** DANGEROUS ****
                     context.Database.Migrate();
                     context.Database.EnsureCreated();
                     SeedData.Initialize(services);
