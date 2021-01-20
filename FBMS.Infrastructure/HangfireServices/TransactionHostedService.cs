@@ -28,7 +28,7 @@ namespace FBMS.Infrastructure.HangfireServices
 
         public Task StartAsync()
         {
-            _logger.LogInformation("Transaction Hosted Service running.");
+            _logger.LogWarning("Transaction Hosted Service running.");
 
             RecurringJob.AddOrUpdate<ITransactionHostedService>(_hangfireSettings.TransactionJobIdentifier, x => x.RecurringTransactionJob(), _hangfireSettings.CronExpression);
 
@@ -37,7 +37,7 @@ namespace FBMS.Infrastructure.HangfireServices
 
         public Task StopAsync()
         {
-            _logger.LogInformation("Transaction Hosted Service is stopping.");
+            _logger.LogWarning("Transaction Hosted Service is stopping.");
 
             RecurringJob.RemoveIfExists(_hangfireSettings.TransactionJobIdentifier);
 

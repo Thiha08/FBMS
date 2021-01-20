@@ -32,7 +32,7 @@ namespace FBMS.Infrastructure.HangfireServices
 
         public Task StartAsync()
         {
-            _logger.LogInformation("Scheduling Hosted Service running.");
+            _logger.LogWarning("Scheduling Hosted Service running.");
 
             RecurringJob.AddOrUpdate<ISchedulingHostedService>(_hangfireSettings.SchedulingJobIdentifier, x => x.RecurringTransactionJob(), _hangfireSettings.CronExpression);
 
@@ -41,7 +41,7 @@ namespace FBMS.Infrastructure.HangfireServices
 
         public Task StopAsync()
         {
-            _logger.LogInformation("Scheduling Hosted Service is stopping.");
+            _logger.LogWarning("Scheduling Hosted Service is stopping.");
 
             RecurringJob.RemoveIfExists(_hangfireSettings.SchedulingJobIdentifier);
 
