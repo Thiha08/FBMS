@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace FBMS.Core.Extensions
 {
-    public class ReflectionHelper
+    public static class ReflectionHelper
     {
         public static string GetEntityExpression<T>()
         {
