@@ -33,16 +33,3 @@ steps:
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: fbms-drop
-
-- task: FtpUpload@2
-  displayName: 'FTP Upload'
-  inputs:
-    credentialsOption: inputs
-    serverUrl: 'ftp://ftp.site4now.net'
-    username: 'thihakyawhtin-002'
-    password: 'welcome123!@#'
-    rootDirectory: '$(Build.ArtifactStagingDirectory)'
-    remoteDirectory: '/fbms'
-    trustSSL: true
-    preservePaths: true
-    clean: true
