@@ -16,6 +16,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4BB16473-F061-49A6-876F-217556BECF78}"
 	ProjectSection(SolutionItems) = preProject
 		FBMS.ruleset = FBMS.ruleset
+		LICENSE = LICENSE
 	EndProjectSection
 EndProject
 Global

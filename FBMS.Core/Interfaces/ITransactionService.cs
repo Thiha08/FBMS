@@ -12,10 +12,14 @@ namespace FBMS.Core.Interfaces
 
         Task<List<TransactionDto>> GetTransactions(TransactionFilterDto filterDto);
 
+        Task UpdateTransaction(TransactionDto transactionDto);
+
+        Task UpdateTransactions(List<TransactionDto> transactionDtos);
+
         Task DeleteTransactions();
 
         Task DeleteTransactions(TransactionFilterDto filterDto);
 
-        Task CrawlTransactions(TransactionFilterCto filterCto);        
+        Task CrawlTransactions(TransactionFilterCto filterCto);
     }
 }

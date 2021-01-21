@@ -62,6 +62,19 @@ namespace FBMS.Infrastructure.Services
             return _mapper.Map<List<TransactionDto>>(transactions);
         }
 
+        public async Task UpdateTransaction(TransactionDto transactionDto)
+        {
+            await _repository.UpdateAsync(_mapper.Map<Transaction>(transactionDto));
+        }
+
+        public async Task UpdateTransactions(List<TransactionDto> transactionDtos)
+        {
+            foreach (var transaction in _mapper.Map<List<Transaction>>(transactionDtos))
+            {
+                await _repository.UpdateAsync(transaction);
+            }
+        }
+
         public async Task DeleteTransactions()
         {
             var transactions = await _repository.ListAsync<Transaction>();

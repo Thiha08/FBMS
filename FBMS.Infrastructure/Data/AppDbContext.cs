@@ -31,6 +31,12 @@ namespace FBMS.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Transaction>(x =>
+            {
+                x.Property(e => e.Amount).HasPrecision(18, 2);
+                x.Property(e => e.SubmittedAmount).HasPrecision(18, 2);
+            });
+
             modelBuilder.ApplyAllConfigurationsFromCurrentAssembly();
 
             // alternately this is built-in to EF Core 2.2

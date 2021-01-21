@@ -1,6 +1,4 @@
-﻿using FBMS.Core.Constants;
-using FBMS.Core.Constants.Hangfire;
-using FBMS.Core.Ctos.Filters;
+﻿using FBMS.Core.Constants.Hangfire;
 using FBMS.Core.Dtos;
 using FBMS.Core.Dtos.Filters;
 using FBMS.Core.Extensions;
@@ -8,6 +6,7 @@ using FBMS.Core.Interfaces;
 using Hangfire;
 using Hangfire.Storage;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,63 +58,58 @@ namespace FBMS.Infrastructure.HangfireServices
 
         public async Task RecurringTransactionJob()
         {
-            var filter = new TransactionFilterDto();
-            filter.IsSubmitted = false;
-            filter.IsPagingEnabled = false;
+            var filter = new TransactionFilterDto
+            {
+                IsSubmitted = false,
+                IsPagingEnabled = false
+            };
             var activeTransactions = await _transactionService.GetTransactions(filter);
 
             var matchSchedule = await _matchSchedulingService.GetMatchSchedule();
             foreach (var transaction in activeTransactions)
             {
-                var selectedMatchs = matchSchedule
-                    .Where(x => x.HomeTeam == transaction.HomeTeam)
-                    .Where(x => x.AwayTeam == transaction.AwayTeam);
+                var selectedMatches = matchSchedule.Where(x => x.HomeTeam == transaction.HomeTeam && x.AwayTeam == transaction.AwayTeam).ToList();
 
-                var matchUrl = "";
-
-                if (transaction.SubmittedTransactionType == TransactionType.Home)
-                {
-                    var fixedMatch = selectedMatchs.Closest(x => x.FtHdpPricing, Convert.ToDecimal(transaction.Pricing));
-                    matchUrl = fixedMatch?.GetHomeUrl();
-                }
-                else if(transaction.SubmittedTransactionType == TransactionType.Away)
-                {
-                    var fixedMatch = selectedMatchs.Closest(x => x.FtHdpPricing, Convert.ToDecimal(transaction.Pricing));
-                    matchUrl = fixedMatch?.GetAwayUrl();
-                }
-                else if(transaction.SubmittedTransactionType == TransactionType.Over)
-                {
-                    var fixedMatch = selectedMatchs.Closest(x => x.FtOuPricing, Convert.ToDecimal(transaction.Pricing));
-                    matchUrl = fixedMatch?.GetOverUrl();
-                }
-                else if(transaction.SubmittedTransactionType == TransactionType.Under)
-                {
-                    var fixedMatch = selectedMatchs.Closest(x => x.FtOuPricing, Convert.ToDecimal(transaction.Pricing));
-                    matchUrl = fixedMatch?.GetUnderUrl();
-                }
+                var matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, Convert.ToDecimal(transaction.Pricing), selectedMatches);
 
                 if (string.IsNullOrWhiteSpace(matchUrl))
                 {
-                   
+                    _logger.LogError(
+                        "Cannot find related Match Detail!" + Environment.NewLine +
+                        transaction.GetInfo());
                 }
                 else
                 {
                     var matchDetail = await _matchSchedulingService.GetMatchDetail(matchUrl);
 
-                    var matchBet = new MatchBetDto();
-                    matchBet.BetUrl = matchDetail.BetUrl;
-                    matchBet.Stack = (int)transaction.SubmittedAmount;
-                    matchBet.Stack = 0; // 0 for now;
-                    var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
-                    if (response.Contains("SUCCESSFULLY"))
+                    var matchBet = new MatchBetDto
                     {
-                        transaction.SubmittedDate = DateTime.Now;
-                        transaction.SubmittedPricing = matchDetail.BetHdp;
-                        transaction.IsSubmitted = true;
-                        // break for loop
-                        break;
-                    }
+                        BetUrl = matchDetail.BetUrl,
+                        Stack = (int)transaction.SubmittedAmount
+                    };
+                 
+                    _logger.LogWarning(
+                        "*** Match Detail:" + Environment.NewLine +
+                        transaction.GetInfo());
+
+                    //matchBet.Stack = 0; // 0 for now;
+                    //var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
+                    //if (response.Contains("SUCCESSFULLY"))
+                    //{
+                    //    transaction.SubmittedDate = DateTime.Now;
+                    //    transaction.SubmittedPricing = matchDetail.BetHdp;
+                    //    transaction.IsSubmitted = true;
+                    //    await _transactionService.UpdateTransaction(transaction);
+                    //}
+                    //_logger.LogWarning(response);
                 }
+
+                // TO PREVENT LOGGING AGAIN AND AGAIN
+                transaction.SubmittedDate = DateTime.Now;
+                transaction.SubmittedPricing = transaction.Pricing;
+                transaction.IsSubmitted = true;
+
+                await _transactionService.UpdateTransaction(transaction);
             }
         }
     }

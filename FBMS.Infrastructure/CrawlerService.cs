@@ -1,5 +1,4 @@
-﻿using FBMS.Core.Constants.Crawler;
-using FBMS.Core.Dtos.Crawler;
+﻿using FBMS.Core.Dtos.Crawler;
 using FBMS.Core.Interfaces;
 using FBMS.SharedKernel;
 using FBMS.SharedKernel.Interfaces;
@@ -7,9 +6,6 @@ using FBMS.Spider.Downloader;
 using FBMS.Spider.Pipeline;
 using FBMS.Spider.Processor;
 using FBMS.Spider.Scheduler;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FBMS.Infrastructure
@@ -31,7 +27,7 @@ namespace FBMS.Infrastructure
             _pipeline = pipeline;
         }
 
-        public async Task CrawlAsync<TEntity>(CrawlerRequest request) where TEntity : BaseEntity, IAggregateRoot
+        public Task CrawlAsync<TEntity>(CrawlerRequest request) where TEntity : BaseEntity, IAggregateRoot
         {
             //var links = await _linkReader.GetLinksAsync(request.Url, request.Regex, 0);
 
@@ -43,6 +39,8 @@ namespace FBMS.Infrastructure
             //    var entity = _processor.Process<TEntity>(document);
             //    await _pipeline.RunAsync(entity);
             //}
+
+            return Task.CompletedTask;
         }
     }
 }

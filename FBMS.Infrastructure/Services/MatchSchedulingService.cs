@@ -10,6 +10,7 @@ using FBMS.Spider.Auth;
 using FBMS.Spider.Downloader;
 using FBMS.Spider.Processor;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,13 +27,15 @@ namespace FBMS.Infrastructure.Services
         private readonly ICrawlerProcessor _processor;
         private readonly ICrawlerAuthorization _crawlerAuthorization;
         private readonly IClientApiCrawlerSettings _clientApiCrawlerSettings;
+        private readonly ILogger<MatchSchedulingService> _logger;
 
-        public MatchSchedulingService(ICrawlerDownloader downloader, ICrawlerProcessor processor, ICrawlerAuthorization crawlerAuthorization, IClientApiCrawlerSettings clientApiCrawlerSettings)
+        public MatchSchedulingService(ICrawlerDownloader downloader, ICrawlerProcessor processor, ICrawlerAuthorization crawlerAuthorization, IClientApiCrawlerSettings clientApiCrawlerSettings, ILogger<MatchSchedulingService> logger)
         {
             _downloader = downloader;
             _processor = processor;
             _crawlerAuthorization = crawlerAuthorization;
             _clientApiCrawlerSettings = clientApiCrawlerSettings;
+            _logger = logger;
         }
 
         public async Task<List<MatchDto>> GetMatchSchedule()
@@ -71,6 +74,34 @@ namespace FBMS.Infrastructure.Services
             };
             var document = await _downloader.DownloadAsync(request);
             return document.Text;
+        }
+
+        public Task<string> GetMatchTransactionUrl(TransactionType transactionType, decimal pricing, List<MatchDto> matches)
+        {
+            var matchUrl = "";
+
+            if (transactionType == TransactionType.Home)
+            {
+                var fixedMatch = matches.Closest(x => x.FtHdpPricing, pricing);
+                matchUrl = fixedMatch?.GetHomeUrl();
+            }
+            else if (transactionType == TransactionType.Away)
+            {
+                var fixedMatch = matches.Closest(x => x.FtHdpPricing, pricing);
+                matchUrl = fixedMatch?.GetAwayUrl();
+            }
+            else if (transactionType == TransactionType.Over)
+            {
+                var fixedMatch = matches.Closest(x => x.FtOuPricing, pricing);
+                matchUrl = fixedMatch?.GetOverUrl();
+            }
+            else if (transactionType == TransactionType.Under)
+            {
+                var fixedMatch = matches.Closest(x => x.FtOuPricing, pricing);
+                matchUrl = fixedMatch?.GetUnderUrl();
+            }
+
+            return Task.FromResult(matchUrl);
         }
 
         private async Task<AuthResponse> GetClientApiAuthentication()
@@ -125,8 +156,7 @@ namespace FBMS.Infrastructure.Services
 
             // Grab the content of the first script element
             var script = head.Descendants()
-                             .Where(n => n.Name == "script")
-                             .LastOrDefault()
+                             .LastOrDefault(n => n.Name == "script")?
                              .InnerText;
 
             var todayUrl = Regex.Match(script, @"timerToday\('(.+?)',").Groups[1].Value;
@@ -157,29 +187,34 @@ namespace FBMS.Infrastructure.Services
                 foreach (IEnumerable<object> item in fouthLevelList)
                 {
                     var entityList = item.ToList();
-                    var match = new MatchDto();
-                    match.Oddsid = Convert.ToInt64(entityList[0].ToString());
-                    match.League = entityList[1].ToString();
-                    match.Soclid = Convert.ToInt64(entityList[2].ToString());
-                    match.EventKey = entityList[7].ToString();
-                    match.Ep = Convert.ToInt32(entityList[18].ToString());
-                    match.HomeTeam = entityList[19].ToString();
-                    match.AwayTeam = entityList[20].ToString();
-                    match.FtHdpPricing = Convert.ToDecimal(entityList[24].ToString());
-                    match.HomeAmount = Convert.ToDecimal(entityList[26].ToString());
-                    match.AwayAmount = Convert.ToDecimal(entityList[27].ToString());
-                    match.FtOuPricing = Convert.ToDecimal(entityList[29].ToString());
-                    match.OverAmount = Convert.ToDecimal(entityList[33].ToString());
-                    match.UnderAmount = Convert.ToDecimal(entityList[34].ToString());
-                    match.MatchDate = DateTime.ParseExact(entityList[63].ToString(), "yyyy-MM-dd HH:mm:ss", null);
+                    var match = new MatchDto
+                    {
+                        Oddsid = Convert.ToInt64(entityList[0].ToString()),
+                        League = entityList[1].ToString(),
+                        Soclid = Convert.ToInt64(entityList[2].ToString()),
+                        EventKey = entityList[7].ToString(),
+                        Ep = Convert.ToInt32(entityList[18].ToString()),
+                        HomeTeam = entityList[19].ToString(),
+                        AwayTeam = entityList[20].ToString(),
+                        FtHdpPricing = Convert.ToDecimal(entityList[24].ToString()),
+                        HomeAmount = Convert.ToDecimal(entityList[26].ToString()),
+                        AwayAmount = Convert.ToDecimal(entityList[27].ToString()),
+                        FtOuPricing = Convert.ToDecimal(entityList[29].ToString()),
+                        OverAmount = Convert.ToDecimal(entityList[33].ToString()),
+                        UnderAmount = Convert.ToDecimal(entityList[34].ToString()),
+                        MatchDate = DateTime.ParseExact(entityList[63].ToString(), "yyyy-MM-dd HH:mm:ss", null),
+                    };
                     matchList.Add(match);
                     index++;
                 }
                 return matchList;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                throw ex;
+                _logger.LogCritical(
+                   "Deserialize Match Schedule has been failed due to exception `{0}`",
+                   exception);
+                throw;
             }
         }
 
@@ -190,9 +225,12 @@ namespace FBMS.Infrastructure.Services
                 var matchDetail = JsonConvert.DeserializeObject<MatchDetailDto>(detailJson);
                 return matchDetail;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                throw ex;
+                _logger.LogCritical(
+                   "Deserialize Match Detail has been failed due to exception `{0}`",
+                   exception);
+                throw;
             }
         }
     }
