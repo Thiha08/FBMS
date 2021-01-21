@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Hangfire;
+using System.Threading.Tasks;
 
 namespace FBMS.Core.Interfaces
 {
@@ -10,6 +11,7 @@ namespace FBMS.Core.Interfaces
 
         Task<bool> IsRunning();
 
+        [AutomaticRetry(Attempts = 0)]
         Task RecurringTransactionJob();
     }
 }

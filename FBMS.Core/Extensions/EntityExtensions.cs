@@ -2,6 +2,7 @@
 using FBMS.Core.Dtos;
 using FBMS.Core.Entities;
 using FBMS.Core.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -83,6 +84,15 @@ namespace FBMS.Core.Extensions
         public static string GetBetUrl(this MatchBetDto match)
         {
             return $"{match.BetUrl}&amt={match.Stack}&isBetterOdds=true";
+        }
+
+        public static string GetInfo(this TransactionDto transaction)
+        {
+            return
+                $"Account : {transaction.UserName}" + Environment.NewLine +
+                $"Transaction Number : {transaction.TransactionNumber}" + Environment.NewLine +
+                $"Transaction Date : {transaction.TransactionDate:dd-MM-yyyy HH:mm:ss}" + Environment.NewLine +
+                $"Match : {transaction.HomeTeam} Vs {transaction.AwayTeam}";
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using FBMS.Core.Dtos;
+﻿using FBMS.Core.Constants;
+using FBMS.Core.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,5 +12,7 @@ namespace FBMS.Core.Interfaces
         Task<MatchDetailDto> GetMatchDetail(string matchUrl);
 
         Task<string> SubmitMatchTransaction(MatchBetDto dto);
+
+        Task<string> GetMatchTransactionUrl(TransactionType transactionType, decimal pricing, List<MatchDto> matches);
     }
 }

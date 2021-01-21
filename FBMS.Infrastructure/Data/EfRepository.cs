@@ -56,7 +56,8 @@ namespace FBMS.Infrastructure.Data
 
         public async Task UpdateAsync<TEntity>(TEntity entity) where TEntity : BaseEntity, IAggregateRoot
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            var entry = _dbContext.Set<TEntity>().SingleOrDefault(e => e.Id == entity.Id);
+            _dbContext.Entry(entry).CurrentValues.SetValues(entity);
             await _dbContext.SaveChangesAsync();
         }
 
