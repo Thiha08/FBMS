@@ -68,7 +68,7 @@
                                     foreach (var item in Model)
                                     {
                                         i++;
-                                        <tr role="row">
+                                        <tr role="row" class="@(item.IsLive ? "table-danger" : "")">
                                             <td>
                                                 @i
                                             </td>

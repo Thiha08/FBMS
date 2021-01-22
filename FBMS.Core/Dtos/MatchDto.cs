@@ -33,5 +33,7 @@ namespace FBMS.Core.Dtos
         public decimal OverAmount { get; set; }
 
         public decimal UnderAmount { get; set; }
+
+        public bool IsLive { get; set; }
     }
 }
