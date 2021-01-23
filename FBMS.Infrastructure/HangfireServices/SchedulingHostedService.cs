@@ -62,7 +62,9 @@ namespace FBMS.Infrastructure.HangfireServices
             {
                 IsSubmitted = false
             };
+
             var activeTransactions = await _transactionService.GetTransactions(filter);
+            if (activeTransactions.Count == 0) return;
 
             var matchSchedule = await _matchSchedulingService.GetMatchSchedule();
             foreach (var transaction in activeTransactions)
@@ -86,7 +88,7 @@ namespace FBMS.Infrastructure.HangfireServices
                         BetUrl = matchDetail.BetUrl,
                         Stack = (int)transaction.SubmittedAmount
                     };
-                 
+
                     _logger.LogWarning(
                         "*** Match Detail:" + Environment.NewLine +
                         transaction.GetInfo());

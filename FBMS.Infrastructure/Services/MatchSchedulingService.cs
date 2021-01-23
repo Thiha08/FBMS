@@ -79,22 +79,34 @@ namespace FBMS.Infrastructure.Services
 
             if (transactionType == TransactionType.Home)
             {
-                var fixedMatch = matches.Closest(x => x.HdpPricing, pricing);
+                var fixedMatch = matches.Count > 1 ?
+                    matches.Aggregate((x, y) => Math.Abs(x.HdpPricing - pricing) < Math.Abs(y.HdpPricing - pricing) ? x : y) :
+                    matches.FirstOrDefault();
+
                 matchUrl = fixedMatch?.GetHomeUrl();
             }
             else if (transactionType == TransactionType.Away)
             {
-                var fixedMatch = matches.Closest(x => x.HdpPricing, pricing);
+                var fixedMatch = matches.Count > 1 ?
+                    matches.Aggregate((x, y) => Math.Abs(x.HdpPricing - pricing) < Math.Abs(y.HdpPricing - pricing) ? x : y) :
+                    matches.FirstOrDefault();
+
                 matchUrl = fixedMatch?.GetAwayUrl();
             }
             else if (transactionType == TransactionType.Over)
             {
-                var fixedMatch = matches.Closest(x => x.OuPricing, pricing);
+                var fixedMatch = matches.Count > 1 ?
+                    matches.Aggregate((x, y) => Math.Abs(x.OuPricing - pricing) < Math.Abs(y.OuPricing - pricing) ? x : y) :
+                    matches.FirstOrDefault();
+
                 matchUrl = fixedMatch?.GetOverUrl();
             }
             else if (transactionType == TransactionType.Under)
             {
-                var fixedMatch = matches.Closest(x => x.OuPricing, pricing);
+                var fixedMatch = matches.Count > 1 ?
+                    matches.Aggregate((x, y) => Math.Abs(x.OuPricing - pricing) < Math.Abs(y.OuPricing - pricing) ? x : y) :
+                    matches.FirstOrDefault();
+
                 matchUrl = fixedMatch?.GetUnderUrl();
             }
 
@@ -205,7 +217,7 @@ namespace FBMS.Infrastructure.Services
                     fouthLevelList = fouthLevelList.Concat(thirdLevelList.GetEnumerableByDepth(1));
                 }
 
-                
+
 
                 var matchList = new List<MatchDto>();
 
