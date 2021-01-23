@@ -45,6 +45,51 @@ namespace FBMS.Core.Extensions
             }
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
+
+        public static decimal ToAbsPricing(this string value)
+        {
+            value = value.Trim();
+
+            if (value == "0-0.5")
+            {
+                value = "0.25";
+            }
+            else if(value == "0.5-1")
+            {
+                value = "0.75";
+            }
+            else if(value == "1-1.5")
+            {
+                value = "1.25";
+            }
+            else if (value == "1.5-2")
+            {
+                value = "1.75";
+            }
+            else if (value == "2-2.5")
+            {
+                value = "2.25";
+            }
+            else if (value == "2.5-3")
+            {
+                value = "2.75";
+            }
+            else if (value == "3-3.5")
+            {
+                value = "3.25";
+            }
+            else if (value == "3.5-4")
+            {
+                value = "3.75";
+            }
+            else if (value == "4-4.5")
+            {
+                value = "4.25";
+            }
+
+            decimal convertedValue = Convert.ToDecimal(value);
+            return Math.Abs(convertedValue);
+        }
     }
 
     

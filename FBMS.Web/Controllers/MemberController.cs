@@ -17,10 +17,7 @@ namespace FBMS.Web.Controllers
 
         public async Task<IActionResult> Index([FromQuery] MemberFilterDto filter)
         {
-            filter = filter ?? new MemberFilterDto();
-
-            filter.IsPagingEnabled = false;
-
+            filter ??= new MemberFilterDto();
             return View(await _memberService.GetMembers(filter));
         }
 
@@ -46,7 +43,6 @@ namespace FBMS.Web.Controllers
         {
             var filter = new MemberFilterDto();
             filter.Status = false;
-            filter.IsPagingEnabled = false;
             await _memberService.EnableMembers(filter);
             GenerateAlertMessage(true, "All members are enable successfully.");
             return RedirectToAction(nameof(Index));
@@ -56,7 +52,6 @@ namespace FBMS.Web.Controllers
         {
             var filter = new MemberFilterDto();
             filter.Status = true;
-            filter.IsPagingEnabled = false;
             await _memberService.DisableMembers(filter);
             GenerateAlertMessage(true, "The template are disable successfully.");
             return RedirectToAction(nameof(Index));

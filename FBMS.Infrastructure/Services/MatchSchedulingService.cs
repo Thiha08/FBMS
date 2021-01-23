@@ -43,13 +43,10 @@ namespace FBMS.Infrastructure.Services
             var authResponse = await GetClientApiAuthentication();
             var scheduleUrl = await GetMatchScheduleUrl(authResponse);
 
-            var request = new CrawlerRequest
-            {
-                BaseUrl = _clientApiCrawlerSettings.MatchScheduleBaseUrl + scheduleUrl,
-                Cookies = authResponse.Cookies
-            };
-            var document = await _downloader.DownloadAsync(request);
-            return DeserializeMatchSchedule(document.Text);
+            var matchSchedule = new List<MatchDto>();
+            matchSchedule.AddRange(await GetLiveMatchSchedule(scheduleUrl));
+            matchSchedule.AddRange(await GetTodayMatchSchedule(scheduleUrl));
+            return matchSchedule;
         }
 
         public async Task<MatchDetailDto> GetMatchDetail(string matchUrl)
@@ -82,22 +79,34 @@ namespace FBMS.Infrastructure.Services
 
             if (transactionType == TransactionType.Home)
             {
-                var fixedMatch = matches.Closest(x => x.FtHdpPricing, pricing);
+                var fixedMatch = matches.Count > 1 ?
+                    matches.Aggregate((x, y) => Math.Abs(x.HdpPricing - pricing) < Math.Abs(y.HdpPricing - pricing) ? x : y) :
+                    matches.FirstOrDefault();
+
                 matchUrl = fixedMatch?.GetHomeUrl();
             }
             else if (transactionType == TransactionType.Away)
             {
-                var fixedMatch = matches.Closest(x => x.FtHdpPricing, pricing);
+                var fixedMatch = matches.Count > 1 ?
+                    matches.Aggregate((x, y) => Math.Abs(x.HdpPricing - pricing) < Math.Abs(y.HdpPricing - pricing) ? x : y) :
+                    matches.FirstOrDefault();
+
                 matchUrl = fixedMatch?.GetAwayUrl();
             }
             else if (transactionType == TransactionType.Over)
             {
-                var fixedMatch = matches.Closest(x => x.FtOuPricing, pricing);
+                var fixedMatch = matches.Count > 1 ?
+                    matches.Aggregate((x, y) => Math.Abs(x.OuPricing - pricing) < Math.Abs(y.OuPricing - pricing) ? x : y) :
+                    matches.FirstOrDefault();
+
                 matchUrl = fixedMatch?.GetOverUrl();
             }
             else if (transactionType == TransactionType.Under)
             {
-                var fixedMatch = matches.Closest(x => x.FtOuPricing, pricing);
+                var fixedMatch = matches.Count > 1 ?
+                    matches.Aggregate((x, y) => Math.Abs(x.OuPricing - pricing) < Math.Abs(y.OuPricing - pricing) ? x : y) :
+                    matches.FirstOrDefault();
+
                 matchUrl = fixedMatch?.GetUnderUrl();
             }
 
@@ -155,12 +164,35 @@ namespace FBMS.Infrastructure.Services
             HtmlNode head = document.DocumentNode.SelectSingleNode("/html/head");
 
             // Grab the content of the first script element
-            var script = head.Descendants()
-                             .LastOrDefault(n => n.Name == "script")?
-                             .InnerText;
+            return head.Descendants()
+                       .LastOrDefault(n => n.Name == "script")?
+                       .InnerText;
+        }
 
-            var todayUrl = Regex.Match(script, @"timerToday\('(.+?)',").Groups[1].Value;
-            return todayUrl;
+        private async Task<List<MatchDto>> GetTodayMatchSchedule(string scheduleUrl)
+        {
+            var todayUrl = Regex.Match(scheduleUrl, @"timerToday\('(.+?)',").Groups[1].Value;
+            var authResponse = await GetClientApiAuthentication();
+            var request = new CrawlerRequest
+            {
+                BaseUrl = _clientApiCrawlerSettings.MatchScheduleBaseUrl + todayUrl,
+                Cookies = authResponse.Cookies
+            };
+            var document = await _downloader.DownloadAsync(request);
+            return DeserializeMatchSchedule(document.Text);
+        }
+
+        private async Task<List<MatchDto>> GetLiveMatchSchedule(string scheduleUrl)
+        {
+            var liveUrl = Regex.Match(scheduleUrl, @"timerRun\('(.+?)',").Groups[1].Value;
+            var authResponse = await GetClientApiAuthentication();
+            var request = new CrawlerRequest
+            {
+                BaseUrl = _clientApiCrawlerSettings.MatchScheduleBaseUrl + liveUrl,
+                Cookies = authResponse.Cookies
+            };
+            var document = await _downloader.DownloadAsync(request);
+            return DeserializeMatchSchedule(document.Text);
         }
 
         private List<MatchDto> DeserializeMatchSchedule(string scheduleJson)
@@ -174,12 +206,18 @@ namespace FBMS.Infrastructure.Services
 
                 var obj = JsonConvert.DeserializeObject<object>(scheduleJson);
                 firstLevelList = (IEnumerable<object>)obj;
+
+                var scheduleSpecifierLevel = firstLevelList.GetEnumerableByDepth(0).ToList();
+                var scheduleSpecifier = scheduleSpecifierLevel[2].ToString();
+
                 secondLevelList = firstLevelList.GetEnumerableByDepth(2);
                 foreach (var item in secondLevelList)
                 {
                     thirdLevelList = (IEnumerable<object>)item;
                     fouthLevelList = fouthLevelList.Concat(thirdLevelList.GetEnumerableByDepth(1));
                 }
+
+
 
                 var matchList = new List<MatchDto>();
 
@@ -193,16 +231,26 @@ namespace FBMS.Infrastructure.Services
                         League = entityList[1].ToString(),
                         Soclid = Convert.ToInt64(entityList[2].ToString()),
                         EventKey = entityList[7].ToString(),
-                        Ep = Convert.ToInt32(entityList[18].ToString()),
                         HomeTeam = entityList[19].ToString(),
                         AwayTeam = entityList[20].ToString(),
-                        FtHdpPricing = Convert.ToDecimal(entityList[24].ToString()),
+
+                        HdpPricing = Convert.ToDecimal(entityList[24].ToString()),
                         HomeAmount = Convert.ToDecimal(entityList[26].ToString()),
                         AwayAmount = Convert.ToDecimal(entityList[27].ToString()),
-                        FtOuPricing = Convert.ToDecimal(entityList[29].ToString()),
+                        OuPricing = Convert.ToDecimal(entityList[29].ToString()),
                         OverAmount = Convert.ToDecimal(entityList[33].ToString()),
                         UnderAmount = Convert.ToDecimal(entityList[34].ToString()),
+
+                        HtOddsid = Convert.ToInt64(entityList[39].ToString()),
+                        HtHdpPricing = Convert.ToDecimal(entityList[43].ToString()),
+                        HtHomeAmount = Convert.ToDecimal(entityList[45].ToString()),
+                        HtAwayAmount = Convert.ToDecimal(entityList[46].ToString()),
+                        HtOuPricing = Convert.ToDecimal(entityList[48].ToString()),
+                        HtOverAmount = Convert.ToDecimal(entityList[52].ToString()),
+                        HtUnderAmount = Convert.ToDecimal(entityList[53].ToString()),
+
                         MatchDate = DateTime.ParseExact(entityList[63].ToString(), "yyyy-MM-dd HH:mm:ss", null),
+                        IsLive = scheduleSpecifier == "r"
                     };
                     matchList.Add(match);
                     index++;

@@ -19,7 +19,7 @@
                 </div>
                 <div class="card-body">
                     <div class="toolbar text-right">
-                        <a class="btn btn-info btn-create" asp-controller="MatchScheduling" asp-action="Index">
+                        <a class="btn btn-info btn-create" asp-controller="MatchScheduling" asp-action="Crawl">
                             <i class="material-icons">system_update_alt</i>
                             Get Latest
                         </a>
@@ -31,15 +31,15 @@
                                     <th>
                                         ID
                                     </th>
-                                    <th>
+                                    @*<th>
                                         @Html.DisplayNameFor(model => model.Oddsid)
-                                    </th>
+                                    </th>*@
                                     <th>
                                         @Html.DisplayNameFor(model => model.MatchDate)
                                     </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.League)
-                                    </th>
+                                    @*<th>
+                                            @Html.DisplayNameFor(model => model.League)
+                                        </th>*@
                                     <th>
                                         @Html.DisplayNameFor(model => model.HomeTeam)
                                     </th>
@@ -58,6 +58,18 @@
                                     <th>
                                         FT. O/U (B)
                                     </th>
+                                    <th>
+                                        HT. HDP
+                                    </th>
+                                    <th>
+                                        HT. HDP (B)
+                                    </th>
+                                    <th>
+                                        HT. O/U
+                                    </th>
+                                    <th>
+                                        HT. O/U (B)
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,19 +80,19 @@
                                     foreach (var item in Model)
                                     {
                                         i++;
-                                        <tr role="row">
+                                        <tr role="row" class="@(item.IsLive ? "table-danger" : "")">
                                             <td>
                                                 @i
                                             </td>
-                                            <td>
+                                            @*<td>
                                                 @Html.DisplayFor(modelItem => item.Oddsid)
-                                            </td>
+                                            </td>*@
                                             <td>
                                                 @item.MatchDate.ToString("yyyy-MM-dd HH:mm:ss")
                                             </td>
-                                            <td style="white-space: normal;">
-                                                @Html.DisplayFor(modelItem => item.League)
-                                            </td>
+                                            @*<td style="white-space: normal;">
+                                                    @Html.DisplayFor(modelItem => item.League)
+                                                </td>*@
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.HomeTeam)
                                             </td>
@@ -88,7 +100,7 @@
                                                 @Html.DisplayFor(modelItem => item.AwayTeam)
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.FtHdpPricing)
+                                                @Html.DisplayFor(modelItem => item.HdpPricing)
                                             </td>
                                             <td>
                                                 <div class="badge bg-info">
@@ -103,7 +115,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.FtOuPricing)
+                                                @Html.DisplayFor(modelItem => item.OuPricing)
                                             </td>
                                             <td>
                                                 <div class="badge bg-info">
@@ -117,13 +129,43 @@
                                                     </a>
                                                 </div>
                                             </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.HtHdpPricing)
+                                            </td>
+                                            <td>
+                                                <div class="badge bg-info">
+                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtHomeUrl()">
+                                                        @(item.HtHomeAmount / 10)
+                                                    </a>
+                                                </div>
+                                                <div class="badge bg-warning">
+                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtAwayUrl()">
+                                                        @(item.HtAwayAmount / 10)
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.OuPricing)
+                                            </td>
+                                            <td>
+                                                <div class="badge bg-info">
+                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtOverUrl()">
+                                                        @(item.HtOverAmount / 10)
+                                                    </a>
+                                                </div>
+                                                <div class="badge bg-warning">
+                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtUnderUrl()">
+                                                        @(item.HtUnderAmount / 10)
+                                                    </a>
+                                                </div>
+                                            </td>
                                         </tr>
                                     }
                                 }
                                 else
                                 {
                                     <tr role="row">
-                                        <td colspan="8" class="text-center">
+                                        <td colspan="12" class="text-center">
                                             No data found.
                                         </td>
                                     </tr>
