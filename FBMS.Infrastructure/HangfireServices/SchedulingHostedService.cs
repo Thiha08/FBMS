@@ -60,8 +60,7 @@ namespace FBMS.Infrastructure.HangfireServices
         {
             var filter = new TransactionFilterDto
             {
-                IsSubmitted = false,
-                IsPagingEnabled = false
+                IsSubmitted = false
             };
             var activeTransactions = await _transactionService.GetTransactions(filter);
 
@@ -70,7 +69,7 @@ namespace FBMS.Infrastructure.HangfireServices
             {
                 var selectedMatches = matchSchedule.Where(x => x.HomeTeam == transaction.HomeTeam && x.AwayTeam == transaction.AwayTeam).ToList();
 
-                var matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, Convert.ToDecimal(transaction.Pricing), selectedMatches);
+                var matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
 
                 if (string.IsNullOrWhiteSpace(matchUrl))
                 {

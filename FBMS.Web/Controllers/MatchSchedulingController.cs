@@ -1,9 +1,7 @@
 ﻿using FBMS.Core.Dtos;
 using FBMS.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FBMS.Web.Controllers
@@ -19,7 +17,12 @@ namespace FBMS.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _matchSchedulingService.GetMatchSchedule());
+            return View(new List<MatchDto>());
+        }
+
+        public async Task<IActionResult> Crawl()
+        {
+            return View(nameof(Index), await _matchSchedulingService.GetMatchSchedule());
         }
 
         public async Task<IActionResult> Edit(string matchUrl)

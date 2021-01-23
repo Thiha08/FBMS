@@ -20,10 +20,7 @@ namespace FBMS.Web.Controllers
 
         public async Task<IActionResult> Index([FromQuery] TransactionFilterDto filter)
         {
-            filter = filter ?? new TransactionFilterDto();
-
-            filter.IsPagingEnabled = false;
-
+            filter ??= new TransactionFilterDto();
             return View(await _transactionService.GetTransactions(filter));
         }
 

@@ -63,22 +63,42 @@ namespace FBMS.Core.Extensions
 
         public static string GetHomeUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=home&oId={match.Oddsid}&odds={match.HomeAmount}&ep={match.FtHdpPricing}|{match.Ep}";
+            return $"JRecPanel.aspx?b=home&oId={match.Oddsid}&odds={match.HomeAmount}&ep={match.HdpPricing}|1";
         }
 
         public static string GetAwayUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=away&oId={match.Oddsid}&odds={match.AwayAmount}&ep={match.FtHdpPricing}|{match.Ep}";
+            return $"JRecPanel.aspx?b=away&oId={match.Oddsid}&odds={match.AwayAmount}&ep={match.HdpPricing}|1";
         }
 
         public static string GetOverUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=over&oId={match.Oddsid}&odds={match.OverAmount}&ep={match.FtOuPricing}";
+            return $"JRecPanel.aspx?b=over&oId={match.Oddsid}&odds={match.OverAmount}&ep={match.OuPricing}";
         }
 
         public static string GetUnderUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=under&oId={match.Oddsid}&odds={match.UnderAmount}&ep={match.FtOuPricing}";
+            return $"JRecPanel.aspx?b=under&oId={match.Oddsid}&odds={match.UnderAmount}&ep={match.OuPricing}";
+        }
+
+        public static string GetHtHomeUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=home&oId={match.HtOddsid}&odds={match.HtHomeAmount}&ep={match.HtHdpPricing}|1";
+        }
+
+        public static string GetHtAwayUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=away&oId={match.HtOddsid}&odds={match.HtAwayAmount}&ep={match.HtHdpPricing}|1";
+        }
+
+        public static string GetHtOverUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=over&oId={match.HtOddsid}&odds={match.HtOverAmount}&ep={match.HtOuPricing}";
+        }
+
+        public static string GetHtUnderUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=under&oId={match.HtOddsid}&odds={match.HtUnderAmount}&ep={match.HtOuPricing}";
         }
 
         public static string GetBetUrl(this MatchBetDto match)

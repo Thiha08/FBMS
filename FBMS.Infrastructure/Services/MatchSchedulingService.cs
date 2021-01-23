@@ -79,22 +79,22 @@ namespace FBMS.Infrastructure.Services
 
             if (transactionType == TransactionType.Home)
             {
-                var fixedMatch = matches.Closest(x => x.FtHdpPricing, pricing);
+                var fixedMatch = matches.Closest(x => x.HdpPricing, pricing);
                 matchUrl = fixedMatch?.GetHomeUrl();
             }
             else if (transactionType == TransactionType.Away)
             {
-                var fixedMatch = matches.Closest(x => x.FtHdpPricing, pricing);
+                var fixedMatch = matches.Closest(x => x.HdpPricing, pricing);
                 matchUrl = fixedMatch?.GetAwayUrl();
             }
             else if (transactionType == TransactionType.Over)
             {
-                var fixedMatch = matches.Closest(x => x.FtOuPricing, pricing);
+                var fixedMatch = matches.Closest(x => x.OuPricing, pricing);
                 matchUrl = fixedMatch?.GetOverUrl();
             }
             else if (transactionType == TransactionType.Under)
             {
-                var fixedMatch = matches.Closest(x => x.FtOuPricing, pricing);
+                var fixedMatch = matches.Closest(x => x.OuPricing, pricing);
                 matchUrl = fixedMatch?.GetUnderUrl();
             }
 
@@ -219,15 +219,24 @@ namespace FBMS.Infrastructure.Services
                         League = entityList[1].ToString(),
                         Soclid = Convert.ToInt64(entityList[2].ToString()),
                         EventKey = entityList[7].ToString(),
-                        Ep = Convert.ToInt32(entityList[18].ToString()),
                         HomeTeam = entityList[19].ToString(),
                         AwayTeam = entityList[20].ToString(),
-                        FtHdpPricing = Convert.ToDecimal(entityList[24].ToString()),
+
+                        HdpPricing = Convert.ToDecimal(entityList[24].ToString()),
                         HomeAmount = Convert.ToDecimal(entityList[26].ToString()),
                         AwayAmount = Convert.ToDecimal(entityList[27].ToString()),
-                        FtOuPricing = Convert.ToDecimal(entityList[29].ToString()),
+                        OuPricing = Convert.ToDecimal(entityList[29].ToString()),
                         OverAmount = Convert.ToDecimal(entityList[33].ToString()),
                         UnderAmount = Convert.ToDecimal(entityList[34].ToString()),
+
+                        HtOddsid = Convert.ToInt64(entityList[39].ToString()),
+                        HtHdpPricing = Convert.ToDecimal(entityList[43].ToString()),
+                        HtHomeAmount = Convert.ToDecimal(entityList[45].ToString()),
+                        HtAwayAmount = Convert.ToDecimal(entityList[46].ToString()),
+                        HtOuPricing = Convert.ToDecimal(entityList[48].ToString()),
+                        HtOverAmount = Convert.ToDecimal(entityList[52].ToString()),
+                        HtUnderAmount = Convert.ToDecimal(entityList[53].ToString()),
+
                         MatchDate = DateTime.ParseExact(entityList[63].ToString(), "yyyy-MM-dd HH:mm:ss", null),
                         IsLive = scheduleSpecifier == "r"
                     };
