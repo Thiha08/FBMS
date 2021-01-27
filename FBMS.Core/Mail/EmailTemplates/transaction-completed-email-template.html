@@ -1,0 +1,360 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	style="-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;font-family:sans-serif !important;margin-top:0 !important;margin-bottom:0 !important;margin-right:auto !important;margin-left:auto !important;padding-top:0 !important;padding-bottom:0 !important;padding-right:0 !important;padding-left:0 !important;height:100% !important;width:100% !important;">
+
+<head style="-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;">
+	<meta charset="utf-8" style="-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;" />
+	<!-- utf-8 works for most cases -->
+	<meta name="viewport" content="width=device-width"
+		style="-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;" />
+	<!-- Forcing initial-scale shouldn't be necessary -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"
+		style="-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;" />
+	<!-- Use the latest (edge) version of IE rendering engine -->
+	<title style="-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;">Haulio</title>
+	<!-- The title tag shows in email notifications, like Android 4.4. -->
+	<!-- Web Font / @font-face : BEGIN -->
+	<!-- NOTE: If web fonts are not required, lines 9 - 26 can be safely removed. -->
+	<!-- Desktop Outlook chokes on web font references and defaults to Times New Roman, so we force a safe fallback font. -->
+	<!--[if mso]>
+        <style style="-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;font-family:sans-serif !important;" >
+            * {
+                font-family: sans-serif !important !important;
+            }
+        </style>
+    <![endif]-->
+	<!--[if gte mso 9]>
+        <style type="text/css" style="-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;font-family:sans-serif !important;" >
+        .viewjob {
+            width: 328px !important;
+            height: 48px !important;
+            display: inline-block !important;
+            cursor: pointer !important;
+            text-align: center !important;
+            background-color: #D34B33 !important;
+            border-radius: 45px !important;
+        }
+
+            .viewjob > a {
+                color: #ffffff !important;
+                font-weight: bold !important;
+                font-size: 18pt !important;
+            }
+        </style>
+    <![endif]-->
+	<!-- All other clients get the webfont reference; some will render the font and others will silently fail to the fallbacks. More on that here: http://stylecampaign.com/blog/2015/02/webfont-support-in-email/ -->
+	<!--[if !mso]><!-->
+	<!-- insert web font reference, eg: <link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css' style="-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;font-family:sans-serif !important;" > -->
+	<!--<![endif]-->
+	<!-- Web Font / @font-face : END -->
+	<!-- CSS Reset -->
+	<style type="text/css" style="-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;">
+		html,
+		body {
+			margin: 0 auto !important;
+			padding: 0 !important;
+			height: 100% !important;
+			width: 100% !important;
+		}
+
+
+		* {
+			-ms-text-size-adjust: 100%;
+			-webkit-text-size-adjust: 100%;
+		}
+
+		@font-face {
+			font-family: "Mark Pro";
+			src: url("https://haulio-community-dev-oms-uat.azurewebsites.net/fonts/MarkPro_Regular.otf");
+		}
+
+		div[style*="margin: 16px 0"] {
+			margin: 0 !important;
+		}
+
+
+		table,
+		td {
+			mso-table-lspace: 0pt !important;
+			mso-table-rspace: 0pt !important;
+		}
+
+
+		table {
+			border-spacing: 0 !important;
+			border-collapse: collapse !important;
+			table-layout: fixed !important;
+			margin: 0 auto !important;
+		}
+
+		table table table {
+			table-layout: auto;
+		}
+
+
+		img {
+			-ms-interpolation-mode: bicubic;
+		}
+
+
+		.mobile-link--footer a,
+		a[x-apple-data-detectors] {
+			color: inherit !important;
+			text-decoration: underline !important;
+		}
+	</style>
+	<!-- Progressive Enhancements -->
+	<style style="-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;">
+		a {
+			text-decoration: none;
+		}
+
+
+		.button-td,
+		.button-a,
+		.button-a:active,
+		.button-a:focus,
+		.button-a:visited {
+			transition: all 100ms ease-in;
+			text-decoration: none !important;
+		}
+
+		.button-td:hover,
+		.button-a:hover {
+			background: #ff9950 !important;
+			border-color: #ff9950 !important;
+			text-decoration: none !important;
+		}
+
+
+		@media screen and (max-width: 480px) {
+
+
+			.fluid,
+			.fluid-centered {
+				width: 100% !important;
+				max-width: 100% !important;
+				height: auto !important;
+				margin-left: auto !important;
+				margin-right: auto !important;
+			}
+
+			.fluid-centered {
+				margin-left: auto !important;
+				margin-right: auto !important;
+			}
+
+
+			.stack-column,
+			.stack-column-center {
+				display: block !important;
+				width: 100% !important;
+				max-width: 100% !important;
+				direction: ltr !important;
+			}
+
+			.stack-column-center {
+				text-align: center !important;
+			}
+
+
+			.center-on-narrow {
+				text-align: center !important;
+				display: block !important;
+				margin-left: auto !important;
+				margin-right: auto !important;
+				float: none !important;
+			}
+
+			table.center-on-narrow {
+				display: inline-block !important;
+			}
+		}
+
+
+		.banner {
+			position: relative;
+			padding: 10px 120px 0px 120px;
+			color: white;
+			background-color: #D2172B;
+			text-align: left;
+		}
+
+		.banner:after {
+			content: '';
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			margin-left: -20px;
+			width: 0;
+			height: 0;
+			border-top: 20px solid #D2172B;
+			border-left: 10px solid transparent;
+			border-right: 10px solid transparent;
+		}
+
+		.bannerHeader {
+			font-size: 48px;
+			font-weight: bold;
+			text-transform: lowercase;
+		}
+
+		.jobCode {
+			margin-top: 14px;
+			font-size: 14px;
+			font-weight: lighter;
+		}
+
+		.jobCode>span {
+			font-size: 14px;
+			font-weight: normal;
+		}
+
+		.jobSummary {
+			text-align: left;
+			width: 100%;
+			margin-top: 16px;
+		}
+
+		.jobSummary tr:nth-child(odd) td {
+			text-transform: capitalize;
+			color: #b3b3b3;
+			font-size: 10pt;
+			font-weight: bold;
+			margin-bottom: 8px;
+		}
+
+		.jobSummary tr:nth-child(even) td {
+			text-transform: capitalize;
+			color: #000000;
+			font-size: 14pt;
+			font-weight: bold;
+		}
+
+		.containerRequirement {
+			width: 100%;
+		}
+
+		.containerRequirement tr td {
+			text-transform: capitalize;
+			color: #000000;
+			font-size: 14pt;
+			font-weight: bold;
+		}
+
+		.containerRequirement tr:first-child td {
+			text-transform: capitalize;
+			color: #b3b3b3;
+			font-size: 10pt;
+			font-weight: bold;
+			margin-bottom: 8px;
+		}
+
+		hr.dotted {
+			margin-top: 36px;
+			margin-bottom: 36px;
+			border: none;
+			width: 456px;
+			border-top: 1px dashed #F2F2F2;
+		}
+
+		.viewjob {
+			width: 328px;
+			height: 48px;
+			display: inline-block;
+			cursor: pointer;
+			text-align: center;
+			background-color: #D34B33;
+			border-radius: 45px;
+		}
+
+		.viewjob>a {
+			color: #ffffff;
+			font-weight: bold;
+			font-size: 18pt;
+		}
+	</style>
+
+</head>
+
+<body bgcolor="#ffffff" width="100%" style="font-family:'Mark Pro' !important;">
+	<center style="width: 100%; background: #ffffff;">
+		<table cellspacing="0" cellpadding="0" border="0" align="center" style="width: 768px;">
+			<tr>
+				<td style="color:white;background-color:#D2172B;height:18px;"></td>
+			</tr>
+			<tr>
+				<td
+					style="color:#D2172B;text-align:center;margin-auto:0px;mso-line-height-rule: exactly;line-height:60%;font-size:36px;">
+					&#9660;</td>
+			</tr>
+			<tr style="height:48px;"></tr>
+			<tr>
+				<td style="padding:0px 100px 0px 100px;font-size:36px;line-height:43.2px;font-weight:bold;color: #333333;">
+					{{TITLE}}
+				</td>
+			</tr>
+			<tr style="height:24px;"></tr>
+			<tr>
+				<td style="padding:0px 120px 0px 120px;">
+					<span style="font-size:10.5pt;font-weight:bold;
+                            line-height:13.5pt;mso-line-height-rule:exactly;color:#D22127">JOB ID {{JOB_ID}}</span>
+				</td>
+			</tr>
+			
+			
+            <tr style="height:24px;"></tr>
+            <tr>
+                <td style="padding:0px 120px 0px 120px;">
+					<table style="float:left;">
+						<tr style="color: #949494;font-size: 7.5pt;font-weight: bold;margin-bottom: 8px;">
+							<td style="width:50px;padding:4px 0px 4px 0px;">QTY</td>
+							<td style="width:400px;padding:4px 0px 4px 0px;">CNTR TYPE</td>
+						</tr>
+						{{CONTAINER_LIST}}
+					</table>
+                </td>
+			</tr>
+
+			<tr style="height:24px;"></tr>
+            <tr>
+                <td style="padding:0px 120px 0px 120px;">
+                    <table style="float:left;">
+                        <tr style="color: #949494;font-size: 7.5pt;font-weight: bold;margin-bottom: 8px;">
+                            <td style="width:350px;padding:4px 0px 4px 0px;">DEADLINE</td>
+                            <td style="width:350px;padding:4px 0px 4px 0px;">HOT BOX</td>
+                        </tr>
+                        <tr style="color: #333333;font-size: 10.5pt;font-weight: bold;margin-bottom: 8px;">
+                            <td style="width:350px;padding:4px 0px 4px 0px;">{{DEADLINE_INPUT}}</td>
+                            <td style="width:350px;padding:4px 0px 4px 0px;">{{HOTBOX_INPUT}}</td>
+						</tr>
+						
+                    </table>
+                </td>
+			</tr>
+			
+            <tr style="height:24px;"></tr>
+            <tr>
+                <td style="padding:0px 120px 0px 120px;font-weight:bold;color:#949494;font-size:7.5pt;">BOOKING NOTES</td>
+            </tr>
+            <tr>
+                <td style="  text-transform: capitalize;color: #333333; font-size: 10.5pt;font-weight: bold;padding:0px 120px 0px 120px;">{{REMARKS}}</td>
+			</tr>
+			
+            <tr style="height:72px;"></tr>
+			<tr>
+				<td
+					style="font-family:'Mark Pro' !important;background-color:#EAEAEA;padding:24px 0px 24px 0px;text-align:center;">
+					<span style="font-size:9pt;font-weight:bold;color:#D22127;"> Got Questions?</span><br />
+					<span style="font-size:9pt;color: #333333;line-height:12pt;font-weight:normal;padding-top: 8px;display: block;">
+						We’re here to help. Give us a call at +65 8508 2327,<br />
+						or drop us an email at <span style="text-decoration:none"><u>support@haulio.io</u></span>
+					</span>
+				</td>
+			</tr>
+		</table>
+		
+	</center>
+</body>
+
+</html>

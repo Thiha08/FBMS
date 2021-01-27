@@ -89,28 +89,19 @@ namespace FBMS.Infrastructure.HangfireServices
                         Stack = (int)transaction.SubmittedAmount
                     };
 
-                    _logger.LogWarning(
-                        "*** Match Detail:" + Environment.NewLine +
+                    _logger.LogInformation(
+                        "Match Detail:" + Environment.NewLine +
                         transaction.GetInfo());
 
-                    //matchBet.Stack = 0; // 0 for now;
-                    //var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
-                    //if (response.Contains("SUCCESSFULLY"))
-                    //{
-                    //    transaction.SubmittedDate = DateTime.Now;
-                    //    transaction.SubmittedPricing = matchDetail.BetHdp;
-                    //    transaction.IsSubmitted = true;
-                    //    await _transactionService.UpdateTransaction(transaction);
-                    //}
-                    //_logger.LogWarning(response);
+                    matchBet.Stack = 0; // 0 for now;
+                    var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
+                    if (response.Contains("SUCCESSFULLY"))
+                    {
+                        //await _transactionService.CompleteTransaction(transaction.Id, matchDetail.BetHdp);
+                    }
+                    _logger.LogWarning(response);
+                    await _transactionService.CompleteTransaction(transaction.Id, matchDetail.BetHdp);
                 }
-
-                // TO PREVENT LOGGING AGAIN AND AGAIN
-                transaction.SubmittedDate = DateTime.Now;
-                transaction.SubmittedPricing = transaction.Pricing;
-                transaction.IsSubmitted = true;
-
-                await _transactionService.UpdateTransaction(transaction);
             }
         }
     }

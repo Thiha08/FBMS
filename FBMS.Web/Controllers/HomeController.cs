@@ -1,10 +1,13 @@
 ﻿using FBMS.Core.Dtos;
 using FBMS.Core.Interfaces;
+using FBMS.Core.Mail;
 using Hangfire.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FBMS.Web.Controllers
@@ -14,11 +17,13 @@ namespace FBMS.Web.Controllers
     {
         private readonly ITransactionHostedService _transactionHostedService;
         private readonly ISchedulingHostedService _schedulingHostedService;
+        private readonly ITransactionService _transactionService;
 
-        public HomeController(ITransactionHostedService transactionHostedService, ISchedulingHostedService schedulingHostedService)
+        public HomeController(ITransactionHostedService transactionHostedService, ISchedulingHostedService schedulingHostedService, ITransactionService transactionService)
         {
             _transactionHostedService = transactionHostedService;
             _schedulingHostedService = schedulingHostedService;
+            _transactionService = transactionService;
         }
 
         public async Task<IActionResult> Index()
@@ -50,6 +55,12 @@ namespace FBMS.Web.Controllers
         public async Task<IActionResult> StopSchedulingJob()
         {
             await _schedulingHostedService.StopAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> SendTestingEmail()
+        {
+            await _transactionService.TestTransactionsCompletedEmail();
             return RedirectToAction(nameof(Index));
         }
 

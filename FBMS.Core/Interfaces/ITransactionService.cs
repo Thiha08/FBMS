@@ -16,10 +16,14 @@ namespace FBMS.Core.Interfaces
 
         Task UpdateTransactions(List<TransactionDto> transactionDtos);
 
+        Task CompleteTransaction(int id, string pricing);
+
         Task DeleteTransactions();
 
         Task DeleteTransactions(TransactionFilterDto filterDto);
 
         Task CrawlTransactions(TransactionFilterCto filterCto);
+
+        Task TestTransactionsCompletedEmail();
     }
 }

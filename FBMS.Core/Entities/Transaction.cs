@@ -1,4 +1,5 @@
 ﻿using FBMS.Core.Constants;
+using FBMS.Core.Events;
 using FBMS.SharedKernel;
 using FBMS.SharedKernel.Interfaces;
 using System;
@@ -38,5 +39,13 @@ namespace FBMS.Core.Entities
         public bool IsSubmitted { get; set; }
 
         public int MemberId { get; set; }
+
+        public void MarkComplete(string pricing)
+        {
+            IsSubmitted = true;
+            SubmittedPricing = pricing;
+            SubmittedDate = DateTime.Now;
+            Events.Add(new TransactionCompletedEvent(this));
+        }
     }
 }
