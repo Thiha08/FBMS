@@ -1,8 +1,10 @@
 ﻿using Autofac;
 using FBMS.Core;
 using FBMS.Core.Interfaces;
+using FBMS.Core.Mail;
 using FBMS.Infrastructure.Data;
 using FBMS.Infrastructure.HangfireServices;
+using FBMS.Infrastructure.Mail;
 using FBMS.Infrastructure.Services;
 using FBMS.SharedKernel.Interfaces;
 using FBMS.Spider.Auth;
@@ -87,6 +89,7 @@ namespace FBMS.Infrastructure
             }
 
             builder.RegisterType<EmailSender>().As<IEmailSender>().InstancePerLifetimeScope();
+            builder.RegisterType<EmailTemplateProvider>().As<IEmailTemplateProvider>().InstancePerLifetimeScope();
             builder.RegisterType<CrawlerDownloader>().As<ICrawlerDownloader>().InstancePerDependency();
             builder.RegisterType<CrawlerPageLinkReader>().As<ICrawlerPageLinkReader>().InstancePerDependency();
             builder.RegisterType<CrawlerPipeline>().As<ICrawlerPipeline>().InstancePerDependency();

@@ -6,20 +6,16 @@ namespace FBMS.Core.Constants.Email
 {
     public interface IEmailSettings
     {
-        bool IsDevelopment { get; set; }
+        string Host { get; set; }
 
-        bool UseSsl { get; set; }
-
-        string MailServer { get; set; }
-
-        int MailPort { get; set; }
-
-        string SenderEmail { get; set; }
+        int Port { get; set; }
 
         string SenderName { get; set; }
 
+        string SenderEmail { get; set; }
+
         string Password { get; set; }
 
-        string AdminEmail { get; set; }
+        string Recipients { get; set; }
     }
 }

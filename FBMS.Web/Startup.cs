@@ -3,6 +3,7 @@ using Autofac;
 using AutoMapper;
 using FBMS.Core.Attributes;
 using FBMS.Core.Constants.Crawler;
+using FBMS.Core.Constants.Email;
 using FBMS.Core.Constants.Hangfire;
 using FBMS.Infrastructure;
 using FBMS.Infrastructure.Mappers;
@@ -104,6 +105,9 @@ namespace FBMS.Web
 
             services.Configure<HangfireSettings>(Configuration.GetSection(nameof(HangfireSettings)));
             services.AddSingleton<IHangfireSettings>(sp => sp.GetRequiredService<IOptions<HangfireSettings>>().Value);
+
+            services.Configure<EmailSettings>(Configuration.GetSection(nameof(EmailSettings)));
+            services.AddSingleton<IEmailSettings>(sp => sp.GetRequiredService<IOptions<EmailSettings>>().Value);
 
             services.AddRazorPages();
 

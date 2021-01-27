@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FBMS.Core.Constants;
 using FBMS.Core.Constants.Crawler;
+using FBMS.Core.Constants.Email;
 using FBMS.Core.Ctos;
 using FBMS.Core.Ctos.Filters;
 using FBMS.Core.Dtos;
@@ -10,6 +11,7 @@ using FBMS.Core.Dtos.Filters;
 using FBMS.Core.Entities;
 using FBMS.Core.Extensions;
 using FBMS.Core.Interfaces;
+using FBMS.Core.Mail;
 using FBMS.Core.Specifications;
 using FBMS.Core.Specifications.Filters;
 using FBMS.SharedKernel.Interfaces;
@@ -18,10 +20,12 @@ using FBMS.Spider.Downloader;
 using FBMS.Spider.Pipeline;
 using FBMS.Spider.Processor;
 using HtmlAgilityPack;
+using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FBMS.Infrastructure.Services
@@ -35,8 +39,11 @@ namespace FBMS.Infrastructure.Services
         private readonly IHostApiCrawlerSettings _hostApiCrawlerSettings;
         private readonly IRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IEmailSender _emailSender;
+        private readonly IEmailTemplateProvider _emailTemplateProvider;
+        private readonly IEmailSettings _emailSettings;
 
-        public TransactionService(ICrawlerDownloader downloader, ICrawlerProcessor processor, ICrawlerPipeline pipeline, ICrawlerAuthorization crawlerAuthorization, IHostApiCrawlerSettings hostApiCrawlerSettings, IRepository repository, IMapper mapper)
+        public TransactionService(ICrawlerDownloader downloader, ICrawlerProcessor processor, ICrawlerPipeline pipeline, ICrawlerAuthorization crawlerAuthorization, IHostApiCrawlerSettings hostApiCrawlerSettings, IRepository repository, IMapper mapper, IEmailSender emailSender, IEmailTemplateProvider emailTemplateProvider, IEmailSettings emailSettings)
         {
             _downloader = downloader;
             _processor = processor;
@@ -45,6 +52,9 @@ namespace FBMS.Infrastructure.Services
             _hostApiCrawlerSettings = hostApiCrawlerSettings;
             _repository = repository;
             _mapper = mapper;
+            _emailSender = emailSender;
+            _emailTemplateProvider = emailTemplateProvider;
+            _emailSettings = emailSettings;
         }
 
         public async Task<List<TransactionDto>> GetTransactions()
@@ -65,6 +75,13 @@ namespace FBMS.Infrastructure.Services
         public async Task UpdateTransaction(TransactionDto transactionDto)
         {
             await _repository.UpdateAsync(_mapper.Map<Transaction>(transactionDto));
+        }
+
+        public async Task CompleteTransaction(int id, string pricing)
+        {
+            var transaction = await _repository.GetByIdAsync<Transaction>(id);
+            transaction.MarkComplete(pricing);
+            await _repository.UpdateAsync(transaction);
         }
 
         public async Task UpdateTransactions(List<TransactionDto> transactionDtos)
@@ -220,6 +237,22 @@ namespace FBMS.Infrastructure.Services
             }
 
             return authResponse;
+        }
+
+        public async Task TestTransactionsCompletedEmail()
+        {
+            var emailTemplate = new StringBuilder(_emailTemplateProvider.GetTransactionCompletedEmailTemplate());
+            List<string> recipients = _emailSettings.Recipients.Split(',').ToList<string>();
+
+            var message = new MimeMessage();
+            message.From.Add(MailboxAddress.Parse(_emailSettings.SenderEmail));
+            recipients.ForEach(recipient => message.To.Add(MailboxAddress.Parse(recipient)));
+            message.Subject = $"TR100001 was completed.";
+            message.Body = new TextPart("html")
+            {
+                Text = emailTemplate.ToString()
+            };
+            await _emailSender.SendAsync(message);
         }
     }
 }

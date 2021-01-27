@@ -32,8 +32,8 @@
                                         ID
                                     </th>
                                     @*<th>
-                                        @Html.DisplayNameFor(model => model.Oddsid)
-                                    </th>*@
+                                            @Html.DisplayNameFor(model => model.Oddsid)
+                                        </th>*@
                                     <th>
                                         @Html.DisplayNameFor(model => model.MatchDate)
                                     </th>
@@ -85,8 +85,8 @@
                                                 @i
                                             </td>
                                             @*<td>
-                                                @Html.DisplayFor(modelItem => item.Oddsid)
-                                            </td>*@
+                                                    @Html.DisplayFor(modelItem => item.Oddsid)
+                                                </td>*@
                                             <td>
                                                 @item.MatchDate.ToString("yyyy-MM-dd HH:mm:ss")
                                             </td>
@@ -103,61 +103,85 @@
                                                 @Html.DisplayFor(modelItem => item.HdpPricing)
                                             </td>
                                             <td>
-                                                <div class="badge bg-info">
-                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHomeUrl()">
-                                                        @(item.HomeAmount/10)
-                                                    </a>
-                                                </div>
-                                                <div class="badge bg-warning">
-                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetAwayUrl()">
-                                                        @(item.AwayAmount/10)
-                                                    </a>
-                                                </div>
+                                                @if (Math.Abs(item.HomeAmount) > 0)
+                                                {
+                                                    <div class="badge bg-info">
+                                                        <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHomeUrl()">
+                                                            @(item.HomeAmount/10)
+                                                        </a>
+                                                    </div>
+                                                }
+                                                @if (Math.Abs(item.AwayAmount) > 0)
+                                                {
+                                                    <div class="badge bg-warning">
+                                                        <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetAwayUrl()">
+                                                            @(item.AwayAmount/10)
+                                                        </a>
+                                                    </div>
+                                                }
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.OuPricing)
                                             </td>
                                             <td>
-                                                <div class="badge bg-info">
-                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetOverUrl()">
-                                                        @(item.OverAmount/10)
-                                                    </a>
-                                                </div>
-                                                <div class="badge bg-warning">
-                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetUnderUrl()">
-                                                        @(item.UnderAmount/10)
-                                                    </a>
-                                                </div>
+                                                @if (Math.Abs(item.OverAmount) > 0)
+                                                {
+                                                    <div class="badge bg-info">
+                                                        <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetOverUrl()">
+                                                            @(item.OverAmount/10)
+                                                        </a>
+                                                    </div>
+                                                }
+                                                @if (Math.Abs(item.UnderAmount) > 0)
+                                                {
+                                                    <div class="badge bg-warning">
+                                                        <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetUnderUrl()">
+                                                            @(item.UnderAmount/10)
+                                                        </a>
+                                                    </div>
+                                                }
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.HtHdpPricing)
                                             </td>
                                             <td>
-                                                <div class="badge bg-info">
-                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtHomeUrl()">
-                                                        @(item.HtHomeAmount / 10)
-                                                    </a>
-                                                </div>
-                                                <div class="badge bg-warning">
-                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtAwayUrl()">
-                                                        @(item.HtAwayAmount / 10)
-                                                    </a>
-                                                </div>
+                                                @if (Math.Abs(item.HtHomeAmount) > 0)
+                                                {
+                                                    <div class="badge bg-info">
+                                                        <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtHomeUrl()">
+                                                            @(item.HtHomeAmount / 10)
+                                                        </a>
+                                                    </div>
+                                                }
+                                                @if (Math.Abs(item.HtAwayAmount) > 0)
+                                                {
+                                                    <div class="badge bg-warning">
+                                                        <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtAwayUrl()">
+                                                            @(item.HtAwayAmount / 10)
+                                                        </a>
+                                                    </div>
+                                                }
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.OuPricing)
                                             </td>
                                             <td>
-                                                <div class="badge bg-info">
-                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtOverUrl()">
-                                                        @(item.HtOverAmount / 10)
-                                                    </a>
-                                                </div>
-                                                <div class="badge bg-warning">
-                                                    <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtUnderUrl()">
-                                                        @(item.HtUnderAmount / 10)
-                                                    </a>
-                                                </div>
+                                                @if (Math.Abs(item.HtOverAmount) > 0)
+                                                {
+                                                    <div class="badge bg-info">
+                                                        <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtOverUrl()">
+                                                            @(item.HtOverAmount / 10)
+                                                        </a>
+                                                    </div>
+                                                }
+                                                @if (Math.Abs(item.HtUnderAmount) > 0)
+                                                {
+                                                    <div class="badge bg-warning">
+                                                        <a asp-controller="MatchScheduling" asp-action="Edit" asp-route-matchUrl="@item.GetHtUnderUrl()">
+                                                            @(item.HtUnderAmount / 10)
+                                                        </a>
+                                                    </div>
+                                                }
                                             </td>
                                         </tr>
                                     }
