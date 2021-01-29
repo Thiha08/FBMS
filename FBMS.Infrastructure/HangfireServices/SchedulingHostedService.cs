@@ -78,6 +78,8 @@ namespace FBMS.Infrastructure.HangfireServices
                     _logger.LogError(
                         "Cannot find related Match Detail!" + Environment.NewLine +
                         transaction.GetInfo());
+
+                    await _transactionService.DischargeTransaction(transaction.Id);
                 }
                 else
                 {
@@ -89,18 +91,15 @@ namespace FBMS.Infrastructure.HangfireServices
                         Stack = (int)transaction.SubmittedAmount
                     };
 
-                    _logger.LogInformation(
+                    _logger.LogWarning(
                         "Match Detail:" + Environment.NewLine +
                         transaction.GetInfo());
 
-                    matchBet.Stack = 0; // 0 for now;
+                    matchBet.Stack = 0; // 0 for now
                     var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
-                    if (response.Contains("SUCCESSFULLY"))
-                    {
-                        //await _transactionService.CompleteTransaction(transaction.Id, matchDetail.BetHdp);
-                    }
+
                     _logger.LogWarning(response);
-                    await _transactionService.CompleteTransaction(transaction.Id, matchDetail.BetHdp);
+                    await _transactionService.CompleteTransaction(transaction.Id, matchDetail.BetHdp, response);
                 }
             }
         }

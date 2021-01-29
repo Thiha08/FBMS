@@ -10,9 +10,12 @@ namespace FBMS.Core.Events
     {
         public Transaction CompletedTransaction { get; set; }
 
-        public TransactionCompletedEvent(Transaction completedTransaction)
+        public string Message { get; set; }
+
+        public TransactionCompletedEvent(Transaction completedTransaction, string message)
         {
             CompletedTransaction = completedTransaction;
+            Message = message;
         }
     }
 }

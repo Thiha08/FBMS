@@ -21,9 +21,11 @@
 
   <ItemGroup>
     <None Remove="Mail\EmailTemplates\transaction-completed-email-template.html" />
+    <None Remove="Mail\EmailTemplates\transaction-discharged-email-template.html" />
   </ItemGroup>
   
   <ItemGroup>
+    <EmbeddedResource Include="Mail\EmailTemplates\transaction-discharged-email-template.html" />
     <EmbeddedResource Include="Mail\EmailTemplates\transaction-completed-email-template.html" />
   </ItemGroup>
 

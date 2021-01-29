@@ -16,7 +16,9 @@ namespace FBMS.Core.Interfaces
 
         Task UpdateTransactions(List<TransactionDto> transactionDtos);
 
-        Task CompleteTransaction(int id, string pricing);
+        Task CompleteTransaction(int id, string pricing, string message);
+
+        Task DischargeTransaction(int id);
 
         Task DeleteTransactions();
 

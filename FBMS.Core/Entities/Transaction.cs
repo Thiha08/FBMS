@@ -38,14 +38,25 @@ namespace FBMS.Core.Entities
 
         public bool IsSubmitted { get; set; }
 
+        public bool IsDischarged { get; set; }
+
+        public DateTime? DischargedDate { get; set; }
+
         public int MemberId { get; set; }
 
-        public void MarkComplete(string pricing)
+        public void MarkComplete(string pricing, string message)
         {
             IsSubmitted = true;
             SubmittedPricing = pricing;
             SubmittedDate = DateTime.Now;
-            Events.Add(new TransactionCompletedEvent(this));
+            Events.Add(new TransactionCompletedEvent(this, message));
+        }
+
+        public void MarkDischarge()
+        {
+            IsDischarged = true;
+            DischargedDate = DateTime.Now;
+            Events.Add(new TransactionDischargedEvent(this));
         }
     }
 }
