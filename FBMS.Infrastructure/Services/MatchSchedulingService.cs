@@ -231,6 +231,7 @@ namespace FBMS.Infrastructure.Services
                         League = entityList[1].ToString(),
                         Soclid = Convert.ToInt64(entityList[2].ToString()),
                         EventKey = entityList[7].ToString(),
+                        Ep = Convert.ToInt32(entityList[18].ToString()),
                         HomeTeam = entityList[19].ToString(),
                         AwayTeam = entityList[20].ToString(),
 
