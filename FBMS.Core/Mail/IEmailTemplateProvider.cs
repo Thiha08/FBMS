@@ -7,5 +7,7 @@ namespace FBMS.Core.Mail
     public interface IEmailTemplateProvider
     {
         string GetTransactionCompletedEmailTemplate();
+
+        string GetTransactionDischargedEmailTemplate();
     }
 }

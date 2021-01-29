@@ -14,41 +14,41 @@ using System.Threading.Tasks;
 
 namespace FBMS.Core.Handlers
 {
-    public class TransactionCompletedEmailNotificationHandler : INotificationHandler<TransactionCompletedEvent>
+    public class TransactionDischargedEmailNotificationHandler : INotificationHandler<TransactionDischargedEvent>
     {
         private readonly IEmailSender _emailSender;
         private readonly IEmailSettings _emailSettings;
         private readonly IEmailTemplateProvider _emailTemplateProvider;
 
-        public TransactionCompletedEmailNotificationHandler(IEmailSender emailSender, IEmailSettings emailSettings, IEmailTemplateProvider emailTemplateProvider)
+        public TransactionDischargedEmailNotificationHandler(IEmailSender emailSender, IEmailSettings emailSettings, IEmailTemplateProvider emailTemplateProvider)
         {
             _emailSender = emailSender;
             _emailSettings = emailSettings;
             _emailTemplateProvider = emailTemplateProvider;
         }
 
-        public async Task Handle(TransactionCompletedEvent domainEvent, CancellationToken cancellationToken)
+        public async Task Handle(TransactionDischargedEvent domainEvent, CancellationToken cancellationToken)
         {
             Guard.Against.Null(domainEvent, nameof(domainEvent));
 
-            var emailTemplate = new StringBuilder(_emailTemplateProvider.GetTransactionCompletedEmailTemplate());
+            var emailTemplate = new StringBuilder(_emailTemplateProvider.GetTransactionDischargedEmailTemplate());
             List<string> recipients = _emailSettings.Recipients.Split(',').ToList<string>();
-            var transaction = domainEvent.CompletedTransaction;
+            var transaction = domainEvent.DischargedTransaction;
 
             emailTemplate.Replace("{{TRANSACTION_NUMBER}}", transaction.TransactionNumber);
             emailTemplate.Replace("{{LEAGUE}}", transaction.League);
             emailTemplate.Replace("{{HOME_TEAM}}", transaction.HomeTeam);
             emailTemplate.Replace("{{AWAY_TEAM}}", transaction.AwayTeam);
-            emailTemplate.Replace("{{PRICING}}", transaction.SubmittedPricing);
-            emailTemplate.Replace("{{TYPE}}", transaction.SubmittedTransactionType.ToString());
-            emailTemplate.Replace("{{AMOUNT}}", transaction.SubmittedAmount.ToString());
-            emailTemplate.Replace("{{SUBMITTED_DATE}}", transaction.SubmittedDate?.ToString("dd-MM-yyyy HH:mm:ss"));
-            emailTemplate.Replace("{{MESSAGE}}", domainEvent.Message);
+            emailTemplate.Replace("{{PRICING}}", transaction.Pricing);
+            emailTemplate.Replace("{{TYPE}}", transaction.TransactionType.ToString());
+            emailTemplate.Replace("{{AMOUNT}}", transaction.Amount.ToString());
+            emailTemplate.Replace("{{DISCHARGED_DATE}}", transaction.DischargedDate?.ToString("dd-MM-yyyy HH:mm:ss"));
+            emailTemplate.Replace("{{MESSAGE}}", "Cannot find related Match Detail!");
 
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(_emailSettings.SenderEmail));
             recipients.ForEach(recipient => message.To.Add(MailboxAddress.Parse(recipient)));
-            message.Subject = $"{ transaction.TransactionNumber } was completed.";
+            message.Subject = $"{ transaction.TransactionNumber } was discharged.";
             message.Body = new TextPart("html")
             {
                 Text = emailTemplate.ToString()

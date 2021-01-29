@@ -77,10 +77,17 @@ namespace FBMS.Infrastructure.Services
             await _repository.UpdateAsync(_mapper.Map<Transaction>(transactionDto));
         }
 
-        public async Task CompleteTransaction(int id, string pricing)
+        public async Task CompleteTransaction(int id, string pricing, string message)
         {
             var transaction = await _repository.GetByIdAsync<Transaction>(id);
-            transaction.MarkComplete(pricing);
+            transaction.MarkComplete(pricing, message);
+            await _repository.UpdateAsync(transaction);
+        }
+
+        public async Task DischargeTransaction(int id)
+        {
+            var transaction = await _repository.GetByIdAsync<Transaction>(id);
+            transaction.MarkDischarge();
             await _repository.UpdateAsync(transaction);
         }
 

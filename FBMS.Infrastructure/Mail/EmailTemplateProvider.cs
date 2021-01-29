@@ -15,5 +15,15 @@ namespace FBMS.Infrastructure.Mail
                 return template;
             }
         }
+
+        public string GetTransactionDischargedEmailTemplate()
+        {
+            using (var stream = typeof(IEmailTemplateProvider).Assembly.GetManifestResourceStream("FBMS.Core.Mail.EmailTemplates.transaction-discharged-email-template.html"))
+            {
+                var bytes = stream.GetAllBytes();
+                var template = Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
+                return template;
+            }
+        }
     }
 }
