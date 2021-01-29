@@ -11,5 +11,7 @@ namespace FBMS.Core.Specifications.Filters
         public string UserName { get; set; }
 
         public bool? IsSubmitted { get; set; }
+
+        public bool? IsDischarged { get; set; }
     }
 }

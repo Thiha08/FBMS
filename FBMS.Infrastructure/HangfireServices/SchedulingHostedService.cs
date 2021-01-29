@@ -76,7 +76,7 @@ namespace FBMS.Infrastructure.HangfireServices
 
                 if (string.IsNullOrWhiteSpace(matchUrl))
                 {
-                    _logger.LogError(
+                    _logger.LogWarning(
                         "Cannot find related Match Detail!" + Environment.NewLine +
                         transaction.GetInfo());
 

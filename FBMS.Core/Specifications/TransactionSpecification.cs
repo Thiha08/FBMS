@@ -22,6 +22,9 @@ namespace FBMS.Core.Specifications
 
             if (filter.IsSubmitted.HasValue)
                 Query.Where(x => x.IsSubmitted == filter.IsSubmitted);
+
+            if (filter.IsDischarged.HasValue)
+                Query.Where(x => x.IsDischarged == filter.IsDischarged);
         }
     }
 }
