@@ -48,7 +48,8 @@ namespace FBMS.Web.Controllers
         {
             var filter = new TransactionFilterDto
             {
-                IsSubmitted = false
+                IsSubmitted = false,
+                IsDischarged = false
             };
 
             var activeTransactions = await _transactionService.GetTransactions(filter);
