@@ -63,12 +63,12 @@ namespace FBMS.Core.Extensions
 
         public static string GetHomeUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=home&oId={match.Oddsid}&odds={match.HomeAmount}&ep={match.HdpPricing}|1";
+            return $"JRecPanel.aspx?b=home&oId={match.Oddsid}&odds={match.HomeAmount}&ep={match.HdpPricing}|{match.Ep}";
         }
 
         public static string GetAwayUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=away&oId={match.Oddsid}&odds={match.AwayAmount}&ep={match.HdpPricing}|1";
+            return $"JRecPanel.aspx?b=away&oId={match.Oddsid}&odds={match.AwayAmount}&ep={match.HdpPricing}|{match.Ep}";
         }
 
         public static string GetOverUrl(this MatchDto match)
@@ -83,12 +83,12 @@ namespace FBMS.Core.Extensions
 
         public static string GetHtHomeUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=home&oId={match.HtOddsid}&odds={match.HtHomeAmount}&ep={match.HtHdpPricing}|1";
+            return $"JRecPanel.aspx?b=home&oId={match.HtOddsid}&odds={match.HtHomeAmount}&ep={match.HtHdpPricing}|{match.Ep}";
         }
 
         public static string GetHtAwayUrl(this MatchDto match)
         {
-            return $"JRecPanel.aspx?b=away&oId={match.HtOddsid}&odds={match.HtAwayAmount}&ep={match.HtHdpPricing}|1";
+            return $"JRecPanel.aspx?b=away&oId={match.HtOddsid}&odds={match.HtAwayAmount}&ep={match.HtHdpPricing}|{match.Ep}";
         }
 
         public static string GetHtOverUrl(this MatchDto match)
