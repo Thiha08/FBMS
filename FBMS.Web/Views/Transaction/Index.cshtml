@@ -20,7 +20,13 @@
                 </div>
                 <div class="card-body">
                     <div class="toolbar text-right">
-                        <a class="btn btn-outline-success btn-create" asp-controller="Transaction" asp-action="Submit">
+                        <a class="btn btn-outline-primary btn-create" asp-controller="Transaction" asp-action="GetTodayTransactions">
+                            Get Today Transactions
+                        </a>
+                        <a class="btn btn-outline-secondary btn-create" asp-controller="Transaction" asp-action="GetAllTransactions">
+                            Get All Transactions
+                        </a>
+                        <a class="btn btn-danger btn-create" asp-controller="Transaction" asp-action="Submit">
                             Submit Transactions
                         </a>
                         <a class="btn btn-info btn-create" asp-controller="Transaction" asp-action="Crawl">
