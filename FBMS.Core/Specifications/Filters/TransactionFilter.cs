@@ -13,5 +13,11 @@ namespace FBMS.Core.Specifications.Filters
         public bool? IsSubmitted { get; set; }
 
         public bool? IsDischarged { get; set; }
+
+        public bool IsDateRangeFilter { get; set; }
+
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
     }
 }

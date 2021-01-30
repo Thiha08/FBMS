@@ -6,6 +6,7 @@ using FBMS.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,10 +27,24 @@ namespace FBMS.Web.Controllers
             _matchSchedulingService = matchSchedulingService;
         }
 
-        public async Task<IActionResult> Index([FromQuery] TransactionFilterDto filter)
+        public async Task<IActionResult> Index()
         {
-            filter ??= new TransactionFilterDto();
-            return View(await _transactionService.GetTransactions(filter));
+            return View(new List<TransactionDto>());
+        }
+
+        public async Task<IActionResult> GetTodayTransactions()
+        {
+            var filter = new TransactionFilterDto();
+            filter.IsDateRangeFilter = true;
+            filter.StartDate = DateTime.UtcNow.AddDays(-1);
+            filter.EndDate = DateTime.UtcNow.Date.AddDays(1);
+            return View(nameof(Index), await _transactionService.GetTransactions(filter));
+        }
+
+        public async Task<IActionResult> GetAllTransactions()
+        {
+            var filter = new TransactionFilterDto();
+            return View(nameof(Index), await _transactionService.GetTransactions(filter));
         }
 
         public async Task<IActionResult> Crawl()
