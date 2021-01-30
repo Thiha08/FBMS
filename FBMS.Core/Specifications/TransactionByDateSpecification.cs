@@ -10,8 +10,8 @@ namespace FBMS.Core.Specifications
     {
         public TransactionByDateSpecification()
         {
-            DateTime startDateTime = DateTime.Today.AddDays(-2); //Yesterday at 00:00:00
-            DateTime endDateTime = DateTime.Today.AddDays(1).AddTicks(-1); //Today at 23:59:59
+            DateTime startDateTime = DateTime.UtcNow.Date.AddDays(-1);
+            DateTime endDateTime = DateTime.UtcNow.Date.AddDays(1);
 
             Query.Where(item => item.DateCreated >= startDateTime && item.DateCreated <= endDateTime);
         }

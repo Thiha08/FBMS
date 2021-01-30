@@ -15,5 +15,7 @@
         string ClientListUrl { get; set; }
 
         string ClientTransactionsUrl { get; set; }
+
+        string TimeZone { get; set; }
     }
 }

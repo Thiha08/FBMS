@@ -8,7 +8,7 @@ namespace FBMS.Core.Specifications
     {
         public TransactionSpecification(TransactionFilter filter)
         {
-            Query.OrderBy(x => x.UserName);
+            Query.OrderByDescending(x => x.TransactionDate);
 
             if (filter.IsPagingEnabled)
                 Query.Skip(PaginationHelper.CalculateSkip(filter))

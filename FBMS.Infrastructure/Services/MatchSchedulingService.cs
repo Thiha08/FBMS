@@ -250,7 +250,7 @@ namespace FBMS.Infrastructure.Services
                         HtOverAmount = Convert.ToDecimal(entityList[52].ToString()),
                         HtUnderAmount = Convert.ToDecimal(entityList[53].ToString()),
 
-                        MatchDate = DateTime.ParseExact(entityList[63].ToString(), "yyyy-MM-dd HH:mm:ss", null),
+                        MatchDate = entityList[63].ToString().ToUtcTime("yyyy-MM-dd HH:mm:ss", _clientApiCrawlerSettings.TimeZone),
                         IsLive = scheduleSpecifier == "r"
                     };
                     matchList.Add(match);

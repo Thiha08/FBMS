@@ -95,7 +95,7 @@ namespace FBMS.Web.Controllers
                 }
 
                 // TO PREVENT LOGGING AGAIN AND AGAIN
-                transaction.SubmittedDate = DateTime.Now;
+                transaction.SubmittedDate = DateTime.UtcNow;
                 transaction.SubmittedPricing = transaction.Pricing;
                 transaction.IsSubmitted = true;
 
