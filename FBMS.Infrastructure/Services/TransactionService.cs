@@ -166,8 +166,8 @@ namespace FBMS.Infrastructure.Services
                     transaction.HomeTeam = item.HomeTeam;
                     transaction.AwayTeam = item.AwayTeam;
                     transaction.Pricing = item.Pricing?.Replace("@", "");
-                    string iString = item.TransactionDate.ReplaceFirst(" ", "/" + DateTime.Now.Year.ToString() + " ");
-                    transaction.TransactionDate = DateTime.ParseExact(iString, "dd/MM/yyyy h:mm:ss tt", null);
+                    string iString = item.TransactionDate.ReplaceFirst(" ", "/" + DateTime.UtcNow.Year.ToString() + " ");
+                    transaction.TransactionDate = iString.ToUtcTime("dd/MM/yyyy h:mm:ss tt", _hostApiCrawlerSettings.TimeZone);
                     transaction.TransactionType = GetTransactionType(item.TransactionType, item.HomeTeam, item.AwayTeam);
                     transaction.Amount = Convert.ToDecimal(item.Amount);
                     var convertedTransaction = member.TransactionTemplate.ApplyTransactionTemplate(transaction);
@@ -182,23 +182,23 @@ namespace FBMS.Infrastructure.Services
         {
             var transactionType = TransactionType.Parlay;
 
-            if (type == homeTeam)
+            if (type?.TrimAndUpper() == homeTeam?.TrimAndUpper())
             {
                 transactionType = TransactionType.Home;
             }
-            else if (type == awayTeam)
+            else if (type?.TrimAndUpper() == awayTeam?.TrimAndUpper())
             {
                 transactionType = TransactionType.Away;
             }
-            else if (type == TransactionType.Parlay.ToDescription())
+            else if (type?.TrimAndUpper() == TransactionType.Parlay.ToDescription().TrimAndUpper())
             {
                 transactionType = TransactionType.Parlay;
             }
-            else if (type == TransactionType.Over.ToDescription())
+            else if (type?.TrimAndUpper() == TransactionType.Over.ToDescription().TrimAndUpper())
             {
                 transactionType = TransactionType.Over;
             }
-            else if (type == TransactionType.Under.ToDescription())
+            else if (type?.TrimAndUpper() == TransactionType.Under.ToDescription().TrimAndUpper())
             {
                 transactionType = TransactionType.Under;
             }

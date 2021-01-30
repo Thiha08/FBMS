@@ -16,7 +16,7 @@ namespace FBMS.Core.Constants
         [Description("Away")]
         Away = 300,
 
-        [Description("OVER")]
+        [Description("Over")]
         Over = 400,
 
         [Description("Under")]

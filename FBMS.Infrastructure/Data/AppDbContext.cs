@@ -50,12 +50,12 @@ namespace FBMS.Infrastructure.Data
 
             foreach (var entityEntry in entries)
             {
-                entityEntry.Entity.DateUpdated = DateTime.Now;
+                entityEntry.Entity.DateUpdated = DateTime.UtcNow;
 
                 if (entityEntry.State == EntityState.Added)
                 {
                     entityEntry.Entity.Status = true;
-                    entityEntry.Entity.DateCreated = DateTime.Now;
+                    entityEntry.Entity.DateCreated = DateTime.UtcNow;
                 }
             }
 

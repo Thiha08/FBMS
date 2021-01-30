@@ -48,14 +48,14 @@ namespace FBMS.Core.Entities
         {
             IsSubmitted = true;
             SubmittedPricing = pricing;
-            SubmittedDate = DateTime.Now;
+            SubmittedDate = DateTime.UtcNow;
             Events.Add(new TransactionCompletedEvent(this, message));
         }
 
         public void MarkDischarge()
         {
             IsDischarged = true;
-            DischargedDate = DateTime.Now;
+            DischargedDate = DateTime.UtcNow;
             Events.Add(new TransactionDischargedEvent(this));
         }
     }

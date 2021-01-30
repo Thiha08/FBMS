@@ -88,9 +88,7 @@ namespace FBMS.Spider.Auth
                     {
                         var cacheExpiryOptions = new MemoryCacheEntryOptions
                         {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            Priority = CacheItemPriority.High,
-                            SlidingExpiration = TimeSpan.FromMinutes(10)
+                            Priority = CacheItemPriority.NeverRemove
                         };
                         memoryCache.Set(response.ResponseUri.Host, authResponse.Cookies, cacheExpiryOptions);
                     }

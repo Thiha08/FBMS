@@ -1,5 +1,6 @@
 ﻿
 @using FBMS.Core.Dtos;
+@using FBMS.Core.Extensions;
 
 @model IEnumerable<TransactionDto>
 
@@ -97,7 +98,7 @@
                                                 @Html.DisplayFor(modelItem => item.TransactionNumber)
                                             </td>
                                             <td>
-                                                @item.TransactionDate.ToString("dd-MM-yyyy HH:mm:ss")
+                                                @item.TransactionDate.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss")
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.League)
@@ -127,7 +128,7 @@
                                                 @Html.DisplayFor(modelItem => item.SubmittedAmount)
                                             </td>
                                             <td class="table-info">
-                                                @Html.DisplayFor(modelItem => item.SubmittedDate)
+                                                @item.SubmittedDate?.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss")
                                             </td>
                                             <td class="table-info">
                                                 @if (item.IsSubmitted)

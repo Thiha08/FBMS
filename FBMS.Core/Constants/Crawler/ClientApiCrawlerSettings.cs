@@ -15,5 +15,7 @@
         public string MatchScheduleUrl { get; set; }
 
         public string MatchDetailBaseUrl { get; set; }
+
+        public string TimeZone { get; set; }
     }
 }
