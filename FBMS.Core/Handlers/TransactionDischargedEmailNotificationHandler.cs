@@ -1,6 +1,7 @@
 ﻿using Ardalis.GuardClauses;
 using FBMS.Core.Constants.Email;
 using FBMS.Core.Events;
+using FBMS.Core.Extensions;
 using FBMS.Core.Mail;
 using MediatR;
 using MimeKit;
@@ -37,12 +38,14 @@ namespace FBMS.Core.Handlers
 
             emailTemplate.Replace("{{TRANSACTION_NUMBER}}", transaction.TransactionNumber);
             emailTemplate.Replace("{{LEAGUE}}", transaction.League);
+            emailTemplate.Replace("{{ACCOUNT}}", transaction.UserName);
+            emailTemplate.Replace("{{TRANSACTION_DATE}}", transaction.TransactionDate.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss"));
             emailTemplate.Replace("{{HOME_TEAM}}", transaction.HomeTeam);
             emailTemplate.Replace("{{AWAY_TEAM}}", transaction.AwayTeam);
             emailTemplate.Replace("{{PRICING}}", transaction.Pricing);
             emailTemplate.Replace("{{TYPE}}", transaction.TransactionType.ToString());
             emailTemplate.Replace("{{AMOUNT}}", transaction.Amount.ToString());
-            emailTemplate.Replace("{{DISCHARGED_DATE}}", transaction.DischargedDate?.ToString("dd-MM-yyyy HH:mm:ss"));
+            emailTemplate.Replace("{{DISCHARGED_DATE}}", transaction.DischargedDate?.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss"));
             emailTemplate.Replace("{{MESSAGE}}", "Cannot find related Match Detail!");
 
             var message = new MimeMessage();
