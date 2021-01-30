@@ -40,12 +40,15 @@ namespace FBMS.Core.Handlers
             emailTemplate.Replace("{{LEAGUE}}", transaction.League);
             emailTemplate.Replace("{{ACCOUNT}}", transaction.UserName);
             emailTemplate.Replace("{{TRANSACTION_DATE}}", transaction.TransactionDate.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss"));
+            emailTemplate.Replace("{{COMPLETED_DATE}}", transaction.SubmittedDate?.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss"));
             emailTemplate.Replace("{{HOME_TEAM}}", transaction.HomeTeam);
             emailTemplate.Replace("{{AWAY_TEAM}}", transaction.AwayTeam);
-            emailTemplate.Replace("{{PRICING}}", transaction.SubmittedPricing);
-            emailTemplate.Replace("{{TYPE}}", transaction.SubmittedTransactionType.ToString());
-            emailTemplate.Replace("{{AMOUNT}}", transaction.SubmittedAmount.ToString());
-            emailTemplate.Replace("{{COMPLETED_DATE}}", transaction.SubmittedDate?.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss"));
+            emailTemplate.Replace("{{PRICING}}", transaction.Pricing);
+            emailTemplate.Replace("{{COMPLETED_PRICING}}", transaction.SubmittedPricing);
+            emailTemplate.Replace("{{TYPE}}", transaction.TransactionType.ToString());
+            emailTemplate.Replace("{{COMPLETED_TYPE}}", transaction.SubmittedTransactionType.ToString());
+            emailTemplate.Replace("{{AMOUNT}}", transaction.Amount.ToString());
+            emailTemplate.Replace("{{COMPLETED_AMOUNT}}", transaction.SubmittedAmount.ToString());
             emailTemplate.Replace("{{MESSAGE}}", domainEvent.Message);
 
             var message = new MimeMessage();

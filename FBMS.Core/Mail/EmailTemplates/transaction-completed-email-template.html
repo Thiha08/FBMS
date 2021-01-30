@@ -293,15 +293,6 @@
                 <td style="padding:0px 120px 0px 120px;">
                     <span style="font-size:10.5pt;font-weight:bold;
                             line-height:13.5pt;mso-line-height-rule:exactly;color:#000000">
-                        LEAGUE : {{LEAGUE}}
-                    </span>
-                </td>
-            </tr>
-            <tr style="height:24px;"></tr>
-            <tr>
-                <td style="padding:0px 120px 0px 120px;">
-                    <span style="font-size:10.5pt;font-weight:bold;
-                            line-height:13.5pt;mso-line-height-rule:exactly;color:#000000">
                         ACCOUNT : {{ACCOUNT}}
                     </span>
                 </td>
@@ -312,6 +303,24 @@
                     <span style="font-size:10.5pt;font-weight:bold;
                             line-height:13.5pt;mso-line-height-rule:exactly;color:#000000">
                         TRANSACTION DATE : {{TRANSACTION_DATE}}
+                    </span>
+                </td>
+            </tr>
+            <tr style="height:24px;"></tr>
+            <tr>
+                <td style="padding:0px 120px 0px 120px;">
+                    <span style="font-size:10.5pt;font-weight:bold;
+                            line-height:13.5pt;mso-line-height-rule:exactly;color:#9b0000;">
+                        COMPLETED DATE : {{COMPLETED_DATE}}
+                    </span>
+                </td>
+            </tr>
+            <tr style="height:24px;"></tr>
+            <tr>
+                <td style="padding:0px 120px 0px 120px;">
+                    <span style="font-size:10.5pt;font-weight:bold;
+                            line-height:13.5pt;mso-line-height-rule:exactly;color:#000000">
+                        LEAGUE : {{LEAGUE}}
                     </span>
                 </td>
             </tr>
@@ -337,17 +346,32 @@
                     <table style="float:left;">
                         <tr style="color: #5D4037;font-size: 7.5pt;font-weight: bold;margin-bottom: 8px;">
                             <td style="width:350px;padding:4px 0px 4px 0px;">PRICING</td>
-                            <td style="width:350px;padding:4px 0px 4px 0px;">TYPE</td>
+                            <td style="width:350px;padding:4px 0px 4px 0px;">COMPLETED PRICING</td>
                         </tr>
                         <tr style="color: #333333;font-size: 10.5pt;font-weight: bold;margin-bottom: 8px;">
                             <td style="width:350px;padding:4px 0px 4px 0px;">{{PRICING}}</td>
-                            <td style="width:350px;padding:4px 0px 4px 0px;">{{TYPE}}</td>
+                            <td style="width:350px;padding:4px 0px 4px 0px;color:#9b0000;">{{COMPLETED_PRICING}}</td>
                         </tr>
 
                     </table>
                 </td>
             </tr>
             <tr style="height:24px;"></tr>
+            <tr>
+                <td style="padding:0px 120px 0px 120px;">
+                    <table style="float:left;">
+                        <tr style="color: #5D4037;font-size: 7.5pt;font-weight: bold;margin-bottom: 8px;">
+                            <td style="width:350px;padding:4px 0px 4px 0px;">TYPE</td>
+                            <td style="width:350px;padding:4px 0px 4px 0px;">COMPLETED TYPE</td>
+                        </tr>
+                        <tr style="color: #333333;font-size: 10.5pt;font-weight: bold;margin-bottom: 8px;">
+                            <td style="width:350px;padding:4px 0px 4px 0px;">{{TYPE}}</td>
+                            <td style="width:350px;padding:4px 0px 4px 0px;color:#9b0000;">{{COMPLETED_TYPE}}</td>
+                        </tr>
+
+                    </table>
+                </td>
+            </tr>
             <!--<tr>
                 <td style="padding:0px 120px 0px 120px;">
                     <table style="float:left;">
@@ -365,11 +389,11 @@
                     <table style="float:left;">
                         <tr style="color: #5D4037;font-size: 7.5pt;font-weight: bold;margin-bottom: 8px;">
                             <td style="width:350px;padding:4px 0px 4px 0px;">AMOUNT</td>
-                            <td style="width:350px;padding:4px 0px 4px 0px;">COMPLETED DATE</td>
+                            <td style="width:350px;padding:4px 0px 4px 0px;">COMPLETED AMOUNT</td>
                         </tr>
                         <tr style="color: #333333;font-size: 10.5pt;font-weight: bold;margin-bottom: 8px;">
                             <td style="width:350px;padding:4px 0px 4px 0px;">{{AMOUNT}}</td>
-                            <td style="width:350px;padding:4px 0px 4px 0px;">{{COMPLETED_DATE}}</td>
+                            <td style="width:350px;padding:4px 0px 4px 0px;color:#9b0000;">{{COMPLETED_AMOUNT}}</td>
                         </tr>
                     </table>
                 </td>
@@ -380,7 +404,6 @@
             <tr>
                 <td style="  text-transform: capitalize;color: #333333; font-size: 10.5pt;font-weight: bold;padding:0px 120px 0px 120px;">{{AMOUNT}}</td>
             </tr>-->
-
             <tr style="height:72px;"></tr>
             <tr>
                 <td style="background-color:#424242;padding:24px 0px 24px 0px;text-align:center;">
