@@ -119,7 +119,8 @@ namespace FBMS.Infrastructure.HangfireServices
                         "Match Detail:" + Environment.NewLine +
                         transaction.GetInfo());
 
-                    matchBet.Stack = 0; // 0 for now
+                    var roundValue = Math.Round(transaction.SubmittedAmount, 0, MidpointRounding.AwayFromZero); // 0 for now
+                    matchBet.Stack = Convert.ToInt32(roundValue);
                     var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
 
                     _logger.LogWarning(response);
