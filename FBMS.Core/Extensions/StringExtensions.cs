@@ -11,11 +11,10 @@ namespace FBMS.Core.Extensions
             return value.Trim().ToUpper();
         }
 
-        //public static string SyncMatch(this string value)
-        //{
-        //    value = value.Replace()
-
-        //    return value.Trim().ToUpper();
-        //}
+        public static string ConcatSuffix(this string value, string suffix)
+        {
+            value = value + " " + suffix;
+            return value.TrimAndUpper();
+        }
     }
 }
