@@ -58,6 +58,12 @@ namespace FBMS.Infrastructure.Services
                 Cookies = authResponse.Cookies
             };
             var document = await _downloader.DownloadAsync(request);
+
+            if (document.Text.Contains(TransactionResponseStatus.NoBet, StringComparison.CurrentCultureIgnoreCase))
+            {
+                throw new Exception(TransactionResponseStatus.NoBet);
+            }
+
             return DeserializeMatchDetail(document.Text);
         }
 

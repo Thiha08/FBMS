@@ -83,6 +83,15 @@
                                     <th class="table-info">
                                         @Html.DisplayNameFor(model => model.IsSubmitted)
                                     </th>
+                                    <th class="table-danger">
+                                        @Html.DisplayNameFor(model => model.IsDischarged)
+                                    </th>
+                                    <th class="table-danger">
+                                        @Html.DisplayNameFor(model => model.DischargedDate)
+                                    </th>
+                                    <th class="table-danger">
+                                        @Html.DisplayNameFor(model => model.DischargedCount)
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -146,13 +155,29 @@
                                                     <span></span>
                                                 }
                                             </td>
+                                            <td class="table-danger">
+                                                @if (item.IsDischarged)
+                                                {
+                                                    <span>Discharged</span>
+                                                }
+                                                else
+                                                {
+                                                    <span></span>
+                                                }
+                                            </td>
+                                            <td class="table-danger">
+                                                @item.DischargedDate?.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss")
+                                            </td>
+                                            <td class="table-danger">
+                                                @Html.DisplayFor(modelItem => item.DischargedCount)
+                                            </td>
                                         </tr>
                                     }
                                 }
                                 else
                                 {
                                     <tr role="row">
-                                        <td colspan="16" class="text-center">
+                                        <td colspan="19" class="text-center">
                                             No data found.
                                         </td>
                                     </tr>

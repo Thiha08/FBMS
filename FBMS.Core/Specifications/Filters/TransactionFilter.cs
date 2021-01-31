@@ -14,6 +14,8 @@ namespace FBMS.Core.Specifications.Filters
 
         public bool? IsDischarged { get; set; }
 
+        public int? MaxDischargedCount { get; set; }
+
         public bool IsDateRangeFilter { get; set; }
 
         public DateTime? StartDate { get; set; }

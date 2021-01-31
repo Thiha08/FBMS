@@ -26,6 +26,9 @@ namespace FBMS.Core.Specifications
             if (filter.IsDischarged.HasValue)
                 Query.Where(x => x.IsDischarged == filter.IsDischarged);
 
+            if (filter.MaxDischargedCount.HasValue)
+                Query.Where(x => x.DischargedCount <= filter.MaxDischargedCount);
+
             if (filter.IsDateRangeFilter)
                 Query.Where(item => item.TransactionDate >= filter.StartDate && item.TransactionDate <= filter.EndDate);
         }

@@ -46,7 +46,7 @@ namespace FBMS.Core.Handlers
             emailTemplate.Replace("{{TYPE}}", transaction.TransactionType.ToString());
             emailTemplate.Replace("{{AMOUNT}}", transaction.Amount.ToString());
             emailTemplate.Replace("{{DISCHARGED_DATE}}", transaction.DischargedDate?.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss"));
-            emailTemplate.Replace("{{MESSAGE}}", "Cannot find related Match Detail!");
+            emailTemplate.Replace("{{MESSAGE}}", domainEvent.Message);
 
             var message = new MimeMessage();
             message.From.Add(MailboxAddress.Parse(_emailSettings.SenderEmail));

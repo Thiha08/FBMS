@@ -84,10 +84,10 @@ namespace FBMS.Infrastructure.Services
             await _repository.UpdateAsync(transaction);
         }
 
-        public async Task DischargeTransaction(int id)
+        public async Task DischargeTransaction(int id, string message)
         {
             var transaction = await _repository.GetByIdAsync<Transaction>(id);
-            transaction.MarkDischarge();
+            transaction.MarkDischarge(message);
             await _repository.UpdateAsync(transaction);
         }
 

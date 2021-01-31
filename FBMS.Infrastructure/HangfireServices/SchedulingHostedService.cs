@@ -1,4 +1,5 @@
-﻿using FBMS.Core.Constants.Hangfire;
+﻿using FBMS.Core.Constants;
+using FBMS.Core.Constants.Hangfire;
 using FBMS.Core.Dtos;
 using FBMS.Core.Dtos.Filters;
 using FBMS.Core.Extensions;
@@ -61,45 +62,47 @@ namespace FBMS.Infrastructure.HangfireServices
             var filter = new TransactionFilterDto
             {
                 IsSubmitted = false,
-                IsDischarged = false
+                MaxDischargedCount = CoreConstants.MaxDischargedCount
             };
 
             var activeTransactions = await _transactionService.GetTransactions(filter);
             if (activeTransactions.Count == 0) return;
 
+            activeTransactions = activeTransactions.OrderByDescending(x => x.DischargedCount)
+                                                   .ThenByDescending(x => x.TransactionDate)
+                                                   .ToList();
+
             var matchSchedule = await _matchSchedulingService.GetMatchSchedule();
+
             foreach (var transaction in activeTransactions)
             {
-                var selectedMatches = matchSchedule.Where(x =>
-                    (
-                        x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.TrimAndUpper() ||
-                        x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(n)") ||
-                        x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(R)") ||
-                        x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(V)") ||
-                        x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(Youth) (n)")
-                    )
-                    &&
-                    (
-                        x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.TrimAndUpper() ||
-                        x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(n)") ||
-                        x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(R)") ||
-                        x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(V)") ||
-                        x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(Youth) (n)")
-                    )
-                ).ToList();
-
-                var matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
-
-                if (string.IsNullOrWhiteSpace(matchUrl))
+                try
                 {
-                    _logger.LogWarning(
-                        "Cannot find related Match Detail!" + Environment.NewLine +
-                        transaction.GetInfo());
+                    var selectedMatches = matchSchedule.Where(x =>
+                        (
+                            x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.TrimAndUpper() ||
+                            x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(n)") ||
+                            x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(R)") ||
+                            x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(V)") ||
+                            x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(Youth) (n)")
+                        )
+                        &&
+                        (
+                            x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.TrimAndUpper() ||
+                            x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(n)") ||
+                            x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(R)") ||
+                            x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(V)") ||
+                            x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(Youth) (n)")
+                        )
+                    ).ToList();
 
-                    await _transactionService.DischargeTransaction(transaction.Id);
-                }
-                else
-                {
+                    var matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
+
+                    if (string.IsNullOrWhiteSpace(matchUrl))
+                    {
+                        throw new Exception(TransactionResponseStatus.MatchNotFound);
+                    }
+
                     _logger.LogWarning(
                         "Match Detail URL!" + Environment.NewLine +
                         matchUrl);
@@ -120,7 +123,27 @@ namespace FBMS.Infrastructure.HangfireServices
                     var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
 
                     _logger.LogWarning(response);
+
+                    if (response.Contains(TransactionResponseStatus.OddChanged, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        throw new Exception(TransactionResponseStatus.OddChanged);
+                    }
+                    else if(response.Contains(TransactionResponseStatus.OddUnavailable, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        throw new Exception(TransactionResponseStatus.OddUnavailable);
+                    }
+
                     await _transactionService.CompleteTransaction(transaction.Id, matchDetail.BetHdp, response);
+
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogWarning(
+                        "Discharge Transaction" + Environment.NewLine +
+                        transaction.GetInfo() + Environment.NewLine +
+                        exception.Message);
+
+                    await _transactionService.DischargeTransaction(transaction.Id, exception.Message);
                 }
             }
         }

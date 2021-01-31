@@ -52,5 +52,11 @@ namespace FBMS.Core.Dtos
 
         [Display(Name = "Status")]
         public bool IsSubmitted { get; set; }
+
+        public bool IsDischarged { get; set; }
+
+        public DateTime? DischargedDate { get; set; }
+
+        public int DischargedCount { get; set; }
     }
 }
