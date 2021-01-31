@@ -7,9 +7,12 @@ namespace FBMS.Core.Events
     {
         public Transaction DischargedTransaction { get; set; }
 
-        public TransactionDischargedEvent(Transaction dischargedTransaction)
+        public string Message { get; set; }
+
+        public TransactionDischargedEvent(Transaction dischargedTransaction, string message)
         {
             DischargedTransaction = dischargedTransaction;
+            Message = message;
         }
     }
 }

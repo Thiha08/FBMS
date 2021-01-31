@@ -18,7 +18,7 @@ namespace FBMS.Core.Interfaces
 
         Task CompleteTransaction(int id, string pricing, string message);
 
-        Task DischargeTransaction(int id);
+        Task DischargeTransaction(int id, string message);
 
         Task DeleteTransactions();
 

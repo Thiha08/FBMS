@@ -7,5 +7,7 @@ namespace FBMS.Core.Constants
     public static class CoreConstants
     {
         public const string SystemTimeZone = "Singapore Standard Time";
+
+        public const int MaxDischargedCount = 3;
     }
 }

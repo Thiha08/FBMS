@@ -42,6 +42,8 @@ namespace FBMS.Core.Entities
 
         public DateTime? DischargedDate { get; set; }
 
+        public int DischargedCount { get; set; }
+
         public int MemberId { get; set; }
 
         public void MarkComplete(string pricing, string message)
@@ -52,11 +54,12 @@ namespace FBMS.Core.Entities
             Events.Add(new TransactionCompletedEvent(this, message));
         }
 
-        public void MarkDischarge()
+        public void MarkDischarge(string message)
         {
             IsDischarged = true;
+            DischargedCount++;
             DischargedDate = DateTime.UtcNow;
-            Events.Add(new TransactionDischargedEvent(this));
+            Events.Add(new TransactionDischargedEvent(this, message));
         }
     }
 }
