@@ -70,7 +70,23 @@ namespace FBMS.Infrastructure.HangfireServices
             var matchSchedule = await _matchSchedulingService.GetMatchSchedule();
             foreach (var transaction in activeTransactions)
             {
-                var selectedMatches = matchSchedule.Where(x => x.HomeTeam == transaction.HomeTeam && x.AwayTeam == transaction.AwayTeam).ToList();
+                var selectedMatches = matchSchedule.Where(x =>
+                    (
+                        x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.TrimAndUpper() ||
+                        x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(n)") ||
+                        x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(R)") ||
+                        x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(V)") ||
+                        x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(Youth) (n)")
+                    )
+                    &&
+                    (
+                        x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.TrimAndUpper() ||
+                        x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(n)") ||
+                        x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(R)") ||
+                        x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(V)") ||
+                        x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(Youth) (n)")
+                    )
+                ).ToList();
 
                 var matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
 
@@ -84,6 +100,10 @@ namespace FBMS.Infrastructure.HangfireServices
                 }
                 else
                 {
+                    _logger.LogWarning(
+                        "Match Detail URL!" + Environment.NewLine +
+                        matchUrl);
+
                     var matchDetail = await _matchSchedulingService.GetMatchDetail(matchUrl);
 
                     var matchBet = new MatchBetDto
