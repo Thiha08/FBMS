@@ -136,13 +136,13 @@ namespace FBMS.Infrastructure.HangfireServices
                     {
                         throw new Exception(TransactionResponseStatus.OddUnavailable);
                     }
-                    else if (response.Contains(TransactionResponseStatus.StatusAccepted, StringComparison.CurrentCultureIgnoreCase))
+                    else if (response.Contains(TransactionResponseStatus.StatusWaiting, StringComparison.CurrentCultureIgnoreCase))
                     {
                         await _transactionService.CompleteTransaction(transaction.Id, matchDetail.BetHdp, response);
                     }
                     else if (response.Contains(TransactionResponseStatus.StatusAccepted, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        await _transactionService.CompleteTransaction(transaction.Id, matchDetail.BetHdp, TransactionResponseStatus.OddUnavailable);
+                        await _transactionService.CompleteTransaction(transaction.Id, matchDetail.BetHdp, response);
                     }
                     else
                     {
