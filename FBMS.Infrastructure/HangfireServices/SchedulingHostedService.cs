@@ -79,6 +79,8 @@ namespace FBMS.Infrastructure.HangfireServices
                 try
                 {
                     var selectedMatches = matchSchedule.Where(x =>
+                        x.League.TrimAndUpper() == transaction.League.TrimAndUpper()
+                        &&
                         (
                             x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.TrimAndUpper() ||
                             x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(n)") ||
@@ -119,7 +121,7 @@ namespace FBMS.Infrastructure.HangfireServices
                         "Match Detail:" + Environment.NewLine +
                         transaction.GetInfo());
 
-                    transaction.SubmittedAmount = Math.Round(transaction.SubmittedAmount, 0, MidpointRounding.AwayFromZero); 
+                    transaction.SubmittedAmount = Math.Round(transaction.SubmittedAmount, 0, MidpointRounding.AwayFromZero);
                     //matchBet.Stack = Convert.ToInt32(transaction.SubmittedAmount);
                     matchBet.Stack = 1; // 0 for now
                     var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
@@ -130,11 +132,11 @@ namespace FBMS.Infrastructure.HangfireServices
                     {
                         throw new Exception(TransactionResponseStatus.OddChanged);
                     }
-                    else if(response.Contains(TransactionResponseStatus.OddUnavailable, StringComparison.CurrentCultureIgnoreCase))
+                    else if (response.Contains(TransactionResponseStatus.OddUnavailable, StringComparison.CurrentCultureIgnoreCase))
                     {
                         throw new Exception(TransactionResponseStatus.OddUnavailable);
                     }
-                    else if(response.Contains(TransactionResponseStatus.StatusAccepted, StringComparison.CurrentCultureIgnoreCase))
+                    else if (response.Contains(TransactionResponseStatus.StatusAccepted, StringComparison.CurrentCultureIgnoreCase))
                     {
                         await _transactionService.CompleteTransaction(transaction.Id, matchDetail.BetHdp, response);
                     }
