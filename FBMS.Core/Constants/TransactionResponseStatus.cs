@@ -16,6 +16,6 @@ namespace FBMS.Core.Constants
 
         public static string StatusAccepted { get { return "BET SUCCESSFULLY"; } }
 
-        public static string StatusWaiting { get { return "LIVE BETTING"; } }
+        public static string StatusWaiting { get { return "WAITING"; } }
     }
 }
