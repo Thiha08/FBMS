@@ -39,13 +39,13 @@ namespace FBMS.Core.Handlers
             emailTemplate.Replace("{{TRANSACTION_NUMBER}}", transaction.TransactionNumber);
             emailTemplate.Replace("{{LEAGUE}}", transaction.League);
             emailTemplate.Replace("{{ACCOUNT}}", transaction.UserName);
-            emailTemplate.Replace("{{TRANSACTION_DATE}}", transaction.TransactionDate.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss"));
+            emailTemplate.Replace("{{TRANSACTION_DATE}}", transaction.TransactionDate.ToTimeZoneTimeString("dd-MM-yyyy HH:mm:ss"));
             emailTemplate.Replace("{{HOME_TEAM}}", transaction.HomeTeam);
             emailTemplate.Replace("{{AWAY_TEAM}}", transaction.AwayTeam);
             emailTemplate.Replace("{{PRICING}}", transaction.Pricing);
             emailTemplate.Replace("{{TYPE}}", transaction.TransactionType.ToString());
             emailTemplate.Replace("{{AMOUNT}}", transaction.Amount.ToString());
-            emailTemplate.Replace("{{DISCHARGED_DATE}}", transaction.DischargedDate?.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss"));
+            emailTemplate.Replace("{{DISCHARGED_DATE}}", transaction.DischargedDate?.ToTimeZoneTimeString("dd-MM-yyyy HH:mm:ss"));
             emailTemplate.Replace("{{MESSAGE}}", domainEvent.Message);
 
             var message = new MimeMessage();
