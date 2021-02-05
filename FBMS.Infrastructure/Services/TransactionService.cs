@@ -133,8 +133,8 @@ namespace FBMS.Infrastructure.Services
                 filterCto.EndDate = filterCto.EndDate.AddDays(-1);
             }
 
-            var startDateUTC = filterCto.StartDate.ToString("MM/dd/yyyy");
-            var endDateUTC = filterCto.EndDate.ToString("MM/dd/yyyy");
+            var startDateUTC = filterCto.StartDate.ToTimeZoneTimeString("MM/dd/yyyy");
+            var endDateUTC = filterCto.EndDate.ToTimeZoneTimeString("MM/dd/yyyy");
 
             var members = await _repository.ListAsync(new MemberWithTransactionTemplateSpecification());
 
