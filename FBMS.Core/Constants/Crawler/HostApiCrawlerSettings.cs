@@ -17,5 +17,7 @@
         public string ClientTransactionsUrl { get; set; }
 
         public string TimeZone { get; set; }
+
+        public int TransitionHour { get; set; }
     }
 }

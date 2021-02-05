@@ -124,8 +124,18 @@ namespace FBMS.Infrastructure.Services
 
         public async Task CrawlTransactions(TransactionFilterCto filterCto)
         {
+            var timeZoneTime = DateTime.UtcNow.ToTimeZoneTime();
+            var transitionTime = new DateTime(timeZoneTime.Year, timeZoneTime.Month, timeZoneTime.Day, _hostApiCrawlerSettings.TransitionHour, 0, 0);
+            var transitionResult = DateTime.Compare(timeZoneTime, transitionTime);
+            if (transitionResult < 0)
+            {
+                filterCto.StartDate = filterCto.StartDate.AddDays(-1);
+                filterCto.EndDate = filterCto.EndDate.AddDays(-1);
+            }
+
             var startDateUTC = filterCto.StartDate.ToString("MM/dd/yyyy");
             var endDateUTC = filterCto.EndDate.ToString("MM/dd/yyyy");
+
             var members = await _repository.ListAsync(new MemberWithTransactionTemplateSpecification());
 
             if (filterCto.MemberIds.Any())
