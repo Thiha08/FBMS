@@ -119,6 +119,30 @@ namespace FBMS.Infrastructure.Services
             return Task.FromResult(matchUrl);
         }
 
+        public Task<string> GetMatchTransactionMmUrl(TransactionType transactionType, MatchDto match)
+        {
+            var matchUrl = "";
+
+            if (transactionType == TransactionType.Home)
+            {
+                matchUrl = match?.GetMmHomeUrl();
+            }
+            else if (transactionType == TransactionType.Away)
+            {
+                matchUrl = match?.GetMmAwayUrl();
+            }
+            else if (transactionType == TransactionType.Over)
+            {
+                matchUrl = match?.GetMmOverUrl();
+            }
+            else if (transactionType == TransactionType.Under)
+            {
+                matchUrl = match?.GetMmUnderUrl();
+            }
+
+            return Task.FromResult(matchUrl);
+        }
+
         private async Task<AuthResponse> GetClientApiAuthentication()
         {
             var authResponse = await _crawlerAuthorization.IsSignedInAsync(_clientApiCrawlerSettings.Url, CacheKeys.SodeAuthCookies);

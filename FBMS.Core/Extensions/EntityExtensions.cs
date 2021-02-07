@@ -81,6 +81,26 @@ namespace FBMS.Core.Extensions
             return $"JRecPanel.aspx?b=under&oId={match.Oddsid}&odds={match.UnderAmount}&ep={match.OuPricing}";
         }
 
+        public static string GetMmHomeUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=mmhome&oId={match.Oddsid}&odds={match.MmHomeAmount}";
+        }
+
+        public static string GetMmAwayUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=mmaway&oId={match.Oddsid}&odds={match.MmAwayAmount}";
+        }
+
+        public static string GetMmOverUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=mmover&oId={match.Oddsid}&odds={match.MmOverAmount}";
+        }
+
+        public static string GetMmUnderUrl(this MatchDto match)
+        {
+            return $"JRecPanel.aspx?b=mmunder&oId={match.Oddsid}&odds={match.MmUnderAmount}";
+        }
+
         public static string GetHtHomeUrl(this MatchDto match)
         {
             return $"JRecPanel.aspx?b=home&oId={match.HtOddsid}&odds={match.HtHomeAmount}&ep={match.HtHdpPricing}|{match.Ep}";
@@ -114,7 +134,8 @@ namespace FBMS.Core.Extensions
                 $"Transaction Date : {transaction.TransactionDate:dd-MM-yyyy HH:mm:ss}" + Environment.NewLine +
                 $"Match : {transaction.HomeTeam} Vs {transaction.AwayTeam}" + Environment.NewLine +
                 $"Type : {transaction.TransactionType.ToDescription()}" + Environment.NewLine +
-                $"Price : {transaction.Pricing}" + Environment.NewLine;
+                $"Price : {transaction.Pricing}" + Environment.NewLine +
+                $"Is MM Pricing : {(transaction.IsMmPricing ? "YES" : "NO")}" + Environment.NewLine;
         }
 
         public static string GetInfo(this MatchDto match)
@@ -123,18 +144,28 @@ namespace FBMS.Core.Extensions
                 $"Match : {match.HomeTeam} Vs {match.AwayTeam}" + Environment.NewLine +
                 $"Match Date : {match.MatchDate:dd-MM-yyyy HH:mm:ss}" + Environment.NewLine +
                 $"Is Live : {(match.IsLive ? "YES" : "NO")}" + Environment.NewLine +
+                $"Is Mm : {(match.IsMm ? "YES" : "NO")}" + Environment.NewLine + Environment.NewLine +
                 $"HdpPricing : {match.HdpPricing}" + Environment.NewLine +
                 $"HomeAmount : {match.HomeAmount}" + Environment.NewLine +
                 $"AwayAmount : {match.AwayAmount}" + Environment.NewLine +
                 $"OuPricing : {match.OuPricing}" + Environment.NewLine +
                 $"OverAmount : {match.OverAmount}" + Environment.NewLine +
-                $"UnderAmount : {match.UnderAmount}" + Environment.NewLine +
+                $"UnderAmount : {match.UnderAmount}" + Environment.NewLine + Environment.NewLine +
                 $"HtHdpPricing : {match.HtHdpPricing}" + Environment.NewLine +
                 $"HtHomeAmount : {match.HtHomeAmount}" + Environment.NewLine +
                 $"HtAwayAmount : {match.HtAwayAmount}" + Environment.NewLine +
                 $"HtOuPricing : {match.HtOverAmount}" + Environment.NewLine +
                 $"HtOverAmount : {match.HtOverAmount}" + Environment.NewLine +
-                $"HtUnderAmount : {match.HtUnderAmount}" + Environment.NewLine;
+                $"HtUnderAmount : {match.HtUnderAmount}" + Environment.NewLine + Environment.NewLine +
+                $"MmHdpPricingPrefix : {match.MmHdpPricingPrefix}" + Environment.NewLine +
+                $"MmHdpPricing : {match.MmHdpPricing}" + Environment.NewLine +
+                $"MmHdpPricingSuffix : {(match.MmHdpPricingSuffix == 0 ? "A" : "H")}" + Environment.NewLine +
+                $"MmHomeAmount : {match.MmHomeAmount}" + Environment.NewLine +
+                $"MmAwayAmount : {match.MmAwayAmount}" + Environment.NewLine + Environment.NewLine +
+                $"MmOuPricingPrefix : {match.MmOuPricingPrefix}" + Environment.NewLine +
+                $"MmOuPricing : {match.MmOuPricing}" + Environment.NewLine +
+                $"MmOverAmount : {match.MmOverAmount}" + Environment.NewLine +
+                $"MmUnderAmount : {match.MmUnderAmount}" + Environment.NewLine;
         }
 
         public static string GetInfo(this List<MatchDto> matches)

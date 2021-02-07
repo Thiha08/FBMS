@@ -104,7 +104,17 @@ namespace FBMS.Infrastructure.HangfireServices
                         "Selected Matches" + Environment.NewLine +
                         selectedMatches.GetInfo());
 
-                    var matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
+                    var matchUrl = "";
+
+                    if (transaction.IsMmPricing)
+                    {
+                        var mmMatch = selectedMatches.FirstOrDefault(x => x.IsMm);
+                        matchUrl = await _matchSchedulingService.GetMatchTransactionMmUrl(transaction.SubmittedTransactionType, mmMatch);
+                    }
+                    else
+                    {
+                        matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
+                    }
 
                     if (string.IsNullOrWhiteSpace(matchUrl))
                     {
