@@ -257,8 +257,24 @@ namespace FBMS.Infrastructure.Services
                         HtUnderAmount = Convert.ToDecimal(entityList[53].ToString()),
 
                         MatchDate = entityList[63].ToString().ToUtcTime("yyyy-MM-dd HH:mm:ss", _clientApiCrawlerSettings.TimeZone),
+                        IsMm = Convert.ToInt64(entityList[69].ToString()) > 0,
                         IsLive = scheduleSpecifier == "r"
                     };
+
+                    if (match.IsMm)
+                    {
+                        match.MmHdpPricingSuffix = Convert.ToInt32(entityList[70].ToString());
+                        match.MmHdpPricingPrefix = Convert.ToInt32(entityList[72].ToString());
+                        match.MmHomeAmount = Convert.ToDecimal(entityList[73].ToString());
+                        match.MmAwayAmount = Convert.ToDecimal(entityList[73].ToString());
+                        match.MmHdpPricing = Convert.ToInt32(entityList[74].ToString());
+
+                        match.MmOuPricingPrefix = Convert.ToInt32(entityList[75].ToString());
+                        match.MmOverAmount = Convert.ToDecimal(entityList[76].ToString());
+                        match.MmUnderAmount = Convert.ToDecimal(entityList[76].ToString());
+                        match.MmOuPricing = Convert.ToInt32(entityList[77].ToString());
+                    }
+
                     matchList.Add(match);
                     index++;
                 }
