@@ -113,7 +113,7 @@
                                                 @Html.DisplayFor(modelItem => item.TransactionNumber)
                                             </td>
                                             <td>
-                                                @item.TransactionDate.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss")
+                                                @item.TransactionDate.ToTimeZoneTimeString("dd-MM-yyyy HH:mm:ss")
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.League)
@@ -143,7 +143,7 @@
                                                 @Html.DisplayFor(modelItem => item.SubmittedAmount)
                                             </td>
                                             <td class="table-info">
-                                                @item.SubmittedDate?.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss")
+                                                @item.SubmittedDate?.ToTimeZoneTimeString("dd-MM-yyyy HH:mm:ss")
                                             </td>
                                             <td class="table-info">
                                                 @if (item.IsSubmitted)
@@ -166,7 +166,7 @@
                                                 }
                                             </td>
                                             <td class="table-danger">
-                                                @item.DischargedDate?.ToTimeZoneTime("dd-MM-yyyy HH:mm:ss")
+                                                @item.DischargedDate?.ToTimeZoneTimeString("dd-MM-yyyy HH:mm:ss")
                                             </td>
                                             <td class="table-danger">
                                                 @Html.DisplayFor(modelItem => item.DischargedCount)
