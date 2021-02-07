@@ -22,6 +22,7 @@ namespace FBMS.Core.Dtos
 
         public DateTime MatchDate { get; set; }
 
+
         public decimal HdpPricing { get; set; }
 
         public decimal OuPricing { get; set; }
@@ -33,6 +34,7 @@ namespace FBMS.Core.Dtos
         public decimal OverAmount { get; set; }
 
         public decimal UnderAmount { get; set; }
+
 
         public long HtOddsid { get; set; }
 
@@ -47,6 +49,27 @@ namespace FBMS.Core.Dtos
         public decimal HtOverAmount { get; set; }
 
         public decimal HtUnderAmount { get; set; }
+
+
+        public int MmHdpPricingPrefix { get; set; }
+
+        public int MmHdpPricing { get; set; }
+
+        public int MmHdpPricingSuffix { get; set; } // 0 - A, 1 - H
+
+        public decimal MmHomeAmount { get; set; }
+
+        public decimal MmAwayAmount { get; set; }
+
+        public int MmOuPricingPrefix { get; set; }
+
+        public int MmOuPricing { get; set; }
+
+        public decimal MmOverAmount { get; set; }
+
+        public decimal MmUnderAmount { get; set; }
+
+        public bool IsMm { get; set; }
 
         public bool IsLive { get; set; }
     }

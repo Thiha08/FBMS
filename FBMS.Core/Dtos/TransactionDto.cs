@@ -58,5 +58,7 @@ namespace FBMS.Core.Dtos
         public DateTime? DischargedDate { get; set; }
 
         public int DischargedCount { get; set; }
+
+        public bool IsMmPricing => TransactionNumber.Contains("MM");
     }
 }
