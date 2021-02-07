@@ -112,7 +112,36 @@ namespace FBMS.Core.Extensions
                 $"Account : {transaction.UserName}" + Environment.NewLine +
                 $"Transaction Number : {transaction.TransactionNumber}" + Environment.NewLine +
                 $"Transaction Date : {transaction.TransactionDate:dd-MM-yyyy HH:mm:ss}" + Environment.NewLine +
-                $"Match : {transaction.HomeTeam} Vs {transaction.AwayTeam}";
+                $"Match : {transaction.HomeTeam} Vs {transaction.AwayTeam}" + Environment.NewLine +
+                $"Type : {transaction.TransactionType.ToDescription()}" + Environment.NewLine +
+                $"Price : {transaction.Pricing}" + Environment.NewLine;
+        }
+
+        public static string GetInfo(this MatchDto match)
+        {
+            return
+                $"Match : {match.HomeTeam} Vs {match.AwayTeam}" + Environment.NewLine +
+                $"Match Date : {match.MatchDate:dd-MM-yyyy HH:mm:ss}" + Environment.NewLine +
+                $"Is Live : {(match.IsLive ? "YES" : "NO")}" + Environment.NewLine +
+                $"HdpPricing : {match.HdpPricing}" + Environment.NewLine +
+                $"HomeAmount : {match.HomeAmount}" + Environment.NewLine +
+                $"AwayAmount : {match.AwayAmount}" + Environment.NewLine +
+                $"OuPricing : {match.OuPricing}" + Environment.NewLine +
+                $"OverAmount : {match.OverAmount}" + Environment.NewLine +
+                $"UnderAmount : {match.UnderAmount}" + Environment.NewLine +
+                $"HtHdpPricing : {match.HtHdpPricing}" + Environment.NewLine +
+                $"HtHomeAmount : {match.HtHomeAmount}" + Environment.NewLine +
+                $"HtAwayAmount : {match.HtAwayAmount}" + Environment.NewLine +
+                $"HtOuPricing : {match.HtOverAmount}" + Environment.NewLine +
+                $"HtOverAmount : {match.HtOverAmount}" + Environment.NewLine +
+                $"HtUnderAmount : {match.HtUnderAmount}" + Environment.NewLine;
+        }
+
+        public static string GetInfo(this List<MatchDto> matches)
+        {
+            var info = "";
+            matches.ForEach(x => info += (x.GetInfo() + Environment.NewLine));
+            return info;
         }
     }
 }

@@ -98,6 +98,12 @@ namespace FBMS.Infrastructure.HangfireServices
                         )
                     ).ToList();
 
+                    _logger.LogWarning(
+                        "Match Detail:" + Environment.NewLine +
+                        transaction.GetInfo() + Environment.NewLine +
+                        "Selected Matches" + Environment.NewLine +
+                        selectedMatches.GetInfo());
+
                     var matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
 
                     if (string.IsNullOrWhiteSpace(matchUrl))
@@ -106,6 +112,8 @@ namespace FBMS.Infrastructure.HangfireServices
                     }
 
                     _logger.LogWarning(
+                        "Match Detail:" + Environment.NewLine +
+                        transaction.GetInfo() + Environment.NewLine +
                         "Match Detail URL!" + Environment.NewLine +
                         matchUrl);
 
@@ -116,10 +124,6 @@ namespace FBMS.Infrastructure.HangfireServices
                         BetUrl = matchDetail.BetUrl,
                         Stack = (int)transaction.SubmittedAmount
                     };
-
-                    _logger.LogWarning(
-                        "Match Detail:" + Environment.NewLine +
-                        transaction.GetInfo());
 
                     transaction.SubmittedAmount = Math.Round(transaction.SubmittedAmount, 0, MidpointRounding.AwayFromZero);
                     //matchBet.Stack = Convert.ToInt32(transaction.SubmittedAmount);

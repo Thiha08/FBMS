@@ -277,8 +277,11 @@ namespace FBMS.Infrastructure.Services
         {
             try
             {
-                var matchDetail = JsonConvert.DeserializeObject<MatchDetailDto>(detailJson);
-                return matchDetail;
+                _logger.LogWarning(
+                  "Match Detail Json:" + Environment.NewLine +
+                  detailJson);
+
+                return JsonConvert.DeserializeObject<MatchDetailDto>(detailJson);
             }
             catch (Exception exception)
             {
