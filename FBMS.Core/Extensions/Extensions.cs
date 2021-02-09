@@ -55,11 +55,11 @@ namespace FBMS.Core.Extensions
             {
                 value = "0.25";
             }
-            else if(value == "0.5-1")
+            else if (value == "0.5-1")
             {
                 value = "0.75";
             }
-            else if(value == "1-1.5")
+            else if (value == "1-1.5")
             {
                 value = "1.25";
             }
@@ -87,11 +87,56 @@ namespace FBMS.Core.Extensions
             {
                 value = "4.25";
             }
+            else if (value == "4.5-5")
+            {
+                value = "4.75";
+            }
+            else if (value == "5-5.5")
+            {
+                value = "5.25";
+            }
+            else if (value == "5.5-6")
+            {
+                value = "5.75";
+            }
+            else if (value == "6-6.5")
+            {
+                value = "6.25";
+            }
+            else if (value == "6.5-7")
+            {
+                value = "6.75";
+            }
+            else if (value == "7-7.5")
+            {
+                value = "7.25";
+            }
+            else if (value == "7.5-8")
+            {
+                value = "7.75";
+            }
+            else if (value == "8-8.5")
+            {
+                value = "8.25";
+            }
+            else if (value == "8.5-9")
+            {
+                value = "8.75";
+            }
+
+            else if (value == "9-9.5")
+            {
+                value = "9.25";
+            }
+            else if (value == "9.5-10")
+            {
+                value = "9.75";
+            }
 
             decimal convertedValue = Convert.ToDecimal(value);
             return Math.Abs(convertedValue);
         }
     }
 
-    
+
 }
