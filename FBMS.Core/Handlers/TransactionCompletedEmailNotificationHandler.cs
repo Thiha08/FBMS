@@ -39,8 +39,8 @@ namespace FBMS.Core.Handlers
             emailTemplate.Replace("{{TRANSACTION_NUMBER}}", transaction.TransactionNumber);
             emailTemplate.Replace("{{LEAGUE}}", transaction.League);
             emailTemplate.Replace("{{ACCOUNT}}", transaction.UserName);
-            emailTemplate.Replace("{{TRANSACTION_DATE}}", transaction.TransactionDate.ToTimeZoneTimeString("dd-MM-yyyy HH:mm:ss"));
-            emailTemplate.Replace("{{COMPLETED_DATE}}", transaction.SubmittedDate?.ToTimeZoneTimeString("dd-MM-yyyy HH:mm:ss"));
+            emailTemplate.Replace("{{TRANSACTION_DATE}}", transaction.TransactionDate.ToTimeZoneTimeString("yyyy-MM-dd HH:mm:ss"));
+            emailTemplate.Replace("{{COMPLETED_DATE}}", transaction.SubmittedDate?.ToTimeZoneTimeString("yyyy-MM-dd HH:mm:ss"));
             emailTemplate.Replace("{{HOME_TEAM}}", transaction.HomeTeam);
             emailTemplate.Replace("{{AWAY_TEAM}}", transaction.AwayTeam);
             emailTemplate.Replace("{{PRICING}}", transaction.Pricing);
