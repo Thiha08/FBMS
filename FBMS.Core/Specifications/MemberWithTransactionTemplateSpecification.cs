@@ -8,14 +8,16 @@ namespace FBMS.Core.Specifications
 {
     public class MemberWithTransactionTemplateSpecification : Specification<Member>
     {
-        public MemberWithTransactionTemplateSpecification(int id = 0)
+        public MemberWithTransactionTemplateSpecification(int? id, bool? status)
         {
             if (id > 0)
                 Query.Where(x => x.Id == id);
 
-            Query.Where(x => x.Status)
-                .Include(x => x.TransactionTemplate)
-                    .ThenInclude(x => x.TemplateItems);
+            if (status.HasValue)
+                Query.Where(x => x.Status == status);
+
+            Query.Include(x => x.TransactionTemplate)
+                 .ThenInclude(x => x.TemplateItems);
         }
     }
 }

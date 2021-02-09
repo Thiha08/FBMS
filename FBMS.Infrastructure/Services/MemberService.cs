@@ -66,8 +66,14 @@ namespace FBMS.Infrastructure.Services
 
         public async Task<MemberTransactionTemplateDto> GetMemberWithTransactionTemplate(int memberId)
         {
-            var member = await _repository.GetBySpecificationAsync(new MemberWithTransactionTemplateSpecification(memberId));
+            var member = await _repository.GetBySpecificationAsync(new MemberWithTransactionTemplateSpecification(id: memberId, status: null));
             Guard.Against.Null(member, nameof(member));
+
+            if (member.TransactionTemplate == null)
+            {
+                var transactionTemplate = new TransactionTemplate();
+                member.TransactionTemplate = transactionTemplate.GetDefaultTransactionTemplate();
+            }
             var output = _mapper.Map<MemberTransactionTemplateDto>(member.TransactionTemplate);
             output.MemberName = member.UserName;
             return output;
@@ -75,16 +81,37 @@ namespace FBMS.Infrastructure.Services
 
         public async Task UpdateMemberWithTransactionTemplate(MemberTransactionTemplateDto dto)
         {
-            var member = await _repository.GetBySpecificationAsync(new MemberWithTransactionTemplateSpecification(dto.MemberId));
+            var member = await _repository.GetBySpecificationAsync(new MemberWithTransactionTemplateSpecification(id: dto.MemberId, status: null));
             Guard.Against.Null(member, nameof(member));
-            var existingTemplateItems = member.TransactionTemplate.TemplateItems;
-            foreach (var item in dto.TemplateItems)
+
+            if (member.TransactionTemplate == null)
             {
-                var existedItem = existingTemplateItems.Where(x => x.Id == item.Id).FirstOrDefault();
-                existedItem.IsInverse = item.IsInverse;
-                existedItem.Status = item.Status;
-                existedItem.AmountPercent = item.AmountPercent;
-                await _repository.UpdateAsync(existedItem).ConfigureAwait(false);
+                member.TransactionTemplate = new TransactionTemplate();
+                var templateItems = new List<TransactionTemplateItem>();
+                foreach (var item in dto.TemplateItems)
+                {
+                    templateItems.Add(new TransactionTemplateItem
+                    {
+                        Name = item.Name,
+                        TransactionType = item.TransactionType,
+                        AmountPercent = item.AmountPercent,
+                        IsInverse = item.IsInverse
+                    });
+                }
+                member.TransactionTemplate.TemplateItems = templateItems;
+                await _repository.UpdateAsync(member);
+            }
+            else
+            {
+                var existingTemplateItems = member.TransactionTemplate.TemplateItems;
+                foreach (var item in dto.TemplateItems)
+                {
+                    var existedItem = existingTemplateItems.Where(x => x.Id == item.Id).FirstOrDefault();
+                    existedItem.IsInverse = item.IsInverse;
+                    existedItem.Status = item.Status;
+                    existedItem.AmountPercent = item.AmountPercent;
+                    await _repository.UpdateAsync(existedItem).ConfigureAwait(false);
+                }
             }
         }
 

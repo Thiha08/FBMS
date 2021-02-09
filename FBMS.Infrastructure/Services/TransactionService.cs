@@ -136,7 +136,7 @@ namespace FBMS.Infrastructure.Services
             var startDateUTC = filterCto.StartDate.ToTimeZoneTimeString("MM/dd/yyyy");
             var endDateUTC = filterCto.EndDate.ToTimeZoneTimeString("MM/dd/yyyy");
 
-            var members = await _repository.ListAsync(new MemberWithTransactionTemplateSpecification());
+            var members = await _repository.ListAsync(new MemberWithTransactionTemplateSpecification(id: null, status: true));
 
             if (filterCto.MemberIds.Any())
             {
