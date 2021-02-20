@@ -136,8 +136,8 @@ namespace FBMS.Infrastructure.HangfireServices
                     };
 
                     transaction.SubmittedAmount = Math.Round(transaction.SubmittedAmount, 0, MidpointRounding.AwayFromZero);
-                    //matchBet.Stack = Convert.ToInt32(transaction.SubmittedAmount);
-                    matchBet.Stack = 1; // 0 for now
+                    matchBet.Stack = Convert.ToInt32(transaction.SubmittedAmount);
+                    //matchBet.Stack = 1; // 0 for now
                     var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
 
                     _logger.LogWarning(response);
