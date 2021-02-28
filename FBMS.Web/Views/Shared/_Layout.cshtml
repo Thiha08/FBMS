@@ -17,7 +17,7 @@
     <!-- Fonts and icons -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600&display=swap">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">*@
     <link rel="shortcut icon" type="image/png" href="~/img/icons8-maple-leaf-96.png" />
 
     <!-- Material Dashboard CSS -->
@@ -79,7 +79,7 @@
     <script src="~/lib/material-dashboard/assets/js/plugins/bootstrap-datetimepicker.min.js"></script>
 
     <!--  DataTables.net Plugin, full documentation here: https://datatables.net/    -->
-    <script src="~/lib/material-dashboard/assets/js/plugins/jquery.datatables.min.js"></script>
+    <!--<script src="~/lib/material-dashboard/assets/js/plugins/jquery.datatables.min.js"></script>-->
 
     <!--	Plugin for Tags, full documentation here: https://github.com/bootstrap-tagsinput/bootstrap-tagsinputs  -->
     <script src="~/lib/material-dashboard/assets/js/plugins/bootstrap-tagsinput.js"></script>
@@ -121,15 +121,13 @@
     <script>
         $(document).ready(function () {
             // Javascript method's body can be found in assets/js/demos.js
-            md.initDashboardPageCharts();
+            //md.initDashboardPageCharts();
 
-            $('#datatables').DataTable({
-                language: { search: "", searchPlaceholder: "Search..." },
-                //"lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
-                paging: false
-            });
-
-
+            //$('#datatables').DataTable({
+            //    language: { search: "", searchPlaceholder: "Search..." },
+            //    //"lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+            //    paging: false
+            //});
         });
     </script>
 
