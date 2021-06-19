@@ -22,6 +22,7 @@ namespace FBMS.Infrastructure.Data
         }
 
         public DbSet<ToDoItem> ToDoItems { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<TransactionTemplate> TransactionTemplates { get; set; }
