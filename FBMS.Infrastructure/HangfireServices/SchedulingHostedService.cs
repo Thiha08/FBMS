@@ -68,7 +68,8 @@ namespace FBMS.Infrastructure.HangfireServices
             var activeTransactions = await _transactionService.GetTransactions(filter);
             if (activeTransactions.Count == 0) return;
 
-            activeTransactions = activeTransactions.OrderByDescending(x => x.DischargedCount)
+            activeTransactions = activeTransactions.AsParallel()
+                                                   .OrderByDescending(x => x.DischargedCount)
                                                    .ThenByDescending(x => x.TransactionDate)
                                                    .ToList();
 
@@ -78,7 +79,7 @@ namespace FBMS.Infrastructure.HangfireServices
             {
                 try
                 {
-                    var selectedMatches = matchSchedule.Where(x =>
+                    var selectedMatches = matchSchedule.AsParallel().Where(x =>
                         x.League.TrimAndUpper() == transaction.League.TrimAndUpper()
                         &&
                         (
@@ -108,7 +109,7 @@ namespace FBMS.Infrastructure.HangfireServices
 
                     if (transaction.IsMmPricing)
                     {
-                        var mmMatch = selectedMatches.FirstOrDefault(x => x.IsMm);
+                        var mmMatch = selectedMatches.AsParallel().FirstOrDefault(x => x.IsMm);
                         matchUrl = await _matchSchedulingService.GetMatchTransactionMmUrl(transaction.SubmittedTransactionType, mmMatch);
                     }
                     else
