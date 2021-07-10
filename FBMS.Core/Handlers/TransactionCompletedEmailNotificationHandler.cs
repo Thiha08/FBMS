@@ -59,7 +59,8 @@ namespace FBMS.Core.Handlers
             {
                 Text = emailTemplate.ToString()
             };
-            await _emailSender.SendAsync(message);
+          
+            _ = Task.Run(() => _emailSender.SendAsync(message).ConfigureAwait(false));
         }
     }
 }

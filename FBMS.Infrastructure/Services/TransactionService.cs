@@ -147,7 +147,7 @@ namespace FBMS.Infrastructure.Services
 
             var specification = new TransactionByDateSpecification();
             var existingTransactions = await _repository.ListAsync(specification);
-            var existingTransactionNumbers = existingTransactions.Select(x => x.TransactionNumber).ToList();
+            var existingTransactionNumbers = existingTransactions.AsParallel().Select(x => x.TransactionNumber).ToList();
 
             var transactions = new List<Transaction>();
 
@@ -163,7 +163,7 @@ namespace FBMS.Infrastructure.Services
                 };
                 var document = await _downloader.DownloadAsync(request);
                 var transactionCtos = _processor.Process<TransactionCto>(document);
-                transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingTransactionNumbers.Contains(x.TransactionNumber));
+                transactionCtos = transactionCtos.AsParallel().Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingTransactionNumbers.Contains(x.TransactionNumber));
 
                 foreach (var item in transactionCtos)
                 {
@@ -184,7 +184,7 @@ namespace FBMS.Infrastructure.Services
                     transactions.Add(convertedTransaction);
                 }
             }
-            transactions = transactions.Where(x => x.Status).ToList();
+            transactions = transactions.AsParallel().Where(x => x.Status).ToList();
             await _pipeline.RunAsync(transactions);
         }
 
