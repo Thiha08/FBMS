@@ -233,23 +233,25 @@ namespace FBMS.Infrastructure.Services
 
             var request = new CrawlerRequest
             {
-                BaseUrl = _hostApiCrawlerSettings.AllClientListUrl,
+                //BaseUrl = _hostApiCrawlerSettings.AllClientListUrl,
+                BaseUrl = _hostApiCrawlerSettings.ClientListUrl,
                 Cookies = authResponse.Cookies
             };
 
             var document = await _downloader.DownloadAsync(request);
-            var memberCtos = _processor.Process<MemberCto>(document);
-
+            var memberCtos = _processor.Process<ActiveMemberCto>(document);
+            
             var existingMembers = await _repository.ListAsync<Member>();
             var existingMemberNames = existingMembers.Select(x => x.UserName).ToList();
 
             memberCtos = memberCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingMemberNames.Contains(x.UserName));
-
+            
             var members = _mapper.Map<List<Member>>(memberCtos);
 
             foreach (var member in members)
             {
                 var transactionTemplate = new TransactionTemplate();
+                member.UserName = member.UserName.Replace("*", "");
                 member.TransactionTemplate = transactionTemplate.GetDefaultTransactionTemplate();
             }
             await _pipeline.RunAsync(members);
