@@ -100,6 +100,7 @@ namespace FBMS.Infrastructure
             builder.RegisterType<MemberService>().As<IMemberService>().InstancePerDependency();
             builder.RegisterType<TransactionService>().As<ITransactionService>().InstancePerDependency();
             builder.RegisterType<MatchSchedulingService>().As<IMatchSchedulingService>().InstancePerDependency();
+            builder.RegisterType<SettingService>().As<ISettingService>().InstancePerDependency();
             builder.RegisterType<TransactionHostedService>().As<ITransactionHostedService>().InstancePerDependency();
             builder.RegisterType<SchedulingHostedService>().As<ISchedulingHostedService>().InstancePerDependency();
         }

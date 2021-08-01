@@ -7,7 +7,6 @@ using FBMS.Core.Interfaces;
 using Hangfire;
 using Hangfire.Storage;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -138,7 +137,7 @@ namespace FBMS.Infrastructure.HangfireServices
 
                     transaction.SubmittedAmount = Math.Round(transaction.SubmittedAmount, 0, MidpointRounding.AwayFromZero);
                     matchBet.Stack = Convert.ToInt32(transaction.SubmittedAmount);
-                    //matchBet.Stack = 1; // 0 for now
+                    matchBet.Stack = 1; // 1 for now
                     var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
 
                     _logger.LogWarning(response);
