@@ -1,12 +1,14 @@
-﻿namespace FBMS.Core.Constants.Crawler
+﻿using System.Threading.Tasks;
+
+namespace FBMS.Core.Constants.Crawler
 {
     public interface IHostApiCrawlerSettings
     {
         string Url { get; set; }
 
-        string UserName { get; set; }
+        string UserName { get; }
 
-        string Password { get; set; }
+        string Password { get; }
 
         string AuthUrl { get; set; }
 
@@ -19,5 +21,7 @@
         string TimeZone { get; set; }
 
         int TransitionHour { get; set; }
+
+        Task InitializeAsync();
     }
 }

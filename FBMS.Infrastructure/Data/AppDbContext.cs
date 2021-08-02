@@ -26,6 +26,7 @@ namespace FBMS.Infrastructure.Data
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<TransactionTemplate> TransactionTemplates { get; set; }
         public DbSet<TransactionTemplateItem> TransactionTemplateItems { get; set; }
+        public DbSet<Setting> Settings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
