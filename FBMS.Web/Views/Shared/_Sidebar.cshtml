@@ -55,13 +55,6 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="~/hangfire">
-                    <i class="material-icons">timeline</i>
-                    <p>Hangfire</p>
-                </a>
-            </li>
-
             @if (User.IsInRole("Admin"))
             {
                 <li class="nav-item @(controllerName == "User" ? "active" : "")">
@@ -70,7 +63,22 @@
                         <p>User Management</p>
                     </a>
                 </li>
+
+                <li class="nav-item @(controllerName == "Setting" ? "active" : "")">
+                    <a class="nav-link" asp-controller="Setting" asp-action="Index">
+                        <i class="material-icons">settings</i>
+                        <p>Setting Management</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="~/hangfire">
+                        <i class="material-icons">timeline</i>
+                        <p>Hangfire</p>
+                    </a>
+                </li>
             }
+
         </ul>
     </div>
 </div>

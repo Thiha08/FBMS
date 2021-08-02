@@ -28,6 +28,8 @@ namespace FBMS.Infrastructure.Mappers
 
             CreateMap<TransactionTemplate, MemberTransactionTemplateDto>().ReverseMap();
             CreateMap<TransactionTemplateItem, TransactionTemplateItemDto>().ReverseMap();
+
+            CreateMap<Setting, SettingDto>().ReverseMap();
         }
     }
 }

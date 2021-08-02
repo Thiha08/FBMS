@@ -2,13 +2,11 @@ using Ardalis.ListStartupServices;
 using Autofac;
 using AutoMapper;
 using FBMS.Core.Attributes;
-using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Constants.Email;
 using FBMS.Core.Constants.Hangfire;
 using FBMS.Infrastructure;
 using FBMS.Infrastructure.Mappers;
 using FBMS.Web.Filters;
-using FBMS.Web.Middlewares;
 using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.SqlServer;
@@ -97,11 +95,6 @@ namespace FBMS.Web
                 options.SlidingExpiration = true;
             });
 
-            services.Configure<HostApiCrawlerSettings>(Configuration.GetSection(nameof(HostApiCrawlerSettings)));
-            services.AddSingleton<IHostApiCrawlerSettings>(sp => sp.GetRequiredService<IOptions<HostApiCrawlerSettings>>().Value);
-
-            services.Configure<ClientApiCrawlerSettings>(Configuration.GetSection(nameof(ClientApiCrawlerSettings)));
-            services.AddSingleton<IClientApiCrawlerSettings>(sp => sp.GetRequiredService<IOptions<ClientApiCrawlerSettings>>().Value);
 
             services.Configure<HangfireSettings>(Configuration.GetSection(nameof(HangfireSettings)));
             services.AddSingleton<IHangfireSettings>(sp => sp.GetRequiredService<IOptions<HangfireSettings>>().Value);

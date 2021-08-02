@@ -1,0 +1,122 @@
+﻿
+@using FBMS.Core.Dtos;
+
+@model IEnumerable<SettingDto>
+
+@{
+    ViewData["Title"] = "Setting Management";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">settings</i>
+                    </div>
+                    <h4 class="card-title">Settings</h4>
+                </div>
+                <div class="card-body">
+                    @*<div class="toolbar text-right">
+                        <a class="btn btn-info btn-create" asp-controller="Setting" asp-action="Create">
+                            <i class="material-icons">add</i>
+                            Create
+                        </a>
+                    </div>*@
+                    <div class="material-datatables">
+                        <div id="datatables_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table id="datatables" class="table table-no-bordered table-hover dataTable dtr-inline" cellspacing="0" width="100%" style="width: 100%;" role="grid" aria-describedby="datatables_info">
+                                        <thead class="text-primary">
+                                            <tr role="row">
+                                                <th>
+                                                    ID
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Name)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Key)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Value)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Status)
+                                                </th>
+                                                <th style="width: 100px;">
+                                                    Actions
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.Any())
+                                            {
+                                                int i = 0;
+
+                                                foreach (var item in Model)
+                                                {
+                                                    i++;
+                                                    <tr role="row">
+                                                        <td>
+                                                            @i
+                                                        </td>
+                                                        <td tabindex="0" class="sorting_1">
+                                                            @Html.DisplayFor(modelItem => item.Name)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Key)
+                                                        </td>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Value)
+                                                        </td>
+                                                        <td>
+                                                            @if (item.Status)
+                                                            {
+                                                                <span class="text-success">Active</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="text-danger">Inactive</span>
+                                                            }
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <div class="dropdown">
+                                                                <button class="dropdown-toggle btn btn-default btn-block" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    Actions
+                                                                    <div class="ripple-container"></div>
+                                                                </button>
+                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; top: 40px; left: 1px; will-change: top, left;">
+                                                                    <a class="dropdown-item" asp-controller="Setting" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                                                    @*<a class="dropdown-item" asp-controller="Setting" asp-action="Enable" asp-route-id="@item.Id">Enable</a>
+                                                                    <a class="dropdown-item" asp-controller="Setting" asp-action="Disable" asp-route-id="@item.Id">Disable</a>
+                                                                    <a class="dropdown-item" asp-controller="Setting" asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr role="row">
+                                                    <td colspan="4" class="text-center">
+                                                        No data found.
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end content-->
+            </div>
+            <!--  end card  -->
+        </div>
+    </div>
+</div>
