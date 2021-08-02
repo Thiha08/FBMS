@@ -86,7 +86,7 @@ namespace FBMS.Infrastructure.Services
         public async Task<List<SettingDto>> GetHostApiCrawlerSettings()
         {
             var settings = (await _repository.ListAsync<Setting>())
-                .Where(x => x.Name == "HostApiCrawler" && x.Status)
+                .Where(x => x.Name == "HostApiCrawlerSettings" && x.Status)
                 .ToList();
 
             return _mapper.Map<List<SettingDto>>(settings);
@@ -95,7 +95,7 @@ namespace FBMS.Infrastructure.Services
         public async Task<List<SettingDto>> GetClientApiCrawlerSettings()
         {
             var settings = (await _repository.ListAsync<Setting>())
-                .Where(x => x.Name == "ClientApiCrawler" && x.Status)
+                .Where(x => x.Name == "ClientApiCrawlerSettings" && x.Status)
                 .ToList();
 
             return _mapper.Map<List<SettingDto>>(settings);

@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using FBMS.Core;
+using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Interfaces;
 using FBMS.Core.Mail;
 using FBMS.Infrastructure.Data;
@@ -103,6 +104,13 @@ namespace FBMS.Infrastructure
             builder.RegisterType<SettingService>().As<ISettingService>().InstancePerDependency();
             builder.RegisterType<TransactionHostedService>().As<ITransactionHostedService>().InstancePerDependency();
             builder.RegisterType<SchedulingHostedService>().As<ISchedulingHostedService>().InstancePerDependency();
+
+
+            builder.RegisterType<HostApiCrawlerSettings>().As<IHostApiCrawlerSettings>().InstancePerLifetimeScope()
+                .OnActivated(x => x.Instance.InitializeAsync().ConfigureAwait(false).GetAwaiter().GetResult());
+
+            builder.RegisterType<ClientApiCrawlerSettings>().As<IClientApiCrawlerSettings>().InstancePerLifetimeScope()
+                .OnActivated(x => x.Instance.InitializeAsync().ConfigureAwait(false).GetAwaiter().GetResult()); ;
         }
 
         private void RegisterDevelopmentOnlyDependencies(ContainerBuilder builder)
