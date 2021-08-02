@@ -78,6 +78,11 @@ namespace FBMS.Infrastructure.HangfireServices
             {
                 try
                 {
+                    if (DateTime.UtcNow > transaction.TransactionDate.AddMinutes(5))
+                    {
+                        throw new Exception(TransactionResponseStatus.OverFiveMinutes);
+                    }
+
                     var selectedMatches = matchSchedule.AsParallel().Where(x =>
                         x.League.TrimAndUpper() == transaction.League.TrimAndUpper()
                         &&
@@ -86,7 +91,8 @@ namespace FBMS.Infrastructure.HangfireServices
                             x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(n)") ||
                             x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(R)") ||
                             x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(V)") ||
-                            x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(Youth) (n)")
+                            x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(Youth) (n)") ||
+                            x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(Win)")
                         )
                         &&
                         (
@@ -94,7 +100,8 @@ namespace FBMS.Infrastructure.HangfireServices
                             x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(n)") ||
                             x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(R)") ||
                             x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(V)") ||
-                            x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(Youth) (n)")
+                            x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(Youth) (n)") ||
+                            x.HomeTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(Win)")
                         )
                     ).ToList();
 
@@ -137,7 +144,7 @@ namespace FBMS.Infrastructure.HangfireServices
 
                     transaction.SubmittedAmount = Math.Round(transaction.SubmittedAmount, 0, MidpointRounding.AwayFromZero);
                     matchBet.Stack = Convert.ToInt32(transaction.SubmittedAmount);
-                    matchBet.Stack = 1; // 1 for now
+                    matchBet.Stack = 1; // 1 for now [TEMP]
                     var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
 
                     _logger.LogWarning(response);
