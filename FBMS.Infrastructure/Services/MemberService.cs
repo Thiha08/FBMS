@@ -240,12 +240,12 @@ namespace FBMS.Infrastructure.Services
 
             var document = await _downloader.DownloadAsync(request);
             var memberCtos = _processor.Process<ActiveMemberCto>(document);
-            
+
             var existingMembers = await _repository.ListAsync<Member>();
             var existingMemberNames = existingMembers.Select(x => x.UserName).ToList();
 
             memberCtos = memberCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingMemberNames.Contains(x.UserName));
-            
+
             var members = _mapper.Map<List<Member>>(memberCtos);
 
             foreach (var member in members)
@@ -304,9 +304,16 @@ namespace FBMS.Infrastructure.Services
             var memberCtos = _processor.Process<ActiveMemberCto>(document);
             var activerMemberNames = memberCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName)).Select(x => x.UserName.Replace("*", "")).ToList();
 
-            return (await _repository.ListAsync(new AcitveMembersSpecification(activerMemberNames)))
-                .Select(x => x.Id)
-                .ToList();
+            if (activerMemberNames == null || activerMemberNames.Count == 0)
+            {
+                return new List<int>();
+            }
+            else
+            {
+                return (await _repository.ListAsync(new AcitveMembersSpecification(activerMemberNames)))
+                    .Select(x => x.Id)
+                    .ToList();
+            }
         }
     }
 }
