@@ -68,9 +68,9 @@ namespace FBMS.Infrastructure.Services
 
             Guard.Against.Null(existingSetting, nameof(existingSetting));
 
-            //existingSetting.Name = existingSetting.Name;
-            //existingSetting.Key = existingSetting.Key;
-            existingSetting.Value = existingSetting.Value;
+            //existingSetting.Name = settingDto.Name;
+            //existingSetting.Key = settingDto.Key;
+            existingSetting.Value = settingDto.Value;
 
             await _repository.UpdateAsync(existingSetting);
         }
