@@ -1,4 +1,5 @@
 ﻿using FBMS.Core.Constants;
+using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Constants.Hangfire;
 using FBMS.Core.Dtos;
 using FBMS.Core.Dtos.Filters;
@@ -20,13 +21,15 @@ namespace FBMS.Infrastructure.HangfireServices
         private readonly IHangfireSettings _hangfireSettings;
         private readonly ITransactionService _transactionService;
         private readonly IMatchSchedulingService _matchSchedulingService;
+        private readonly IClientApiCrawlerSettings _clientApiCrawlerSettings;
 
-        public SchedulingHostedService(ILogger<SchedulingHostedService> logger, IHangfireSettings hangfireSettings, ITransactionService transactionService, IMatchSchedulingService matchSchedulingService)
+        public SchedulingHostedService(ILogger<SchedulingHostedService> logger, IHangfireSettings hangfireSettings, ITransactionService transactionService, IMatchSchedulingService matchSchedulingService, IClientApiCrawlerSettings clientApiCrawlerSettings)
         {
             _logger = logger;
             _hangfireSettings = hangfireSettings;
             _transactionService = transactionService;
             _matchSchedulingService = matchSchedulingService;
+            _clientApiCrawlerSettings = clientApiCrawlerSettings;
         }
 
         public Task StartAsync()
@@ -61,7 +64,7 @@ namespace FBMS.Infrastructure.HangfireServices
             var filter = new TransactionFilterDto
             {
                 IsSubmitted = false,
-                MaxDischargedCount = CoreConstants.MaxDischargedCount
+                MaxDischargedCount = _clientApiCrawlerSettings.AcceptableDischargedCount
             };
 
             var activeTransactions = await _transactionService.GetTransactions(filter);
@@ -78,9 +81,9 @@ namespace FBMS.Infrastructure.HangfireServices
             {
                 try
                 {
-                    if (DateTime.UtcNow > transaction.TransactionDate.AddMinutes(5))
+                    if (DateTime.UtcNow > transaction.TransactionDate.AddMinutes(_clientApiCrawlerSettings.AcceptablePassedMinute))
                     {
-                        throw new Exception(TransactionResponseStatus.OverFiveMinutes);
+                        throw new Exception($"{TransactionResponseStatus.OverAcceptablePassedMinute} ({_clientApiCrawlerSettings.AcceptablePassedMinute} min)");
                     }
 
                     var selectedMatches = matchSchedule.AsParallel().Where(x =>
@@ -143,8 +146,16 @@ namespace FBMS.Infrastructure.HangfireServices
                     };
 
                     transaction.SubmittedAmount = Math.Round(transaction.SubmittedAmount, 0, MidpointRounding.AwayFromZero);
-                    matchBet.Stack = Convert.ToInt32(transaction.SubmittedAmount);
-                    matchBet.Stack = 1; // 1 for now [TEMP]
+
+                    if (_clientApiCrawlerSettings.IsTestingStack)
+                    {
+                        matchBet.Stack = 1;
+                    }
+                    else
+                    {
+                        matchBet.Stack = Convert.ToInt32(transaction.SubmittedAmount);
+                    }    
+
                     var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
 
                     _logger.LogWarning(response);

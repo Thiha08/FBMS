@@ -20,6 +20,12 @@ namespace FBMS.Core.Constants.Crawler
 
         string TimeZone { get; set; }
 
+        int AcceptablePassedMinute { get; set; }
+
+        int AcceptableDischargedCount { get; set; }
+
+        bool IsTestingStack { get; set; } // if testing stack, stack = 1
+
         Task InitializeAsync();
     }
 }
