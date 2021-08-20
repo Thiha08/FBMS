@@ -79,7 +79,7 @@ namespace FBMS.Infrastructure.Services
             return document.Text;
         }
 
-        public Task<string> GetMatchTransactionUrl(TransactionType transactionType, decimal pricing, List<MatchDto> matches)
+        public async Task<string> GetMatchTransactionUrl(TransactionType transactionType, decimal pricing, List<MatchDto> matches)
         {
             var matchUrl = "";
 
@@ -116,10 +116,10 @@ namespace FBMS.Infrastructure.Services
                 matchUrl = fixedMatch?.GetUnderUrl();
             }
 
-            return Task.FromResult(matchUrl);
+            return await Task.FromResult(matchUrl);
         }
 
-        public Task<string> GetMatchTransactionMmUrl(TransactionType transactionType, MatchDto match)
+        public async Task<string> GetMatchTransactionMmUrl(TransactionType transactionType, MatchDto match)
         {
             var matchUrl = "";
 
@@ -140,7 +140,7 @@ namespace FBMS.Infrastructure.Services
                 matchUrl = match?.GetMmUnderUrl();
             }
 
-            return Task.FromResult(matchUrl);
+            return await Task.FromResult(matchUrl);
         }
 
         private async Task<AuthResponse> GetClientApiAuthentication()
