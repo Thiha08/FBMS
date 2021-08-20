@@ -75,7 +75,7 @@ namespace FBMS.Web.Controllers
             {
                 var selectedMatches = matchSchedule.Where(x => x.HomeTeam == transaction.HomeTeam && x.AwayTeam == transaction.AwayTeam).ToList();
 
-                var matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
+                var matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(false, transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
 
                 if (string.IsNullOrWhiteSpace(matchUrl))
                 {

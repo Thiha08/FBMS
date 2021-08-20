@@ -122,7 +122,7 @@ namespace FBMS.Infrastructure.HangfireServices
                     }
                     else
                     {
-                        matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
+                        matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.IsFirstHalf, transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
                     }
 
                     if (string.IsNullOrWhiteSpace(matchUrl))

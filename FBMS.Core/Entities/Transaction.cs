@@ -46,6 +46,8 @@ namespace FBMS.Core.Entities
 
         public int MemberId { get; set; }
 
+        public bool IsFirstHalf { get; set; }
+
         public void MarkComplete(string pricing, string message)
         {
             IsSubmitted = true;

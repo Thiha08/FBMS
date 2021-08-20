@@ -181,6 +181,7 @@ namespace FBMS.Infrastructure.Services
                     transaction.Pricing = item.Pricing?.Replace("@", "");
                     transaction.TransactionDate = transactionDate; // UTC
                     transaction.TransactionType = GetTransactionType(item.TransactionType, item.HomeTeam, item.AwayTeam);
+                    transaction.IsFirstHalf = !string.IsNullOrWhiteSpace(item.FirstHalf) && item.FirstHalf.Contains("(First Half)");
                     transaction.Amount = Convert.ToDecimal(item.Amount);
                     var convertedTransaction = member.TransactionTemplate.ApplyTransactionTemplate(transaction);
                     transactions.Add(convertedTransaction);
