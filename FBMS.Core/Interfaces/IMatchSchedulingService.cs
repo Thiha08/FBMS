@@ -13,7 +13,7 @@ namespace FBMS.Core.Interfaces
 
         Task<string> SubmitMatchTransaction(MatchBetDto dto);
 
-        Task<string> GetMatchTransactionUrl(TransactionType transactionType, decimal pricing, List<MatchDto> matches);
+        Task<string> GetMatchTransactionUrl(bool isFirstHalf, TransactionType transactionType, decimal pricing, List<MatchDto> matches);
 
         Task<string> GetMatchTransactionMmUrl(TransactionType transactionType, MatchDto match);
     }

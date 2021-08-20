@@ -29,6 +29,9 @@ namespace FBMS.Core.Ctos
         [CrawlerField(Expression = ".//td[4]//span[2]/text()", SelectorType = SelectorType.XPath)]
         public string AwayTeam { get; set; }
 
+        [CrawlerField(Expression = ".//td[4]//span[2]/following-sibling::text()[1]", SelectorType = SelectorType.XPath)]
+        public string FirstHalf { get; set; }
+
         [CrawlerField(Expression = ".//td[5]//span[1]/text()", SelectorType = SelectorType.XPath)]
         public string TransactionType { get; set; }
 

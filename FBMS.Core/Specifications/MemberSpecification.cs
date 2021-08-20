@@ -8,7 +8,8 @@ namespace FBMS.Core.Specifications
     {
         public MemberSpecification(MemberFilter filter)
         {
-            Query.OrderBy(x => x.UserName);
+            Query.OrderByDescending(x => x.Status)
+                 .ThenByDescending(x => x.DateUpdated);
 
             if (filter.LoadChildren)
                 Query.Include(x => x.TransactionTemplate)

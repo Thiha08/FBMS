@@ -147,7 +147,7 @@ namespace FBMS.Infrastructure.Services
 
             var specification = new TransactionByDateSpecification();
             var existingTransactions = await _repository.ListAsync(specification);
-            var existingTransactionNumbers = existingTransactions.AsParallel().Select(x => x.TransactionNumber).ToList();
+            var existingTransactionNumbers = existingTransactions.Select(x => x.TransactionNumber).ToList();
 
             var transactions = new List<Transaction>();
 
@@ -163,7 +163,7 @@ namespace FBMS.Infrastructure.Services
                 };
                 var document = await _downloader.DownloadAsync(request);
                 var transactionCtos = _processor.Process<TransactionCto>(document);
-                transactionCtos = transactionCtos.AsParallel().Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingTransactionNumbers.Contains(x.TransactionNumber));
+                transactionCtos = transactionCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName) && !existingTransactionNumbers.Contains(x.TransactionNumber));
 
                 foreach (var item in transactionCtos)
                 {
@@ -181,12 +181,13 @@ namespace FBMS.Infrastructure.Services
                     transaction.Pricing = item.Pricing?.Replace("@", "");
                     transaction.TransactionDate = transactionDate; // UTC
                     transaction.TransactionType = GetTransactionType(item.TransactionType, item.HomeTeam, item.AwayTeam);
+                    transaction.IsFirstHalf = !string.IsNullOrWhiteSpace(item.FirstHalf) && item.FirstHalf.Contains("(First Half)");
                     transaction.Amount = Convert.ToDecimal(item.Amount);
                     var convertedTransaction = member.TransactionTemplate.ApplyTransactionTemplate(transaction);
                     transactions.Add(convertedTransaction);
                 }
             }
-            transactions = transactions.AsParallel().Where(x => x.Status).ToList();
+            transactions = transactions.Where(x => x.Status).ToList();
             await _pipeline.RunAsync(transactions);
         }
 

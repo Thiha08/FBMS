@@ -1,14 +1,13 @@
 ﻿using Ardalis.GuardClauses;
+using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Constants.Email;
 using FBMS.Core.Events;
 using FBMS.Core.Extensions;
 using FBMS.Core.Mail;
 using MediatR;
 using MimeKit;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,12 +19,14 @@ namespace FBMS.Core.Handlers
         private readonly IEmailSender _emailSender;
         private readonly IEmailSettings _emailSettings;
         private readonly IEmailTemplateProvider _emailTemplateProvider;
+        private readonly IClientApiCrawlerSettings _clientApiCrawlerSettings;
 
-        public TransactionCompletedEmailNotificationHandler(IEmailSender emailSender, IEmailSettings emailSettings, IEmailTemplateProvider emailTemplateProvider)
+        public TransactionCompletedEmailNotificationHandler(IEmailSender emailSender, IEmailSettings emailSettings, IEmailTemplateProvider emailTemplateProvider, IClientApiCrawlerSettings clientApiCrawlerSettings)
         {
             _emailSender = emailSender;
             _emailSettings = emailSettings;
             _emailTemplateProvider = emailTemplateProvider;
+            _clientApiCrawlerSettings = clientApiCrawlerSettings;
         }
 
         public async Task Handle(TransactionCompletedEvent domainEvent, CancellationToken cancellationToken)
@@ -48,7 +49,7 @@ namespace FBMS.Core.Handlers
             emailTemplate.Replace("{{TYPE}}", transaction.TransactionType.ToString());
             emailTemplate.Replace("{{COMPLETED_TYPE}}", transaction.SubmittedTransactionType.ToString());
             emailTemplate.Replace("{{AMOUNT}}", transaction.Amount.ToString());
-            emailTemplate.Replace("{{COMPLETED_AMOUNT}}", transaction.SubmittedAmount.ToString());
+            emailTemplate.Replace("{{COMPLETED_AMOUNT}}", $"{transaction.SubmittedAmount}{(_clientApiCrawlerSettings.IsTestingStack ? " (Testing Amount: 1)" : "")}");
             emailTemplate.Replace("{{MESSAGE}}", domainEvent.Message);
 
             var message = new MimeMessage();

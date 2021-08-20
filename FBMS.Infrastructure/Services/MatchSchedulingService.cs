@@ -79,47 +79,85 @@ namespace FBMS.Infrastructure.Services
             return document.Text;
         }
 
-        public Task<string> GetMatchTransactionUrl(TransactionType transactionType, decimal pricing, List<MatchDto> matches)
+        public async Task<string> GetMatchTransactionUrl(bool isFirstHalf, TransactionType transactionType, decimal pricing, List<MatchDto> matches)
         {
             var matchUrl = "";
 
-            if (transactionType == TransactionType.Home)
+            if (isFirstHalf)
             {
-                var fixedMatch = matches.Count > 1 ?
-                    matches.Aggregate((x, y) => Math.Abs(x.HdpPricing - pricing) < Math.Abs(y.HdpPricing - pricing) ? x : y) :
-                    matches.FirstOrDefault();
+                if (transactionType == TransactionType.Home)
+                {
+                    var fixedMatch = matches.Count > 1 ?
+                        matches.Aggregate((x, y) => Math.Abs(x.HtHdpPricing - pricing) < Math.Abs(y.HtHdpPricing - pricing) ? x : y) :
+                        matches.FirstOrDefault();
 
-                matchUrl = fixedMatch?.GetHomeUrl();
+                    matchUrl = fixedMatch?.GetHtHomeUrl();
+                }
+                else if (transactionType == TransactionType.Away)
+                {
+                    var fixedMatch = matches.Count > 1 ?
+                        matches.Aggregate((x, y) => Math.Abs(x.HtHdpPricing - pricing) < Math.Abs(y.HtHdpPricing - pricing) ? x : y) :
+                        matches.FirstOrDefault();
+
+                    matchUrl = fixedMatch?.GetHtAwayUrl();
+                }
+                else if (transactionType == TransactionType.Over)
+                {
+                    var fixedMatch = matches.Count > 1 ?
+                        matches.Aggregate((x, y) => Math.Abs(x.HtOuPricing - pricing) < Math.Abs(y.HtOuPricing - pricing) ? x : y) :
+                        matches.FirstOrDefault();
+
+                    matchUrl = fixedMatch?.GetHtOverUrl();
+                }
+                else if (transactionType == TransactionType.Under)
+                {
+                    var fixedMatch = matches.Count > 1 ?
+                        matches.Aggregate((x, y) => Math.Abs(x.HtOuPricing - pricing) < Math.Abs(y.HtOuPricing - pricing) ? x : y) :
+                        matches.FirstOrDefault();
+
+                    matchUrl = fixedMatch?.GetHtUnderUrl();
+                }
             }
-            else if (transactionType == TransactionType.Away)
+            else
             {
-                var fixedMatch = matches.Count > 1 ?
-                    matches.Aggregate((x, y) => Math.Abs(x.HdpPricing - pricing) < Math.Abs(y.HdpPricing - pricing) ? x : y) :
-                    matches.FirstOrDefault();
+                if (transactionType == TransactionType.Home)
+                {
+                    var fixedMatch = matches.Count > 1 ?
+                        matches.Aggregate((x, y) => Math.Abs(x.HdpPricing - pricing) < Math.Abs(y.HdpPricing - pricing) ? x : y) :
+                        matches.FirstOrDefault();
 
-                matchUrl = fixedMatch?.GetAwayUrl();
+                    matchUrl = fixedMatch?.GetHomeUrl();
+                }
+                else if (transactionType == TransactionType.Away)
+                {
+                    var fixedMatch = matches.Count > 1 ?
+                        matches.Aggregate((x, y) => Math.Abs(x.HdpPricing - pricing) < Math.Abs(y.HdpPricing - pricing) ? x : y) :
+                        matches.FirstOrDefault();
+
+                    matchUrl = fixedMatch?.GetAwayUrl();
+                }
+                else if (transactionType == TransactionType.Over)
+                {
+                    var fixedMatch = matches.Count > 1 ?
+                        matches.Aggregate((x, y) => Math.Abs(x.OuPricing - pricing) < Math.Abs(y.OuPricing - pricing) ? x : y) :
+                        matches.FirstOrDefault();
+
+                    matchUrl = fixedMatch?.GetOverUrl();
+                }
+                else if (transactionType == TransactionType.Under)
+                {
+                    var fixedMatch = matches.Count > 1 ?
+                        matches.Aggregate((x, y) => Math.Abs(x.OuPricing - pricing) < Math.Abs(y.OuPricing - pricing) ? x : y) :
+                        matches.FirstOrDefault();
+
+                    matchUrl = fixedMatch?.GetUnderUrl();
+                }
             }
-            else if (transactionType == TransactionType.Over)
-            {
-                var fixedMatch = matches.Count > 1 ?
-                    matches.Aggregate((x, y) => Math.Abs(x.OuPricing - pricing) < Math.Abs(y.OuPricing - pricing) ? x : y) :
-                    matches.FirstOrDefault();
 
-                matchUrl = fixedMatch?.GetOverUrl();
-            }
-            else if (transactionType == TransactionType.Under)
-            {
-                var fixedMatch = matches.Count > 1 ?
-                    matches.Aggregate((x, y) => Math.Abs(x.OuPricing - pricing) < Math.Abs(y.OuPricing - pricing) ? x : y) :
-                    matches.FirstOrDefault();
-
-                matchUrl = fixedMatch?.GetUnderUrl();
-            }
-
-            return Task.FromResult(matchUrl);
+            return await Task.FromResult(matchUrl);
         }
 
-        public Task<string> GetMatchTransactionMmUrl(TransactionType transactionType, MatchDto match)
+        public async Task<string> GetMatchTransactionMmUrl(TransactionType transactionType, MatchDto match)
         {
             var matchUrl = "";
 
@@ -140,7 +178,7 @@ namespace FBMS.Infrastructure.Services
                 matchUrl = match?.GetMmUnderUrl();
             }
 
-            return Task.FromResult(matchUrl);
+            return await Task.FromResult(matchUrl);
         }
 
         private async Task<AuthResponse> GetClientApiAuthentication()

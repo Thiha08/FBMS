@@ -1,14 +1,13 @@
 ﻿using Ardalis.GuardClauses;
+using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Constants.Email;
 using FBMS.Core.Events;
 using FBMS.Core.Extensions;
 using FBMS.Core.Mail;
 using MediatR;
 using MimeKit;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,12 +19,14 @@ namespace FBMS.Core.Handlers
         private readonly IEmailSender _emailSender;
         private readonly IEmailSettings _emailSettings;
         private readonly IEmailTemplateProvider _emailTemplateProvider;
+        private readonly IClientApiCrawlerSettings _clientApiCrawlerSettings;
 
-        public TransactionDischargedEmailNotificationHandler(IEmailSender emailSender, IEmailSettings emailSettings, IEmailTemplateProvider emailTemplateProvider)
+        public TransactionDischargedEmailNotificationHandler(IEmailSender emailSender, IEmailSettings emailSettings, IEmailTemplateProvider emailTemplateProvider, IClientApiCrawlerSettings clientApiCrawlerSettings)
         {
             _emailSender = emailSender;
             _emailSettings = emailSettings;
             _emailTemplateProvider = emailTemplateProvider;
+            _clientApiCrawlerSettings = clientApiCrawlerSettings;
         }
 
         public async Task Handle(TransactionDischargedEvent domainEvent, CancellationToken cancellationToken)
@@ -40,12 +41,15 @@ namespace FBMS.Core.Handlers
             emailTemplate.Replace("{{LEAGUE}}", transaction.League);
             emailTemplate.Replace("{{ACCOUNT}}", transaction.UserName);
             emailTemplate.Replace("{{TRANSACTION_DATE}}", transaction.TransactionDate.ToTimeZoneTimeString("yyyy-MM-dd HH:mm:ss"));
+            emailTemplate.Replace("{{DISCHARGED_DATE}}", transaction.DischargedDate?.ToTimeZoneTimeString("yyyy-MM-dd HH:mm:ss"));
             emailTemplate.Replace("{{HOME_TEAM}}", transaction.HomeTeam);
             emailTemplate.Replace("{{AWAY_TEAM}}", transaction.AwayTeam);
             emailTemplate.Replace("{{PRICING}}", transaction.Pricing);
+            emailTemplate.Replace("{{DISCHARGED_PRICING}}", "");
             emailTemplate.Replace("{{TYPE}}", transaction.TransactionType.ToString());
+            emailTemplate.Replace("{{DISCHARGED_TYPE}}", transaction.SubmittedTransactionType.ToString());
             emailTemplate.Replace("{{AMOUNT}}", transaction.Amount.ToString());
-            emailTemplate.Replace("{{DISCHARGED_DATE}}", transaction.DischargedDate?.ToTimeZoneTimeString("yyyy-MM-dd HH:mm:ss"));
+            emailTemplate.Replace("{{DISCHARGED_AMOUNT}}", $"{transaction.SubmittedAmount}{(_clientApiCrawlerSettings.IsTestingStack ? " (Testing Amount: 1)" : "")}");
             emailTemplate.Replace("{{MESSAGE}}", domainEvent.Message);
 
             var message = new MimeMessage();
@@ -56,7 +60,8 @@ namespace FBMS.Core.Handlers
             {
                 Text = emailTemplate.ToString()
             };
-            await _emailSender.SendAsync(message);
+
+            _ = Task.Run(() => _emailSender.SendAsync(message).ConfigureAwait(false));
         }
     }
 }
