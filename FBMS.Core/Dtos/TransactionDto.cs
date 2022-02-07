@@ -60,5 +60,7 @@ namespace FBMS.Core.Dtos
         public int DischargedCount { get; set; }
 
         public bool IsMmPricing => TransactionNumber.Contains("MM");
+
+        public bool IsFirstHalf { get; set; }
     }
 }

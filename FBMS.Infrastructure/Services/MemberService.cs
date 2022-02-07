@@ -233,12 +233,13 @@ namespace FBMS.Infrastructure.Services
 
             var request = new CrawlerRequest
             {
-                BaseUrl = _hostApiCrawlerSettings.AllClientListUrl,
+                //BaseUrl = _hostApiCrawlerSettings.AllClientListUrl,
+                BaseUrl = _hostApiCrawlerSettings.ClientListUrl,
                 Cookies = authResponse.Cookies
             };
 
             var document = await _downloader.DownloadAsync(request);
-            var memberCtos = _processor.Process<MemberCto>(document);
+            var memberCtos = _processor.Process<ActiveMemberCto>(document);
 
             var existingMembers = await _repository.ListAsync<Member>();
             var existingMemberNames = existingMembers.Select(x => x.UserName).ToList();
@@ -250,6 +251,7 @@ namespace FBMS.Infrastructure.Services
             foreach (var member in members)
             {
                 var transactionTemplate = new TransactionTemplate();
+                member.UserName = member.UserName.Replace("*", "");
                 member.TransactionTemplate = transactionTemplate.GetDefaultTransactionTemplate();
             }
             await _pipeline.RunAsync(members);
@@ -302,9 +304,16 @@ namespace FBMS.Infrastructure.Services
             var memberCtos = _processor.Process<ActiveMemberCto>(document);
             var activerMemberNames = memberCtos.Where(x => !string.IsNullOrWhiteSpace(x.UserName)).Select(x => x.UserName.Replace("*", "")).ToList();
 
-            return (await _repository.ListAsync(new AcitveMembersSpecification(activerMemberNames)))
-                .Select(x => x.Id)
-                .ToList();
+            if (activerMemberNames == null || activerMemberNames.Count == 0)
+            {
+                return new List<int>();
+            }
+            else
+            {
+                return (await _repository.ListAsync(new AcitveMembersSpecification(activerMemberNames)))
+                    .Select(x => x.Id)
+                    .ToList();
+            }
         }
     }
 }

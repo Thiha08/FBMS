@@ -1,4 +1,5 @@
 ﻿using FBMS.Core.Constants;
+using FBMS.Core.Constants.Crawler;
 using FBMS.Core.Constants.Hangfire;
 using FBMS.Core.Dtos;
 using FBMS.Core.Dtos.Filters;
@@ -7,7 +8,6 @@ using FBMS.Core.Interfaces;
 using Hangfire;
 using Hangfire.Storage;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +21,15 @@ namespace FBMS.Infrastructure.HangfireServices
         private readonly IHangfireSettings _hangfireSettings;
         private readonly ITransactionService _transactionService;
         private readonly IMatchSchedulingService _matchSchedulingService;
+        private readonly IClientApiCrawlerSettings _clientApiCrawlerSettings;
 
-        public SchedulingHostedService(ILogger<SchedulingHostedService> logger, IHangfireSettings hangfireSettings, ITransactionService transactionService, IMatchSchedulingService matchSchedulingService)
+        public SchedulingHostedService(ILogger<SchedulingHostedService> logger, IHangfireSettings hangfireSettings, ITransactionService transactionService, IMatchSchedulingService matchSchedulingService, IClientApiCrawlerSettings clientApiCrawlerSettings)
         {
             _logger = logger;
             _hangfireSettings = hangfireSettings;
             _transactionService = transactionService;
             _matchSchedulingService = matchSchedulingService;
+            _clientApiCrawlerSettings = clientApiCrawlerSettings;
         }
 
         public Task StartAsync()
@@ -62,7 +64,7 @@ namespace FBMS.Infrastructure.HangfireServices
             var filter = new TransactionFilterDto
             {
                 IsSubmitted = false,
-                MaxDischargedCount = CoreConstants.MaxDischargedCount
+                MaxDischargedCount = _clientApiCrawlerSettings.AcceptableDischargedCount
             };
 
             var activeTransactions = await _transactionService.GetTransactions(filter);
@@ -78,7 +80,12 @@ namespace FBMS.Infrastructure.HangfireServices
             {
                 try
                 {
-                    var selectedMatches = matchSchedule.Where(x =>
+                    if (DateTime.UtcNow > transaction.TransactionDate.AddMinutes(_clientApiCrawlerSettings.AcceptablePassedMinute))
+                    {
+                        throw new Exception($"{TransactionResponseStatus.OverAcceptablePassedMinute} ({_clientApiCrawlerSettings.AcceptablePassedMinute} min)");
+                    }
+
+                    var selectedMatches = matchSchedule.AsParallel().Where(x =>
                         x.League.TrimAndUpper() == transaction.League.TrimAndUpper()
                         &&
                         (
@@ -86,7 +93,8 @@ namespace FBMS.Infrastructure.HangfireServices
                             x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(n)") ||
                             x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(R)") ||
                             x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(V)") ||
-                            x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(Youth) (n)")
+                            x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(Youth) (n)") ||
+                            x.HomeTeam.TrimAndUpper() == transaction.HomeTeam.ConcatSuffix("(Win)")
                         )
                         &&
                         (
@@ -94,7 +102,8 @@ namespace FBMS.Infrastructure.HangfireServices
                             x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(n)") ||
                             x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(R)") ||
                             x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(V)") ||
-                            x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(Youth) (n)")
+                            x.AwayTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(Youth) (n)") ||
+                            x.HomeTeam.TrimAndUpper() == transaction.AwayTeam.ConcatSuffix("(Win)")
                         )
                     ).ToList();
 
@@ -113,7 +122,7 @@ namespace FBMS.Infrastructure.HangfireServices
                     }
                     else
                     {
-                        matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
+                        matchUrl = await _matchSchedulingService.GetMatchTransactionUrl(transaction.IsFirstHalf, transaction.SubmittedTransactionType, transaction.Pricing.ToAbsPricing(), selectedMatches);
                     }
 
                     if (string.IsNullOrWhiteSpace(matchUrl))
@@ -136,8 +145,16 @@ namespace FBMS.Infrastructure.HangfireServices
                     };
 
                     transaction.SubmittedAmount = Math.Round(transaction.SubmittedAmount, 0, MidpointRounding.AwayFromZero);
-                    matchBet.Stack = Convert.ToInt32(transaction.SubmittedAmount);
-                    //matchBet.Stack = 1; // 0 for now
+
+                    if (_clientApiCrawlerSettings.IsTestingStack)
+                    {
+                        matchBet.Stack = 1;
+                    }
+                    else
+                    {
+                        matchBet.Stack = Convert.ToInt32(transaction.SubmittedAmount);
+                    }    
+
                     var response = await _matchSchedulingService.SubmitMatchTransaction(matchBet);
 
                     _logger.LogWarning(response);

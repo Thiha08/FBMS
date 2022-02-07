@@ -6,6 +6,8 @@ namespace FBMS.Core.Constants
 {
     public static class TransactionResponseStatus
     {
+        public static string OverAcceptablePassedMinute { get { return "Over acceptable passed minutes"; } }
+
         public static string NoBet { get { return "NOBET"; } }
 
         public static string OddChanged { get { return "Odds has changed to"; } }

@@ -167,6 +167,9 @@ namespace FBMS.Infrastructure.Services
 
                 foreach (var item in transactionCtos)
                 {
+                    string iString = item.TransactionDate.ReplaceFirst(" ", "/" + DateTime.UtcNow.Year.ToString() + " ");
+                    var transactionDate = iString.ToUtcTime("dd/MM/yyyy h:mm:ss tt", _hostApiCrawlerSettings.TimeZone);
+
                     var transaction = new Transaction();
                     transaction.MemberId = member.Id;
                     transaction.SerialNumber = item.SerialNumber;
@@ -176,9 +179,9 @@ namespace FBMS.Infrastructure.Services
                     transaction.HomeTeam = item.HomeTeam;
                     transaction.AwayTeam = item.AwayTeam;
                     transaction.Pricing = item.Pricing?.Replace("@", "");
-                    string iString = item.TransactionDate.ReplaceFirst(" ", "/" + DateTime.UtcNow.Year.ToString() + " ");
-                    transaction.TransactionDate = iString.ToUtcTime("dd/MM/yyyy h:mm:ss tt", _hostApiCrawlerSettings.TimeZone);
+                    transaction.TransactionDate = transactionDate; // UTC
                     transaction.TransactionType = GetTransactionType(item.TransactionType, item.HomeTeam, item.AwayTeam);
+                    transaction.IsFirstHalf = !string.IsNullOrWhiteSpace(item.FirstHalf) && item.FirstHalf.Contains("(First Half)");
                     transaction.Amount = Convert.ToDecimal(item.Amount);
                     var convertedTransaction = member.TransactionTemplate.ApplyTransactionTemplate(transaction);
                     transactions.Add(convertedTransaction);

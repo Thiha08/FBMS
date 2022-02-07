@@ -1,0 +1,72 @@
+﻿@using FBMS.Core.Dtos;
+
+@model SettingDto
+
+@{
+    ViewData["Title"] = "Edit Setting";
+}
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-controller="Setting" asp-action="Edit">
+                <div class="card card-stats">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">settings</i>
+                        </div>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <label asp-for="Name" class="col-md-3 col-form-label"></label>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <input asp-for="Name" class="form-control" autocomplete="off" readonly/>
+
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="Key" class="col-md-3 col-form-label"></label>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <input asp-for="Key" class="form-control" autocomplete="off" readonly/>
+
+                                    <span asp-validation-for="Key" class="text-danger"></span>
+                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label asp-for="Value" class="col-md-3 col-form-label"></label>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <input asp-for="Value" class="form-control" autocomplete="off" />
+
+                                    <span asp-validation-for="Value" class="text-danger"></span>
+                                    <span class="has-error form-control-feedback"><i class="material-icons">clear</i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-fill btn-success">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div>
+        <a class="back-to" asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+
+
+
+
+
+
